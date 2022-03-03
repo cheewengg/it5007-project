@@ -4,10 +4,10 @@
 
 1. Docker Pull Image 
 - docker pull garyngkaiyi/webapp
-- docker run -dit -p 3000:3000 --name devtest2 garyngkaiyi/webapp
+- docker run -dit -p 3000:3000 --name webapp garyngkaiyi/webapp:latest
 
 if you need to share local directory with container 
-docker run -dit -p 3000:3000 --name devtest -v {"C:/Users/..."}:/rebalance ubuntu
+docker run -dit -p 3000:3000 --name webapp -v {"C:/Users/..."}:/rebalance ubuntu
 
 2. Git Config User & E-mail
 - git config --global user.name "Your Name"
@@ -37,15 +37,15 @@ npm install --save-dev @babel/preset-react@7
 
 ## To Prepare Windows PC for Development (one-time)
 1. Download Docker Desktop 
-	https://www.docker.com/products/docker-desktop
+	- https://www.docker.com/products/docker-desktop
 	
 2. Install Windows Subsystem for Linux 
-	https://docs.microsoft.com/en-us/windows/wsl/install
+	- https://docs.microsoft.com/en-us/windows/wsl/install
 
 3. Open Powershell (as admin)
-	dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-	dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-	wsl --set-default-version 2
+	- dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+	- dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+	- wsl --set-default-version 2
 
 4. May Need Restart 
 
@@ -58,29 +58,29 @@ This should not be necessary unless you feel that you would like to recreate the
 	- docker run -dit -p 3000:3000 --name webapp ubuntu		
 
 2. Setup Working Environment
-	apt update
-	apt upgrade
+	- apt update
+	- apt upgrade
 	
 3. Install Visual Studio Code Plugin
-	Open VS Code, Extension, Docker 
-	You may run an Ubuntu shell on your image
+	- Open VS Code, Extension, Docker 
+	- You may run an Ubuntu shell on your image
 
 4. Install Curl (ubuntu shell) 
-	apt install curl
-	apt install screen
+	- apt install -y curl
+	- apt install -y screen
 
 5. Install Node Version Manager & Node Package Manager(ubuntu shell)
-	https://github.com/nvm-sh/nvm gives the below: 
+	- https://github.com/nvm-sh/nvm gives the below: 
 	
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-	nvm install 10
-	nvm alias default 10
-	node --version
-	npm --version
-	npm install -g npm@6
+	- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+	- nvm install 10
+	- nvm alias default 10
+	- node --version
+	- npm --version
+	- npm install -g npm@6
 	
 6. Install Git 
-	apt install git 
+	apt install -y git 
 
 7. Install Express
 	npm install express
@@ -88,7 +88,7 @@ This should not be necessary unless you feel that you would like to recreate the
 	npm install express@4
 
 8. Install Mongo DB (worked only in CLI, not code cli)
-	apt-get install wget
+	apt-get install -y wget
 	apt-get update && apt-get install -y gnupg2
 	
 	MongoDB installation for WSL --> https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database
@@ -100,7 +100,8 @@ This should not be necessary unless you feel that you would like to recreate the
 10. Push Docker Image to Repository 
     create public or private repository using docker web UI (requires signin)
 
-    docker tag webapp garyngkaiyi/webapp
+    docker tag garyngkayi/webapp garyngkaiyi/webapp
+    docker push garyngkaiyi/webapp
 
 11. Copy Files to and From Container 
     docker cp sourcefile container:directory
