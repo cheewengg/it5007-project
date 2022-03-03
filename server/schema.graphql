@@ -1,0 +1,71 @@
+scalar GraphQLDate
+
+enum StatusType {
+  New
+  Assigned
+  Fixed
+  Closed
+}
+
+type Issue {
+  event_name: String
+  country: String
+  ticker: String
+  ticker_px_close_1D: Float
+  announcement_date: String
+  trade_date: String
+  prediction_date: String
+  days_to_announcement: String
+  conviction: String
+  Side: Int
+  demand_usd: Float
+  demand_shares: Float
+  demand_adv: Float
+  ticker_pct_chg_1D: Float
+  ticker_pct_chg_5D: Float
+  ticker_pct_chg_30D: Float
+  ticker_pct_chg_90D: Float
+  ticker_vs_index_1D: Float
+  ticker_vs_index_5D: Float
+  ticker_vs_index_30D: Float
+  ticker_vs_index_90D: Float
+  ticker_vs_ticker_30DpreA: Float
+  ticker_vs_index_30DpreA: Float
+  average_volume: Float
+  excess_volume1D_A: Float
+  excess_volume5D_A: Float
+  excess_volume15D_A: Float
+  excess_volume30D_A: Float
+  excess_volume1D_B: Float
+  excess_volume5D_B: Float
+  excess_volume15D_B: Float
+  excess_volume30D_B: Float
+  exp_reporting_date: String
+  benchmark_index: String
+  lookback_duration: String
+  lookback_end_days_ago: String
+  remarks: String
+}
+
+"Toned down Issue, used as inputs, without server generated values."
+input IssueInputs {
+  title: String!
+  "Optional, if not supplied, will be set to 'New'"
+  status: StatusType = New
+  owner: String
+  effort: Int
+  due: GraphQLDate
+  
+}
+
+##### Top level declarations
+
+type Query {
+  about: String!
+  issueList: [Issue!]!
+}
+
+type Mutation {
+  setAboutMessage(message: String!): String
+  issueAdd(issue: IssueInputs!): Issue!
+}
