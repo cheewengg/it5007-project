@@ -5,10 +5,10 @@ function jsonDateReviver(key, value) {
   return value;
 }
 
-class IssueFilter extends React.Component {
+class Charting extends React.Component {
   render() {
     return (
-      <div>This is a placeholder for the issue filter.</div>
+      <div>This is a placeholder for the charting area</div>
     );
   }
 }
@@ -20,13 +20,14 @@ function IssueRow(props) {
       <td>{issue.event_name}</td>
       <td>{issue.country}</td>
       <td>{issue.ticker}</td>
+      <td>{issue.name}</td>
       <td>{issue.ticker_px_close_1D}</td>
       <td>{issue.announcement_date}</td>
       <td>{issue.trade_date}</td>
       <td>{issue.prediction_date}</td>
       <td>{issue.days_to_announcement}</td>
       <td>{issue.conviction}</td>
-      <td>{issue.Side}</td>
+      <td>{issue.side}</td>
       <td>{issue.demand_usd}</td>
       <td>{issue.demand_shares}</td>
       <td>{issue.demand_adv}</td>
@@ -53,6 +54,7 @@ function IssueRow(props) {
       <td>{issue.benchmark_index}</td>
       <td>{issue.lookback_duration}</td>
       <td>{issue.lookback_end_days_ago}</td>
+      <td>{issue.creator}</td>
     </tr>
   );
 }
@@ -69,6 +71,7 @@ function IssueTable(props) {
           <th>Event Name</th>
           <th>Country</th>
           <th>Ticker</th>
+          <th>Name</th>
           <th>Last Px</th>
           <th>Announcement Date</th>
           <th>Trade Date</th>
@@ -102,6 +105,7 @@ function IssueTable(props) {
           <th>Benchmark</th>
           <th>Benchmark Duration</th>
           <th>Benchmark End (days ago)</th>
+          <th>Creator</th>
         </tr>
       </thead>
       <tbody>
@@ -121,7 +125,8 @@ class IssueAdd extends React.Component {
     e.preventDefault();
     const form = document.forms.issueAdd;
     const issue = {
-      owner: form.owner.value, title: form.title.value,
+      owner: form.owner.value, 
+      title: form.title.value,
       due: new Date(new Date().getTime() + 1000*60*60*24*10),
     }
     this.props.createIssue(issue);
@@ -131,9 +136,9 @@ class IssueAdd extends React.Component {
   render() {
     return (
       <form name="issueAdd" onSubmit={this.handleSubmit}>
-        <input type="text" name="owner" placeholder="Owner" />
-        <input type="text" name="title" placeholder="Title" />
-        <button>Add</button>
+        <input type="text" name="owner" placeholder="Example Input1" />
+        <input type="text" name="title" placeholder="Example Input2" />
+        <button>Add to Trade Basket</button>
       </form>
     );
   }
@@ -181,13 +186,14 @@ class IssueList extends React.Component {
         event_name
         country
         ticker
+        name
         ticker_px_close_1D
         announcement_date
         trade_date
         prediction_date
         days_to_announcement
         conviction
-        Side
+        side
         demand_usd
         demand_shares
         demand_adv
@@ -213,7 +219,8 @@ class IssueList extends React.Component {
         exp_reporting_date
         benchmark_index
         lookback_duration
-        lookback_end_days_ago       
+        lookback_end_days_ago
+        creator
       }
     }`;
 
@@ -241,7 +248,7 @@ class IssueList extends React.Component {
       <React.Fragment>
         <h1>Index Rebalance Watchlist (Beta)</h1>
         <IssueAdd createIssue={this.createIssue} />
-        <IssueFilter />
+        <Charting />
         <hr />
         <IssueTable issues={this.state.issues} />
         <hr />

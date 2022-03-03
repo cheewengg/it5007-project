@@ -14,7 +14,6 @@ const url = 'mongodb://localhost/indexrebalance';
 // const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
 
 let db;
-
 let aboutMessage = "Index Rebalance Watcher API v1.0";
 
 const issuesDB = [
@@ -65,8 +64,9 @@ function setAboutMessage(_, { message }) {
 }
 
 async function issueList() {
-  const issues = await db.collection('intropic').find({}).toArray();
-  return issues;
+  const issues = await db.collection('brianfreitas').find({}).toArray();
+  const issues2 = await db.collection('intropic').find({}).toArray();
+  return issues.concat(issues2);
 }
 
 function issueValidate(issue) {

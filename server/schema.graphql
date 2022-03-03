@@ -11,13 +11,14 @@ type Issue {
   event_name: String
   country: String
   ticker: String
+  name: String
   ticker_px_close_1D: Float
   announcement_date: String
   trade_date: String
   prediction_date: String
   days_to_announcement: String
   conviction: String
-  Side: Int
+  side: Int
   demand_usd: Float
   demand_shares: Float
   demand_adv: Float
@@ -44,7 +45,7 @@ type Issue {
   benchmark_index: String
   lookback_duration: String
   lookback_end_days_ago: String
-  remarks: String
+  creator: String
 }
 
 "Toned down Issue, used as inputs, without server generated values."
