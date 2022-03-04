@@ -107,36 +107,53 @@ function IssueTable(props) {
 
 class Charting extends React.Component {
   render() {
+    var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+    var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+    new Chart("myChart", {
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: "blue",
+          borderColor: "blue",
+          data: yValues
+        }]
+      },
+      options:{}
+    });
+
     return (
-      <div>This is a placeholder for the charting area</div>
+      <div>
+        This is a placeholder for the charting area
+      
+        <canvas id="myChart"></canvas>
+    </div>
     );
   }
 }
 
 function filterTable() {
-  let eventDropdown, event, eventFilter;
-  let countryDropdown, country, countryFilter;
-  let table, rows, cells 
-
-  eventDropdown = document.getElementById("eventDropdown");
-  eventFilter = eventDropdown.value;
-
-  countryDropdown = document.getElementById("countryDropdown");
-  countryFilter = countryDropdown.value;
-
+  let table, rows, cells; 
+  let event, eventFilter, eventBool;
+  let country, countryFilter, countryBool;
+   
   table = document.getElementById("rebalanceTable");
   rows = table.getElementsByTagName('tr');  
+  
+  eventFilter = document.getElementById("eventDropdown").value;
+  countryFilter = document.getElementById("countryDropdown").value;
 
   for (let row of rows) { 
     cells = row.getElementsByTagName("td");
 
-    event = cells[0] || null; 
+    event = cells[0] || null;   // be careful, identification of value is index-based
     country = cells[1] || null;
-    
-    console.log(event, eventFilter)
-    console.log(country, countryFilter)
 
-    if (eventFilter === "All Events" || !event || (eventFilter === event.textContent) && (countryFilter === "All Countries" || !country || (countryFilter === country.textContent))) {
+    eventBool = ((eventFilter === ("All Events") || !event || (eventFilter === event.textContent)))
+    countryBool = ((countryFilter === "All Countries") || !country || (countryFilter === country.textContent))
+    
+    if (eventBool && countryBool) {
         row.style.display = "";
     }
     else {
@@ -145,28 +162,72 @@ function filterTable() {
   }
 }
 
+function DropdownOptions({ options }) {
+  return (
+      options.map(option => 
+      <option key={option.id} value={option.value}>                                   
+        {option.value}
+      </option>
+    )
+  );
+};
+
+
 class EventFilter extends React.Component {
   render() {
+
+    // need to code automated dropdown options
+    const eventList = [
+      {
+        id: 1,
+        value: 'All Events'
+      }, {
+          id: 2,
+          value: 'FTSE TW50 March'
+      }, {
+          id: 3,
+          value: 'ASX50 March'
+      }, {
+          id: 4,
+          value: 'ASX200 March'
+      }, {
+          id: 5,
+          value: 'FTSE China 50 March'
+      }
+    ];
+
     return (
       <select id="eventDropdown" onInput={filterTable}>
-          <option>All Events</option>
-          <option>FTSE TW50 March</option>
-          <option>ASX50 March</option>
-          <option>ASX200 March</option>
-      </select>
+        <DropdownOptions options={eventList} />
+      </select>  
     );
   }
 }
 
 class CountryFilter extends React.Component {
   render() {
+
+    // need to code out automated dropdown options
+    const countryList = [
+      {
+          id: 1,
+          value: 'All Countries'
+      }, {
+          id: 2,
+          value: 'TT'
+      }, {
+          id: 3,
+          value: 'AU'
+      }, {
+          id: 4,
+          value: 'HK'
+      }
+    ];
+    
     return (
       <select id="countryDropdown" onInput={filterTable}>
-          <option>All Countries</option>
-          <option>TT</option>
-          <option>AU</option>
-          <option>HK</option>
-      </select>
+        <DropdownOptions options={countryList} />
+      </select>  
     );
   }
 }
@@ -225,6 +286,9 @@ async function graphQLFetch(query, variables = {}) {
     alert(`Error in sending data to server: ${e.message}`);
   }
 }
+
+
+
 
 class IssueList extends React.Component {
   constructor() {
@@ -304,7 +368,7 @@ class IssueList extends React.Component {
     return (
       <React.Fragment>
         <h1>Index Rebalance Watchlist (Beta)</h1>
-        <IssueAdd createIssue={this.createIssue} />
+        {/* <IssueAdd createIssue={this.createIssue} /> */}
         <Charting />
         <EventFilter /> 
         <CountryFilter /> 

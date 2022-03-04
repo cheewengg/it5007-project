@@ -23,30 +23,45 @@ function IssueTable(props) {
 
 class Charting extends React.Component {
   render() {
-    return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the charting area");
+    var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+    var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+    new Chart("myChart", {
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: "blue",
+          borderColor: "blue",
+          data: yValues
+        }]
+      },
+      options: {}
+    });
+    return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the charting area", /*#__PURE__*/React.createElement("canvas", {
+      id: "myChart"
+    }));
   }
 
 }
 
 function filterTable() {
-  let eventDropdown, event, eventFilter;
-  let countryDropdown, country, countryFilter;
   let table, rows, cells;
-  eventDropdown = document.getElementById("eventDropdown");
-  eventFilter = eventDropdown.value;
-  countryDropdown = document.getElementById("countryDropdown");
-  countryFilter = countryDropdown.value;
+  let event, eventFilter, eventBool;
+  let country, countryFilter, countryBool;
   table = document.getElementById("rebalanceTable");
   rows = table.getElementsByTagName('tr');
+  eventFilter = document.getElementById("eventDropdown").value;
+  countryFilter = document.getElementById("countryDropdown").value;
 
   for (let row of rows) {
     cells = row.getElementsByTagName("td");
-    event = cells[0] || null;
-    country = cells[1] || null;
-    console.log(event, eventFilter);
-    console.log(country, countryFilter);
+    event = cells[0] || null; // be careful, identification of value is index-based
 
-    if (eventFilter === "All Events" || !event || eventFilter === event.textContent && (countryFilter === "All Countries" || !country || countryFilter === country.textContent)) {
+    country = cells[1] || null;
+    eventBool = eventFilter === "All Events" || !event || eventFilter === event.textContent;
+    countryBool = countryFilter === "All Countries" || !country || countryFilter === country.textContent;
+
+    if (eventBool && countryBool) {
       row.style.display = "";
     } else {
       row.style.display = "none";
@@ -54,22 +69,68 @@ function filterTable() {
   }
 }
 
+function DropdownOptions({
+  options
+}) {
+  return options.map(option => /*#__PURE__*/React.createElement("option", {
+    key: option.id,
+    value: option.value
+  }, option.value));
+}
+
+;
+
 class EventFilter extends React.Component {
   render() {
+    // need to code automated dropdown options
+    const eventList = [{
+      id: 1,
+      value: 'All Events'
+    }, {
+      id: 2,
+      value: 'FTSE TW50 March'
+    }, {
+      id: 3,
+      value: 'ASX50 March'
+    }, {
+      id: 4,
+      value: 'ASX200 March'
+    }, {
+      id: 5,
+      value: 'FTSE China 50 March'
+    }];
     return /*#__PURE__*/React.createElement("select", {
       id: "eventDropdown",
       onInput: filterTable
-    }, /*#__PURE__*/React.createElement("option", null, "All Events"), /*#__PURE__*/React.createElement("option", null, "FTSE TW50 March"), /*#__PURE__*/React.createElement("option", null, "ASX50 March"), /*#__PURE__*/React.createElement("option", null, "ASX200 March"));
+    }, /*#__PURE__*/React.createElement(DropdownOptions, {
+      options: eventList
+    }));
   }
 
 }
 
 class CountryFilter extends React.Component {
   render() {
+    // need to code out automated dropdown options
+    const countryList = [{
+      id: 1,
+      value: 'All Countries'
+    }, {
+      id: 2,
+      value: 'TT'
+    }, {
+      id: 3,
+      value: 'AU'
+    }, {
+      id: 4,
+      value: 'HK'
+    }];
     return /*#__PURE__*/React.createElement("select", {
       id: "countryDropdown",
       onInput: filterTable
-    }, /*#__PURE__*/React.createElement("option", null, "All Countries"), /*#__PURE__*/React.createElement("option", null, "TT"), /*#__PURE__*/React.createElement("option", null, "AU"), /*#__PURE__*/React.createElement("option", null, "HK"));
+    }, /*#__PURE__*/React.createElement(DropdownOptions, {
+      options: countryList
+    }));
   }
 
 }
@@ -223,9 +284,7 @@ class IssueList extends React.Component {
   }
 
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(IssueAdd, {
-      createIssue: this.createIssue
-    }), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
       issues: this.state.issues
     }), /*#__PURE__*/React.createElement("hr", null));
   }
