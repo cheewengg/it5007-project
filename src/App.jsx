@@ -5,14 +5,6 @@ function jsonDateReviver(key, value) {
   return value;
 }
 
-class Charting extends React.Component {
-  render() {
-    return (
-      <div>This is a placeholder for the charting area</div>
-    );
-  }
-}
-
 function IssueRow(props) {
   const issue = props.issue;
   return (
@@ -60,12 +52,10 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  const issueRows = props.issues.map(issue =>
-    <IssueRow key={issue.id} issue={issue} />
-  );
+  const issueRows = props.issues.map(issue => <IssueRow key={issue.id} issue={issue} />);
 
   return (
-    <table className="bordered-table">
+    <table id="rebalanceTable" className="bordered-table">
       <thead>
         <tr>
           <th>Event Name</th>
@@ -115,6 +105,49 @@ function IssueTable(props) {
   );
 }
 
+class Charting extends React.Component {
+  render() {
+    return (
+      <div>This is a placeholder for the charting area</div>
+    );
+  }
+}
+
+function filterTable() {
+  let dropdown, table, rows, cells, country, filter;
+  dropdown = document.getElementById("countryDropdown");
+  table = document.getElementById("rebalanceTable");
+  rows = table.getElementsByTagName('tr');
+      
+  filter = dropdown.value;
+
+  for (let row of rows) { 
+    cells = row.getElementsByTagName("td");
+    country = cells[1] || null; // gets the 2nd `td` or nothing
+
+    if (filter === "All Countries" || !country || (filter === country.textContent)) {
+      row.style.display = ""; // shows row
+    }
+    else {
+      row.style.display = "none"; // hide row
+    }
+  }
+}
+
+class Filter extends React.Component {
+
+  render() {
+    return (
+      <select id="countryDropdown" onInput={filterTable}>
+          <option>All Countries</option>
+          <option>TT</option>
+          <option>AU</option>
+          <option>HK</option>
+      </select>
+    );
+  }
+}
+
 class IssueAdd extends React.Component {
   constructor() {
     super();
@@ -130,7 +163,8 @@ class IssueAdd extends React.Component {
       due: new Date(new Date().getTime() + 1000*60*60*24*10),
     }
     this.props.createIssue(issue);
-    form.owner.value = ""; form.title.value = "";
+    form.owner.value = ""; 
+    form.title.value = "";
   }
 
   render() {
@@ -249,6 +283,7 @@ class IssueList extends React.Component {
         <h1>Index Rebalance Watchlist (Beta)</h1>
         <IssueAdd createIssue={this.createIssue} />
         <Charting />
+        <Filter /> 
         <hr />
         <IssueTable issues={this.state.issues} />
         <hr />

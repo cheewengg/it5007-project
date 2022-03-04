@@ -5,13 +5,6 @@ function jsonDateReviver(key, value) {
   return value;
 }
 
-class Charting extends React.Component {
-  render() {
-    return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the charting area");
-  }
-
-}
-
 function IssueRow(props) {
   const issue = props.issue;
   return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, issue.announcement_date), /*#__PURE__*/React.createElement("td", null, issue.trade_date), /*#__PURE__*/React.createElement("td", null, issue.prediction_date), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, issue.demand_usd), /*#__PURE__*/React.createElement("td", null, issue.demand_shares), /*#__PURE__*/React.createElement("td", null, issue.demand_adv), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_1D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_5D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_30D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_90D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_1D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_5D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_30D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_90D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_ticker_30DpreA), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_30DpreA), /*#__PURE__*/React.createElement("td", null, issue.average_volume), /*#__PURE__*/React.createElement("td", null, issue.excess_volume1D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume5D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume15D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume30D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume1D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume5D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume15D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume30D_B), /*#__PURE__*/React.createElement("td", null, issue.exp_reporting_date), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
@@ -23,8 +16,48 @@ function IssueTable(props) {
     issue: issue
   }));
   return /*#__PURE__*/React.createElement("table", {
+    id: "rebalanceTable",
     className: "bordered-table"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand $USD"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
+}
+
+class Charting extends React.Component {
+  render() {
+    return /*#__PURE__*/React.createElement("div", null, "This is a placeholder for the charting area");
+  }
+
+}
+
+function filterTable() {
+  let dropdown, table, rows, cells, country, filter;
+  dropdown = document.getElementById("countryDropdown");
+  table = document.getElementById("rebalanceTable");
+  rows = table.getElementsByTagName('tr');
+  console.log(dropdown);
+  console.log(table);
+  console.log(rows);
+  filter = dropdown.value;
+
+  for (let row of rows) {
+    cells = row.getElementsByTagName("td");
+    country = cells[1] || null; // gets the 2nd `td` or nothing
+
+    if (filter === "All Countries" || !country || filter === country.textContent) {
+      row.style.display = ""; // shows row
+    } else {
+      row.style.display = "none"; // hide row
+    }
+  }
+}
+
+class Filter extends React.Component {
+  render() {
+    return /*#__PURE__*/React.createElement("select", {
+      id: "countryDropdown",
+      onInput: filterTable
+    }, /*#__PURE__*/React.createElement("option", null, "All Countries"), /*#__PURE__*/React.createElement("option", null, "TT"), /*#__PURE__*/React.createElement("option", null, "AU"), /*#__PURE__*/React.createElement("option", null, "HK"));
+  }
+
 }
 
 class IssueAdd extends React.Component {
@@ -178,7 +211,7 @@ class IssueList extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(IssueAdd, {
       createIssue: this.createIssue
-    }), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
+    }), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(Filter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
       issues: this.state.issues
     }), /*#__PURE__*/React.createElement("hr", null));
   }
