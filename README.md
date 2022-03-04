@@ -113,4 +113,3 @@ This should not be necessary unless you feel that you would like to recreate the
     copy docker files --> local PC 
     - docker ps
     - docker cp 135950565ad8:/somefile.txt ~/Desktop/somefile.txt
-
