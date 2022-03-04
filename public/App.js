@@ -29,28 +29,42 @@ class Charting extends React.Component {
 }
 
 function filterTable() {
-  let dropdown, table, rows, cells, country, filter;
-  dropdown = document.getElementById("countryDropdown");
+  let eventDropdown, event, eventFilter;
+  let countryDropdown, country, countryFilter;
+  let table, rows, cells;
+  eventDropdown = document.getElementById("eventDropdown");
+  eventFilter = eventDropdown.value;
+  countryDropdown = document.getElementById("countryDropdown");
+  countryFilter = countryDropdown.value;
   table = document.getElementById("rebalanceTable");
   rows = table.getElementsByTagName('tr');
-  console.log(dropdown);
-  console.log(table);
-  console.log(rows);
-  filter = dropdown.value;
 
   for (let row of rows) {
     cells = row.getElementsByTagName("td");
-    country = cells[1] || null; // gets the 2nd `td` or nothing
+    event = cells[0] || null;
+    country = cells[1] || null;
+    console.log(event, eventFilter);
+    console.log(country, countryFilter);
 
-    if (filter === "All Countries" || !country || filter === country.textContent) {
-      row.style.display = ""; // shows row
+    if (eventFilter === "All Events" || !event || eventFilter === event.textContent && (countryFilter === "All Countries" || !country || countryFilter === country.textContent)) {
+      row.style.display = "";
     } else {
-      row.style.display = "none"; // hide row
+      row.style.display = "none";
     }
   }
 }
 
-class Filter extends React.Component {
+class EventFilter extends React.Component {
+  render() {
+    return /*#__PURE__*/React.createElement("select", {
+      id: "eventDropdown",
+      onInput: filterTable
+    }, /*#__PURE__*/React.createElement("option", null, "All Events"), /*#__PURE__*/React.createElement("option", null, "FTSE TW50 March"), /*#__PURE__*/React.createElement("option", null, "ASX50 March"), /*#__PURE__*/React.createElement("option", null, "ASX200 March"));
+  }
+
+}
+
+class CountryFilter extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("select", {
       id: "countryDropdown",
@@ -211,7 +225,7 @@ class IssueList extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(IssueAdd, {
       createIssue: this.createIssue
-    }), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(Filter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
+    }), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
       issues: this.state.issues
     }), /*#__PURE__*/React.createElement("hr", null));
   }

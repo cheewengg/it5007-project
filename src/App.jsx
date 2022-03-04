@@ -114,28 +114,51 @@ class Charting extends React.Component {
 }
 
 function filterTable() {
-  let dropdown, table, rows, cells, country, filter;
-  dropdown = document.getElementById("countryDropdown");
+  let eventDropdown, event, eventFilter;
+  let countryDropdown, country, countryFilter;
+  let table, rows, cells 
+
+  eventDropdown = document.getElementById("eventDropdown");
+  eventFilter = eventDropdown.value;
+
+  countryDropdown = document.getElementById("countryDropdown");
+  countryFilter = countryDropdown.value;
+
   table = document.getElementById("rebalanceTable");
-  rows = table.getElementsByTagName('tr');
-      
-  filter = dropdown.value;
+  rows = table.getElementsByTagName('tr');  
 
   for (let row of rows) { 
     cells = row.getElementsByTagName("td");
-    country = cells[1] || null; // gets the 2nd `td` or nothing
 
-    if (filter === "All Countries" || !country || (filter === country.textContent)) {
-      row.style.display = ""; // shows row
+    event = cells[0] || null; 
+    country = cells[1] || null;
+    
+    console.log(event, eventFilter)
+    console.log(country, countryFilter)
+
+    if (eventFilter === "All Events" || !event || (eventFilter === event.textContent) && (countryFilter === "All Countries" || !country || (countryFilter === country.textContent))) {
+        row.style.display = "";
     }
     else {
-      row.style.display = "none"; // hide row
+      row.style.display = "none";
     }
   }
 }
 
-class Filter extends React.Component {
+class EventFilter extends React.Component {
+  render() {
+    return (
+      <select id="eventDropdown" onInput={filterTable}>
+          <option>All Events</option>
+          <option>FTSE TW50 March</option>
+          <option>ASX50 March</option>
+          <option>ASX200 March</option>
+      </select>
+    );
+  }
+}
 
+class CountryFilter extends React.Component {
   render() {
     return (
       <select id="countryDropdown" onInput={filterTable}>
@@ -283,7 +306,8 @@ class IssueList extends React.Component {
         <h1>Index Rebalance Watchlist (Beta)</h1>
         <IssueAdd createIssue={this.createIssue} />
         <Charting />
-        <Filter /> 
+        <EventFilter /> 
+        <CountryFilter /> 
         <hr />
         <IssueTable issues={this.state.issues} />
         <hr />
