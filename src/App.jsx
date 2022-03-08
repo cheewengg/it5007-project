@@ -7,8 +7,12 @@ function jsonDateReviver(key, value) {
 
 function IssueRow(props) {
   const issue = props.issue;
+ 
   return (
     <tr>
+      <td>{issue.id}</td>
+      <td>{issue.visualize}</td>
+      <td>{issue.add_basket}</td>
       <td>{issue.event_name}</td>
       <td>{issue.country}</td>
       <td>{issue.ticker}</td>
@@ -52,12 +56,21 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
+  for (let i=0; i < props.issues.length; i++) {
+    props.issues[i].id = i + 1;
+    // props.issues[i].visualize = <button onClick={(e) => Chart(e, ticker=props.issues[i].ticker)}>Visualize</button>;
+    props.issues[i].visualize = <button onClick={(e) => ChartFunc(e, ticker=props.issues[i].ticker)}>Visualize</button>;
+    props.issues[i].add_basket = <button onClick={(e) => Shortlist(e, ticker=props.issues[i].ticker)}>Shortlist</button>;
+  }
   const issueRows = props.issues.map(issue => <IssueRow key={issue.id} issue={issue} />);
-
+  
   return (
     <table id="rebalanceTable" className="bordered-table">
       <thead>
         <tr>
+          <th>ID</th>
+          <th>Charting</th>
+          <th>Trade Basket</th>
           <th>Event Name</th>
           <th>Country</th>
           <th>Ticker</th>
@@ -105,35 +118,92 @@ function IssueTable(props) {
   );
 }
 
+function Shortlist() {
+  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket')
+}
+
+  
+function ChartFunc() {
+  console.log('Inside Chart Function');
+  console.log(ticker);
+
+  // console.log(ticker);
+
+  Chart.getChart('myChart').destroy();
+
+  var xValues = [10,20,30,40,50,60,70,80,90,100,110];
+  var yLineValues = [54,58,52,57,62,68,69,67,72,74,73];
+  var yBarValues = [100,101,110,120,80,60,110,100,90,100,105];
+
+  const data = {
+    labels: xValues,
+    datasets: [{
+      type: 'line',
+      label: 'Test Price History',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: yLineValues,
+    }, {
+      type: 'bar',
+      label: 'Test Volume History',
+      data: yBarValues, 
+    }
+  ]
+  };
+
+  const config = {
+    data: data,
+    options: {}
+  };
+
+  const myChart = new Chart(
+    document.getElementById('myChart'), 
+    config
+  );
+}
+
 class Charting extends React.Component {
   render() {
-    var xValues = [50,60,70,80,90,100,110,120,130,140,150];
-    var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+    // need to replace these hardcoded values with actual historical price data
+    var xValues = [10,20,30,40,50,60,70,80,90,100,110];
+    var yLineValues = [54,58,52,57,62,68,69,67,72,74,73];
+    var yBarValues = [100,101,110,120,80,60,110,100,90,100,105];
 
-    new Chart("myChart", {
-      type: "line",
-      data: {
-        labels: xValues,
-        datasets: [{
-          backgroundColor: "blue",
-          borderColor: "blue",
-          data: yValues
-        }]
-      },
-      options:{}
-    });
+    const data = {
+      labels: xValues,
+      datasets: [{
+        type: 'line',
+        label: 'Test Price History',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: yLineValues,
+      }, {
+        type: 'bar',
+        label: 'Test Volume History',
+        data: yBarValues, 
+      }
+    ]
+    };
+  
+    const config = {
+      data: data,
+      options: {}
+    };
+
+    new Chart(
+      document.getElementById('myChart'), 
+      config
+    );
 
     return (
       <div>
-        This is a placeholder for the charting area
-      
-        <canvas id="myChart"></canvas>
-    </div>
+        <canvas id="myChart" width="400" height="200" aria-label="myChart" role="img"></canvas>
+      </div>
     );
   }
 }
 
-function filterTable() {
+function FilterTable() {
   let table, rows, cells; 
   let event, eventFilter, eventBool;
   let country, countryFilter, countryBool;
@@ -147,8 +217,8 @@ function filterTable() {
   for (let row of rows) { 
     cells = row.getElementsByTagName("td");
 
-    event = cells[0] || null;   // be careful, identification of value is index-based
-    country = cells[1] || null;
+    event = cells[3] || null;   // be careful, identification of value is index-based
+    country = cells[4] || null;
 
     eventBool = ((eventFilter === ("All Events") || !event || (eventFilter === event.textContent)))
     countryBool = ((countryFilter === "All Countries") || !country || (countryFilter === country.textContent))
@@ -176,7 +246,7 @@ function DropdownOptions({ options }) {
 class EventFilter extends React.Component {
   render() {
 
-    // need to code automated dropdown options
+    // need to code automated dropdown options i/o hardcode
     const eventList = [
       {
         id: 1,
@@ -197,7 +267,7 @@ class EventFilter extends React.Component {
     ];
 
     return (
-      <select id="eventDropdown" onInput={filterTable}>
+      <select id="eventDropdown" onInput={FilterTable}>
         <DropdownOptions options={eventList} />
       </select>  
     );
@@ -207,7 +277,7 @@ class EventFilter extends React.Component {
 class CountryFilter extends React.Component {
   render() {
 
-    // need to code out automated dropdown options
+    // need to code out automated dropdown options i/o hardcode
     const countryList = [
       {
           id: 1,
@@ -225,7 +295,7 @@ class CountryFilter extends React.Component {
     ];
     
     return (
-      <select id="countryDropdown" onInput={filterTable}>
+      <select id="countryDropdown" onInput={FilterTable}>
         <DropdownOptions options={countryList} />
       </select>  
     );
@@ -286,9 +356,6 @@ async function graphQLFetch(query, variables = {}) {
     alert(`Error in sending data to server: ${e.message}`);
   }
 }
-
-
-
 
 class IssueList extends React.Component {
   constructor() {
