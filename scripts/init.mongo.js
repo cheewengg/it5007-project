@@ -6,6 +6,31 @@
 
 db.intropic.drop();
 db.brianfreitas.drop();
+db.historical.drop(); 
+
+const historicalData = [
+  {
+    ticker: '049770 KS Equity',
+    date: ['2022/02/01', '2022/02/02', '2022/02/03', '2022/02/04', '2022/02/05', '2022/02/06', '2022/02/07', '2022/02/08'],
+    px_last: [100,101,102,103,102,104,107,110],
+    px_volume: [30,40,20,50,80,100,80,60],
+  }, {
+    ticker: '9633 HK Equity',
+    date: ['2022/02/01', '2022/02/02', '2022/02/03', '2022/02/04', '2022/02/05', '2022/02/06', '2022/02/07', '2022/02/08'],
+    px_last: [50,51,52,53,52,44,48,52],
+    px_volume: [130,140,120,150,180,200,180,160],
+  }, {
+    ticker: '4938 TT Equity',
+    date: ['2022/02/01', '2022/02/02', '2022/02/03', '2022/02/04', '2022/02/05', '2022/02/06', '2022/02/07', '2022/02/08'],
+    px_last: [250,243,248,253,258,262,258,252],
+    px_volume: [100,180,200,210,220,180,180,150],
+  }, {
+    ticker: 'BSL AU Equity',
+    date: ['2022/02/01', '2022/02/02', '2022/02/03', '2022/02/04', '2022/02/05', '2022/02/06', '2022/02/07', '2022/02/08'],
+    px_last: [1.8, 2.2, 2.1, 2.3, 2.1, 2.25, 2.35, 2.41],
+    px_volume: [100, 120, 130, 110, 145, 130, 170, 200],
+  }
+]
 
 const intropicInitData = [
   {
@@ -175,9 +200,8 @@ const brianfreitasInitData = [
 
 db.intropic.insertMany(intropicInitData);
 db.brianfreitas.insertMany(brianfreitasInitData);
+db.historical.insertMany(historicalData);
 
-const count = db.intropic.count();
-const count2 = db.brianfreitas.count();
-
-print('Inserted', count, 'intropic');
-print('Inserted', count2, 'brianfreitas');
+print('Inserted', db.intropic.count(), 'intropic');
+print('Inserted', db.brianfreitas.count(), 'brianfreitas');
+print('Inserted', db.historical.count(), 'historical');

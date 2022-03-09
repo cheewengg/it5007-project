@@ -56,10 +56,22 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
+  function chartingSubmit(e, ticker) {
+    var data = []
+    e.preventDefault();
+
+    for (let i=0; i < props.data.length; i++) {
+      if (props.data[i].ticker == ticker) {
+        data = props.data[i];
+      }
+    }
+
+    new Charting().updateChart(ticker, data); 
+  }
+
   for (let i=0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
-    // props.issues[i].visualize = <button onClick={(e) => Chart(e, ticker=props.issues[i].ticker)}>Visualize</button>;
-    props.issues[i].visualize = <button onClick={(e) => ChartFunc(e, ticker=props.issues[i].ticker)}>Visualize</button>;
+    props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, ticker=props.issues[i].ticker)}>Visualize</button>;
     props.issues[i].add_basket = <button onClick={(e) => Shortlist(e, ticker=props.issues[i].ticker)}>Shortlist</button>;
   }
   const issueRows = props.issues.map(issue => <IssueRow key={issue.id} issue={issue} />);
@@ -118,78 +130,103 @@ function IssueTable(props) {
   );
 }
 
-function Shortlist() {
-  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket')
-}
-
-  
-function ChartFunc() {
-  console.log('Inside Chart Function');
-  console.log(ticker);
-
-  // console.log(ticker);
-
-  Chart.getChart('myChart').destroy();
-
-  var xValues = [10,20,30,40,50,60,70,80,90,100,110];
-  var yLineValues = [54,58,52,57,62,68,69,67,72,74,73];
-  var yBarValues = [100,101,110,120,80,60,110,100,90,100,105];
-
-  const data = {
-    labels: xValues,
-    datasets: [{
-      type: 'line',
-      label: 'Test Price History',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: yLineValues,
-    }, {
-      type: 'bar',
-      label: 'Test Volume History',
-      data: yBarValues, 
-    }
-  ]
-  };
-
-  const config = {
-    data: data,
-    options: {}
-  };
-
-  const myChart = new Chart(
-    document.getElementById('myChart'), 
-    config
-  );
-}
-
 class Charting extends React.Component {
-  render() {
-    // need to replace these hardcoded values with actual historical price data
-    var xValues = [10,20,30,40,50,60,70,80,90,100,110];
-    var yLineValues = [54,58,52,57,62,68,69,67,72,74,73];
-    var yBarValues = [100,101,110,120,80,60,110,100,90,100,105];
+  constructor() {
+    super();
+    this.state = {ticker: '4938 TT Equity'};
+    this.updateChart = this.updateChart.bind(this); 
+  }
 
+  updateChart(new_ticker, new_data) {
+    if (Chart.getChart('myChart')) {
+      Chart.getChart('myChart').destroy();
+    }
+  
+    var xValues = new_data.date;
+    var yLineValues = new_data.px_last;
+    var yBarValues = new_data.px_volume;
+      
     const data = {
       labels: xValues,
-      datasets: [{
-        type: 'line',
-        label: 'Test Price History',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: yLineValues,
-      }, {
-        type: 'bar',
-        label: 'Test Volume History',
-        data: yBarValues, 
-      }
-    ]
+      datasets: [
+        {
+          type: 'line',
+          label: 'Historical Price',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: yLineValues,
+          hidden: false,
+        }, {
+          type: 'bar',
+          label: 'Historical Volume',
+          data: yBarValues,
+          hidden: false,
+        }
+      ]
     };
   
     const config = {
       data: data,
-      options: {}
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: new_ticker
+          }
+        }
+      }
     };
+    
+    new Chart(
+      document.getElementById('myChart'), 
+      config
+    );
+  }
 
+  render() {
+    if (Chart.getChart('myChart')) {
+      Chart.getChart('myChart').destroy();
+    }
+  
+    for (let i=0; i < this.props.data.length; i++) {  
+      if (this.props.data[i].ticker == this.state.ticker) {
+        var xValues = this.props.data[i].date;
+        var yLineValues = this.props.data[i].px_last;
+        var yBarValues = this.props.data[i].px_volume;
+      }
+    }
+  
+    const data = {
+      labels: xValues,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Historical Price',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: yLineValues,
+          hidden: false,
+        }, {
+          type: 'bar',
+          label: 'Historical Volume',
+          data: yBarValues,
+          hidden: false,
+        }
+      ]
+    };
+  
+    const config = {
+      data: data,
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: this.state.ticker
+          }
+        }
+      }
+    };
+    
     new Chart(
       document.getElementById('myChart'), 
       config
@@ -201,6 +238,10 @@ class Charting extends React.Component {
       </div>
     );
   }
+}
+
+function Shortlist() {
+  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket')
 }
 
 function FilterTable() {
@@ -241,7 +282,6 @@ function DropdownOptions({ options }) {
     )
   );
 };
-
 
 class EventFilter extends React.Component {
   render() {
@@ -302,36 +342,6 @@ class CountryFilter extends React.Component {
   }
 }
 
-class IssueAdd extends React.Component {
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    const form = document.forms.issueAdd;
-    const issue = {
-      owner: form.owner.value, 
-      title: form.title.value,
-      due: new Date(new Date().getTime() + 1000*60*60*24*10),
-    }
-    this.props.createIssue(issue);
-    form.owner.value = ""; 
-    form.title.value = "";
-  }
-
-  render() {
-    return (
-      <form name="issueAdd" onSubmit={this.handleSubmit}>
-        <input type="text" name="owner" placeholder="Example Input1" />
-        <input type="text" name="title" placeholder="Example Input2" />
-        <button>Add to Trade Basket</button>
-      </form>
-    );
-  }
-}
-
 async function graphQLFetch(query, variables = {}) {
   try {
     const response = await fetch('/graphql', {
@@ -360,8 +370,7 @@ async function graphQLFetch(query, variables = {}) {
 class IssueList extends React.Component {
   constructor() {
     super();
-    this.state = { issues: [] };
-    this.createIssue = this.createIssue.bind(this);
+    this.state = { issues: [], historical: [] };
   }
 
   componentDidMount() {
@@ -412,35 +421,29 @@ class IssueList extends React.Component {
       }
     }`;
 
-    const data = await graphQLFetch(query);
-    if (data) {
-      this.setState({ issues: data.issueList });
-    }
-  }
-
-  async createIssue(issue) {
-    const query = `mutation issueAdd($issue: IssueInputs!) {
-      issueAdd(issue: $issue) {
-        id
+    const query2 = `query {
+      historicalData {
+        ticker
+        date
+        px_last
+        px_volume
       }
     }`;
 
-    const data = await graphQLFetch(query, { issue });
-    if (data) {
-      this.loadData();
-    }
+    const data = await graphQLFetch(query);
+    const data2 = await graphQLFetch(query2);
+    this.setState({ issues: data.issueList, historical: data2.historicalData });
   }
 
   render() {
     return (
       <React.Fragment>
         <h1>Index Rebalance Watchlist (Beta)</h1>
-        {/* <IssueAdd createIssue={this.createIssue} /> */}
-        <Charting />
+        <Charting data={this.state.historical}/>
         <EventFilter /> 
         <CountryFilter /> 
         <hr />
-        <IssueTable issues={this.state.issues} />
+        <IssueTable issues={this.state.issues} data={this.state.historical} />
         <hr />
       </React.Fragment>
     );

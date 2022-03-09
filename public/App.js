@@ -11,11 +11,23 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  for (let i = 0; i < props.issues.length; i++) {
-    props.issues[i].id = i + 1; // props.issues[i].visualize = <button onClick={(e) => Chart(e, ticker=props.issues[i].ticker)}>Visualize</button>;
+  function chartingSubmit(e, ticker) {
+    var data = [];
+    e.preventDefault();
 
+    for (let i = 0; i < props.data.length; i++) {
+      if (props.data[i].ticker == ticker) {
+        data = props.data[i];
+      }
+    }
+
+    new Charting().updateChart(ticker, data);
+  }
+
+  for (let i = 0; i < props.issues.length; i++) {
+    props.issues[i].id = i + 1;
     props.issues[i].visualize = /*#__PURE__*/React.createElement("button", {
-      onClick: e => ChartFunc(e, ticker = props.issues[i].ticker)
+      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker)
     }, "Visualize");
     props.issues[i].add_basket = /*#__PURE__*/React.createElement("button", {
       onClick: e => Shortlist(e, ticker = props.issues[i].ticker)
@@ -32,64 +44,92 @@ function IssueTable(props) {
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand $USD"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
 }
 
-function Shortlist() {
-  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket');
-}
-
-function ChartFunc() {
-  console.log('Inside Chart Function');
-  console.log(ticker); // console.log(ticker);
-
-  Chart.getChart('myChart').destroy(); // var new_xValues = [120,130,140,150,160,170,180,190,200,210,220];
-  // var new_yValues = [7,8,8,9,9,9,10,11,14,14,15];
-
-  var xValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-  var yLineValues = [54, 58, 52, 57, 62, 68, 69, 67, 72, 74, 73];
-  var yBarValues = [100, 101, 110, 120, 80, 60, 110, 100, 90, 100, 105];
-  const data = {
-    labels: xValues,
-    datasets: [{
-      type: 'line',
-      label: 'Test Price History',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: yLineValues
-    }, {
-      type: 'bar',
-      label: 'Test Volume History',
-      data: yBarValues
-    }]
-  };
-  const config = {
-    data: data,
-    options: {}
-  };
-  const myChart = new Chart(document.getElementById('myChart'), config);
-}
-
 class Charting extends React.Component {
-  render() {
-    // need to replace these hardcoded values with actual historical price data
-    var xValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110];
-    var yLineValues = [54, 58, 52, 57, 62, 68, 69, 67, 72, 74, 73];
-    var yBarValues = [100, 101, 110, 120, 80, 60, 110, 100, 90, 100, 105];
+  constructor() {
+    super();
+    this.state = {
+      ticker: '4938 TT Equity'
+    };
+    this.updateChart = this.updateChart.bind(this);
+  }
+
+  updateChart(new_ticker, new_data) {
+    if (Chart.getChart('myChart')) {
+      Chart.getChart('myChart').destroy();
+    }
+
+    var xValues = new_data.date;
+    var yLineValues = new_data.px_last;
+    var yBarValues = new_data.px_volume;
     const data = {
       labels: xValues,
       datasets: [{
         type: 'line',
-        label: 'Test Price History',
+        label: 'Historical Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
-        data: yLineValues
+        data: yLineValues,
+        hidden: false
       }, {
         type: 'bar',
-        label: 'Test Volume History',
-        data: yBarValues
+        label: 'Historical Volume',
+        data: yBarValues,
+        hidden: false
       }]
     };
     const config = {
       data: data,
-      options: {}
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: new_ticker
+          }
+        }
+      }
+    };
+    new Chart(document.getElementById('myChart'), config);
+  }
+
+  render() {
+    if (Chart.getChart('myChart')) {
+      Chart.getChart('myChart').destroy();
+    }
+
+    for (let i = 0; i < this.props.data.length; i++) {
+      if (this.props.data[i].ticker == this.state.ticker) {
+        var xValues = this.props.data[i].date;
+        var yLineValues = this.props.data[i].px_last;
+        var yBarValues = this.props.data[i].px_volume;
+      }
+    }
+
+    const data = {
+      labels: xValues,
+      datasets: [{
+        type: 'line',
+        label: 'Historical Price',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: yLineValues,
+        hidden: false
+      }, {
+        type: 'bar',
+        label: 'Historical Volume',
+        data: yBarValues,
+        hidden: false
+      }]
+    };
+    const config = {
+      data: data,
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: this.state.ticker
+          }
+        }
+      }
     };
     new Chart(document.getElementById('myChart'), config);
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("canvas", {
@@ -101,6 +141,10 @@ class Charting extends React.Component {
     }));
   }
 
+}
+
+function Shortlist() {
+  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket');
 }
 
 function FilterTable() {
@@ -194,42 +238,6 @@ class CountryFilter extends React.Component {
 
 }
 
-class IssueAdd extends React.Component {
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    const form = document.forms.issueAdd;
-    const issue = {
-      owner: form.owner.value,
-      title: form.title.value,
-      due: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)
-    };
-    this.props.createIssue(issue);
-    form.owner.value = "";
-    form.title.value = "";
-  }
-
-  render() {
-    return /*#__PURE__*/React.createElement("form", {
-      name: "issueAdd",
-      onSubmit: this.handleSubmit
-    }, /*#__PURE__*/React.createElement("input", {
-      type: "text",
-      name: "owner",
-      placeholder: "Example Input1"
-    }), /*#__PURE__*/React.createElement("input", {
-      type: "text",
-      name: "title",
-      placeholder: "Example Input2"
-    }), /*#__PURE__*/React.createElement("button", null, "Add to Trade Basket"));
-  }
-
-}
-
 async function graphQLFetch(query, variables = {}) {
   try {
     const response = await fetch('/graphql', {
@@ -266,9 +274,9 @@ class IssueList extends React.Component {
   constructor() {
     super();
     this.state = {
-      issues: []
+      issues: [],
+      historical: []
     };
-    this.createIssue = this.createIssue.bind(this);
   }
 
   componentDidMount() {
@@ -318,33 +326,28 @@ class IssueList extends React.Component {
         creator
       }
     }`;
-    const data = await graphQLFetch(query);
-
-    if (data) {
-      this.setState({
-        issues: data.issueList
-      });
-    }
-  }
-
-  async createIssue(issue) {
-    const query = `mutation issueAdd($issue: IssueInputs!) {
-      issueAdd(issue: $issue) {
-        id
+    const query2 = `query {
+      historicalData {
+        ticker
+        date
+        px_last
+        px_volume
       }
     }`;
-    const data = await graphQLFetch(query, {
-      issue
+    const data = await graphQLFetch(query);
+    const data2 = await graphQLFetch(query2);
+    this.setState({
+      issues: data.issueList,
+      historical: data2.historicalData
     });
-
-    if (data) {
-      this.loadData();
-    }
   }
 
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
-      issues: this.state.issues
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(Charting, {
+      data: this.state.historical
+    }), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
+      issues: this.state.issues,
+      data: this.state.historical
     }), /*#__PURE__*/React.createElement("hr", null));
   }
 

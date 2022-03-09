@@ -51,6 +51,7 @@ const resolvers = {
   Query: {
     about: () => aboutMessage,
     issueList,
+    historicalData,
   },
   Mutation: {
     setAboutMessage,
@@ -67,6 +68,11 @@ async function issueList() {
   const issues = await db.collection('brianfreitas').find({}).toArray();
   const issues2 = await db.collection('intropic').find({}).toArray();
   return issues.concat(issues2);
+}
+
+async function historicalData() {
+  const historical = await db.collection('historical').find({}).toArray();
+  return historical;
 }
 
 function issueValidate(issue) {

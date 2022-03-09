@@ -48,6 +48,14 @@ type Issue {
   creator: String
 }
 
+type Historical {
+  ticker: String
+  date: [String]
+  px_last: [Float]
+  px_volume: [Int]
+}
+
+
 "Toned down Issue, used as inputs, without server generated values."
 input IssueInputs {
   title: String!
@@ -64,6 +72,7 @@ input IssueInputs {
 type Query {
   about: String!
   issueList: [Issue!]!
+  historicalData: [Historical!]
 }
 
 type Mutation {
