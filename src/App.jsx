@@ -24,28 +24,28 @@ function IssueRow(props) {
       <td>{issue.days_to_announcement}</td>
       <td>{issue.conviction}</td>
       <td>{issue.side}</td>
-      <td>{issue.demand_usd}</td>
-      <td>{issue.demand_shares}</td>
-      <td>{issue.demand_adv}</td>
-      <td>{issue.ticker_pct_chg_1D}</td>
-      <td>{issue.ticker_pct_chg_5D}</td>
-      <td>{issue.ticker_pct_chg_30D}</td>
-      <td>{issue.ticker_pct_chg_90D}</td>
-      <td>{issue.ticker_vs_index_1D}</td>
-      <td>{issue.ticker_vs_index_5D}</td>
-      <td>{issue.ticker_vs_index_30D}</td>
-      <td>{issue.ticker_vs_index_90D}</td>
-      <td>{issue.ticker_vs_ticker_30DpreA}</td>
-      <td>{issue.ticker_vs_index_30DpreA}</td>
-      <td>{issue.average_volume}</td>
-      <td>{issue.excess_volume1D_A}</td>
-      <td>{issue.excess_volume5D_A}</td>
-      <td>{issue.excess_volume15D_A}</td>
-      <td>{issue.excess_volume30D_A}</td>
-      <td>{issue.excess_volume1D_B}</td>
-      <td>{issue.excess_volume5D_B}</td>
-      <td>{issue.excess_volume15D_B}</td>
-      <td>{issue.excess_volume30D_B}</td>
+      <td>{'$' + issue.demand_usd.toFixed(2)}</td>
+      <td>{issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+      <td>{issue.demand_adv.toFixed(2)}</td>
+      <td>{(100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_index_1D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_index_5D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_index_30D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_index_90D).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'}</td>
+      <td>{issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
+      <td>{(100 * issue.excess_volume1D_A).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume5D_A).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume15D_A).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume30D_A).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume1D_B).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume5D_B).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume15D_B).toFixed(2) + '%'}</td>
+      <td>{(100 * issue.excess_volume30D_B).toFixed(2) + '%'}</td>
       <td>{issue.exp_reporting_date}</td>
       <td>{issue.benchmark_index}</td>
       <td>{issue.lookback_duration}</td>
@@ -94,7 +94,7 @@ function IssueTable(props) {
           <th>Days to Announce</th>
           <th>Conviction</th>
           <th>Side</th>
-          <th>Demand $USD</th>
+          <th>Demand USD $m</th>
           <th>Demand Shares</th>
           <th>Days to Trade</th>
           <th>1D%Chg</th>
@@ -133,15 +133,13 @@ function IssueTable(props) {
 class Charting extends React.Component {
   constructor() {
     super();
-    this.state = {ticker: '4938 TT Equity'};
-    this.updateChart = this.updateChart.bind(this); 
   }
 
   updateChart(new_ticker, new_data) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
-  
+
     var xValues = new_data.date;
     var yLineValues = new_data.px_last;
     var yBarValues = new_data.px_volume;
@@ -152,6 +150,7 @@ class Charting extends React.Component {
         {
           type: 'line',
           label: 'Historical Price',
+          yAxisID: 'Price',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',
           data: yLineValues,
@@ -159,6 +158,7 @@ class Charting extends React.Component {
         }, {
           type: 'bar',
           label: 'Historical Volume',
+          yAxisID: 'Volume',
           data: yBarValues,
           hidden: false,
         }
@@ -168,10 +168,35 @@ class Charting extends React.Component {
     const config = {
       data: data,
       options: {
+        scales: {
+          Price: {
+            type: 'linear',
+            position: 'left',
+            ticks: {
+              callback: function(value, index, values) {
+                return '$' + value;
+              },
+            },
+            title: {
+              display: true,
+              text: 'Price',
+            },
+            }, 
+          Volume: {
+            type: 'linear', 
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Volume',
+            },
+          },
+        },
         plugins: {
           title: {
             display: true,
-            text: new_ticker
+            text: new_ticker,
+            maintainAspectRatio: false,
+            responsive: true,
           }
         }
       }
@@ -184,12 +209,10 @@ class Charting extends React.Component {
   }
 
   render() {
-    if (Chart.getChart('myChart')) {
-      Chart.getChart('myChart').destroy();
-    }
-  
+    var defaultTicker = '4938 TT Equity';
+
     for (let i=0; i < this.props.data.length; i++) {  
-      if (this.props.data[i].ticker == this.state.ticker) {
+      if (this.props.data[i].ticker == defaultTicker) {
         var xValues = this.props.data[i].date;
         var yLineValues = this.props.data[i].px_last;
         var yBarValues = this.props.data[i].px_volume;
@@ -202,6 +225,7 @@ class Charting extends React.Component {
         {
           type: 'line',
           label: 'Historical Price',
+          yAxisID: 'Price',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',
           data: yLineValues,
@@ -209,6 +233,7 @@ class Charting extends React.Component {
         }, {
           type: 'bar',
           label: 'Historical Volume',
+          yAxisID: 'Volume',
           data: yBarValues,
           hidden: false,
         }
@@ -218,10 +243,35 @@ class Charting extends React.Component {
     const config = {
       data: data,
       options: {
+        scales: {
+          Price: {
+            type: 'linear',
+            position: 'left',
+            ticks: {
+              callback: function(value, index, values) {
+                return '$' + value;
+              },
+            },
+            title: {
+              display: true,
+              text: 'Price',
+            },
+            }, 
+          Volume: {
+            type: 'linear', 
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Volume',
+            },
+          },
+        },
         plugins: {
           title: {
             display: true,
-            text: this.state.ticker
+            text: defaultTicker,
+            maintainAspectRatio: false,
+            responsive: true,
           }
         }
       }
@@ -234,7 +284,7 @@ class Charting extends React.Component {
 
     return (
       <div>
-        <canvas id="myChart" width="400" height="200" aria-label="myChart" role="img"></canvas>
+        <canvas id="myChart" width="200" height="100" aria-label="myChart" role="img"></canvas>
       </div>
     );
   }
@@ -438,7 +488,7 @@ class IssueList extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <h1>Index Rebalance Watchlist (Beta)</h1>
+        <h1>Index Rebalance Watcher (Beta)</h1>
         <Charting data={this.state.historical}/>
         <EventFilter /> 
         <CountryFilter /> 

@@ -7,7 +7,7 @@ function jsonDateReviver(key, value) {
 
 function IssueRow(props) {
   const issue = props.issue;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, issue.announcement_date), /*#__PURE__*/React.createElement("td", null, issue.trade_date), /*#__PURE__*/React.createElement("td", null, issue.prediction_date), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, issue.demand_usd), /*#__PURE__*/React.createElement("td", null, issue.demand_shares), /*#__PURE__*/React.createElement("td", null, issue.demand_adv), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_1D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_5D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_30D), /*#__PURE__*/React.createElement("td", null, issue.ticker_pct_chg_90D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_1D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_5D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_30D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_90D), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_ticker_30DpreA), /*#__PURE__*/React.createElement("td", null, issue.ticker_vs_index_30DpreA), /*#__PURE__*/React.createElement("td", null, issue.average_volume), /*#__PURE__*/React.createElement("td", null, issue.excess_volume1D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume5D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume15D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume30D_A), /*#__PURE__*/React.createElement("td", null, issue.excess_volume1D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume5D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume15D_B), /*#__PURE__*/React.createElement("td", null, issue.excess_volume30D_B), /*#__PURE__*/React.createElement("td", null, issue.exp_reporting_date), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, issue.announcement_date), /*#__PURE__*/React.createElement("td", null, issue.trade_date), /*#__PURE__*/React.createElement("td", null, issue.prediction_date), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, '$' + issue.demand_usd.toFixed(2)), /*#__PURE__*/React.createElement("td", null, issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, issue.demand_adv.toFixed(2)), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.exp_reporting_date), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
 }
 
 function IssueTable(props) {
@@ -47,10 +47,6 @@ function IssueTable(props) {
 class Charting extends React.Component {
   constructor() {
     super();
-    this.state = {
-      ticker: '4938 TT Equity'
-    };
-    this.updateChart = this.updateChart.bind(this);
   }
 
   updateChart(new_ticker, new_data) {
@@ -66,6 +62,7 @@ class Charting extends React.Component {
       datasets: [{
         type: 'line',
         label: 'Historical Price',
+        yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
         data: yLineValues,
@@ -73,6 +70,7 @@ class Charting extends React.Component {
       }, {
         type: 'bar',
         label: 'Historical Volume',
+        yAxisID: 'Volume',
         data: yBarValues,
         hidden: false
       }]
@@ -80,10 +78,35 @@ class Charting extends React.Component {
     const config = {
       data: data,
       options: {
+        scales: {
+          Price: {
+            type: 'linear',
+            position: 'left',
+            ticks: {
+              callback: function (value, index, values) {
+                return '$' + value;
+              }
+            },
+            title: {
+              display: true,
+              text: 'Price'
+            }
+          },
+          Volume: {
+            type: 'linear',
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Volume'
+            }
+          }
+        },
         plugins: {
           title: {
             display: true,
-            text: new_ticker
+            text: new_ticker,
+            maintainAspectRatio: false,
+            responsive: true
           }
         }
       }
@@ -92,12 +115,10 @@ class Charting extends React.Component {
   }
 
   render() {
-    if (Chart.getChart('myChart')) {
-      Chart.getChart('myChart').destroy();
-    }
+    var defaultTicker = '4938 TT Equity';
 
     for (let i = 0; i < this.props.data.length; i++) {
-      if (this.props.data[i].ticker == this.state.ticker) {
+      if (this.props.data[i].ticker == defaultTicker) {
         var xValues = this.props.data[i].date;
         var yLineValues = this.props.data[i].px_last;
         var yBarValues = this.props.data[i].px_volume;
@@ -109,6 +130,7 @@ class Charting extends React.Component {
       datasets: [{
         type: 'line',
         label: 'Historical Price',
+        yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
         data: yLineValues,
@@ -116,6 +138,7 @@ class Charting extends React.Component {
       }, {
         type: 'bar',
         label: 'Historical Volume',
+        yAxisID: 'Volume',
         data: yBarValues,
         hidden: false
       }]
@@ -123,10 +146,35 @@ class Charting extends React.Component {
     const config = {
       data: data,
       options: {
+        scales: {
+          Price: {
+            type: 'linear',
+            position: 'left',
+            ticks: {
+              callback: function (value, index, values) {
+                return '$' + value;
+              }
+            },
+            title: {
+              display: true,
+              text: 'Price'
+            }
+          },
+          Volume: {
+            type: 'linear',
+            position: 'right',
+            title: {
+              display: true,
+              text: 'Volume'
+            }
+          }
+        },
         plugins: {
           title: {
             display: true,
-            text: this.state.ticker
+            text: defaultTicker,
+            maintainAspectRatio: false,
+            responsive: true
           }
         }
       }
@@ -134,8 +182,8 @@ class Charting extends React.Component {
     new Chart(document.getElementById('myChart'), config);
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("canvas", {
       id: "myChart",
-      width: "400",
-      height: "200",
+      width: "200",
+      height: "100",
       "aria-label": "myChart",
       role: "img"
     }));
@@ -343,7 +391,7 @@ class IssueList extends React.Component {
   }
 
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watchlist (Beta)"), /*#__PURE__*/React.createElement(Charting, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watcher (Beta)"), /*#__PURE__*/React.createElement(Charting, {
       data: this.state.historical
     }), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
       issues: this.state.issues,

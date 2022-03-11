@@ -1,4 +1,4 @@
-# Index Rebalance Watchlist 
+# Index Rebalance Watcher
 
 ## To Start New Development Environment
 	1. Docker Pull Image 
@@ -28,15 +28,18 @@
 	6. Launch MongoDB Server (Separate Ubuntu CLI) 
 		- mongod --dbpath ~/data/db
 
-	7. Initialize MongoDB Database
+	7. Import and Format csv data to MongoDB Database
+		- mongoimport --db indexrebalance --collection brianfreitas --drop --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
+		
+		- mongoimport --db indexrebalance --collection intropic --drop --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
+
+		- mongoimport --db indexrebalance --collection historical --drop --type csv --headerline --ignoreBlanks --file data/historical.csv
+
 		- mongo indexrebalance scripts/init.mongo.js
 
 	8. Launch WebApp Server
 		- screen npm start (or npm start) (or screen node server.js)
 
-	9. Import csv data to MongoDB
-		- mongoimport --db indexrebalance --collection brianfreitas --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
-		- mongoimport --db indexrebalance --collection intropic --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
 
 ## To Prepare Windows PC for Development (one-time)
 	1. Download Docker Desktop 
@@ -112,6 +115,7 @@ This should not be necessary unless you feel that you would like to recreate the
 		copy local files --> docker container or reverse
 		- docker cp intropic_processed.csv webapp:rebalance/data
 		- docker cp brian_freitas_processed.csv webapp:rebalance/data
+		- docker cp historical.csv webapp:rebalance/data
 			
 		copy docker files --> local PC 
 		- docker ps
