@@ -11,37 +11,54 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  function chartingSubmit(e, ticker) {
-    var data = [];
+  function chartingSubmit(e, ticker_name, benchmark_name) {
     e.preventDefault();
 
     for (let i = 0; i < props.data.length; i++) {
-      if (props.data[i].ticker == ticker) {
-        data = props.data[i];
+      if (props.data[i].ticker == ticker_name) {
+        ticker_data = props.data[i];
+      }
+
+      if (props.data[i].ticker == benchmark_name) {
+        benchmark_data = props.data[i];
       }
     }
 
-    new Charting().updateChart(ticker, data);
-  }
+    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data);
+  } // add visualization and shortlist buttons
+
 
   for (let i = 0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
     props.issues[i].visualize = /*#__PURE__*/React.createElement("button", {
-      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker)
+      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker, benchmark = props.issues[i].benchmark_index)
     }, "Visualize");
     props.issues[i].add_basket = /*#__PURE__*/React.createElement("button", {
       onClick: e => Shortlist(e, ticker = props.issues[i].ticker)
     }, "Shortlist");
-  }
+  } // add main rows with data
+
 
   const issueRows = props.issues.map(issue => /*#__PURE__*/React.createElement(IssueRow, {
     key: issue.id,
     issue: issue
+  })); // add sorting columns functionality
+
+  const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+  const comparer = (idx, asc) => (a, b) => ((v1, v2) => v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+  document.querySelectorAll('th').forEach(th => th.addEventListener('click', () => {
+    const table = th.closest('table');
+    const tbody = table.querySelector('tbody');
+    Array.from(tbody.querySelectorAll('tr')).sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc)).forEach(tr => tbody.appendChild(tr));
   }));
   return /*#__PURE__*/React.createElement("table", {
     id: "rebalanceTable",
     className: "bordered-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand $USD"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
+  }, /*#__PURE__*/React.createElement("thead", {
+    bgcolor: "DarkGrey"
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand USD $m"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
 }
 
 class Charting extends React.Component {
@@ -49,30 +66,41 @@ class Charting extends React.Component {
     super();
   }
 
-  updateChart(new_ticker, new_data) {
+  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
 
-    var xValues = new_data.date;
-    var yLineValues = new_data.px_last;
-    var yBarValues = new_data.px_volume;
+    var xValues = new_ticker_data.date;
+    var yLineValues = new_ticker_data.px_last;
+    var yBarValues = new_ticker_data.px_volume;
+    var ticker_data_length = xValues.length;
+    var starting_point = new_benchmark_data.px_last.length - ticker_data_length;
+    var benchmark_yValues = new_benchmark_data.px_last.slice(starting_point);
     const data = {
       labels: xValues,
       datasets: [{
         type: 'line',
-        label: 'Historical Price',
+        label: new_benchmark_name,
         yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
-        data: yLineValues,
-        hidden: false
+        data: yLineValues
+      }, {
+        type: 'line',
+        label: new_benchmark_name,
+        yAxisID: 'BenchmarkPrice',
+        backgroundColor: 'transparent',
+        borderColor: 'Blue',
+        borderDash: [5, 8],
+        pointRadius: 0,
+        data: benchmark_yValues
       }, {
         type: 'bar',
         label: 'Historical Volume',
         yAxisID: 'Volume',
-        data: yBarValues,
-        hidden: false
+        backgroundColor: 'DarkGrey',
+        data: yBarValues
       }]
     };
     const config = {
@@ -89,7 +117,15 @@ class Charting extends React.Component {
             },
             title: {
               display: true,
-              text: 'Price'
+              text: 'Ticker Price'
+            }
+          },
+          BenchmarkPrice: {
+            type: 'linear',
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Benchmark Price'
             }
           },
           Volume: {
@@ -97,14 +133,14 @@ class Charting extends React.Component {
             position: 'right',
             title: {
               display: true,
-              text: 'Volume'
+              text: 'Ticker Volume'
             }
           }
         },
         plugins: {
           title: {
             display: true,
-            text: new_ticker,
+            text: new_ticker_name,
             maintainAspectRatio: false,
             responsive: true
           }
@@ -115,71 +151,6 @@ class Charting extends React.Component {
   }
 
   render() {
-    var defaultTicker = '4938 TT Equity';
-
-    for (let i = 0; i < this.props.data.length; i++) {
-      if (this.props.data[i].ticker == defaultTicker) {
-        var xValues = this.props.data[i].date;
-        var yLineValues = this.props.data[i].px_last;
-        var yBarValues = this.props.data[i].px_volume;
-      }
-    }
-
-    const data = {
-      labels: xValues,
-      datasets: [{
-        type: 'line',
-        label: 'Historical Price',
-        yAxisID: 'Price',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: yLineValues,
-        hidden: false
-      }, {
-        type: 'bar',
-        label: 'Historical Volume',
-        yAxisID: 'Volume',
-        data: yBarValues,
-        hidden: false
-      }]
-    };
-    const config = {
-      data: data,
-      options: {
-        scales: {
-          Price: {
-            type: 'linear',
-            position: 'left',
-            ticks: {
-              callback: function (value, index, values) {
-                return '$' + value;
-              }
-            },
-            title: {
-              display: true,
-              text: 'Price'
-            }
-          },
-          Volume: {
-            type: 'linear',
-            position: 'right',
-            title: {
-              display: true,
-              text: 'Volume'
-            }
-          }
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: defaultTicker,
-            maintainAspectRatio: false,
-            responsive: true
-          }
-        }
-      }
-    };
-    new Chart(document.getElementById('myChart'), config);
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("canvas", {
       id: "myChart",
       width: "200",
@@ -239,13 +210,13 @@ class EventFilter extends React.Component {
       value: 'All Events'
     }, {
       id: 2,
-      value: 'FTSE TW50 March'
+      value: 'KOSPI2 June'
     }, {
       id: 3,
-      value: 'ASX50 March'
+      value: 'KOSDAQ150 June'
     }, {
       id: 4,
-      value: 'ASX200 March'
+      value: 'CSI300 June'
     }, {
       id: 5,
       value: 'FTSE China 50 March'
@@ -268,10 +239,10 @@ class CountryFilter extends React.Component {
       value: 'All Countries'
     }, {
       id: 2,
-      value: 'TT'
+      value: 'KS'
     }, {
       id: 3,
-      value: 'AU'
+      value: 'CH'
     }, {
       id: 4,
       value: 'HK'

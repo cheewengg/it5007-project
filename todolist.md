@@ -1,13 +1,9 @@
 ## Must Add / Change 
-- Sorting: Add sorting for columns 
 - Graph: Add Excess Volume Analysis
 - Excess Volume V2 only counts if price % chg vs INDEX matches direction (add vs Index part)
-- move benchmark period from 9 months ago for 3 months to 6 months ago for 3 months 
-
 
 ## Graph Formatting 
-- Add benchmark data to graph 
-- Price (left y-axis column): $ Sign for needs to be "KRW" for South Korean Won or "£" for British Pounds 
+- Price (left y-axis column): $ Sign for needs to be "KRW" for South Korean Won or "£" for British Pounds (consider adding just KRW, USD, AUD, GBP etc)
 - Price (left y-axis column): Add commas to numbers above 1,000 (usually KRW)
 - Date (x-axis): remove string & format properly
 
@@ -15,11 +11,11 @@
 ## Table Formatting
 - Format dates properly (currently string)
 
-
 ## Infrastructure
 - Dropdown menus need to function properly
 - Shortlist button needs functionality (add to list and master "export to csv" button) 
-- Query Graph data only when visualize for the specific ticker is clicked (right now i'm querying the entire collection)
+- Load graph data only when visualize button for the specific ticker is clicked (right now i'm loading the entire collection which leads to slow startup time)
+- put methods into appropriate Class (organize app.jsx)
 
 
 ## Add New (if time)
@@ -33,3 +29,11 @@
     - Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data
 
 - clean up python code (class Intropic & class BrianFreitas)
+
+
+### Changelog (March 14th, 2022) 
+- Sorting: Columns may now be sorted
+
+### Changelog (March 11, 2022)
+- Add benchmark data to graph
+- Moved benchmark period from 9 months ago for 3 months to 6 months ago for 3 months 

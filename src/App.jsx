@@ -56,29 +56,49 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  function chartingSubmit(e, ticker) {
-    var data = []
+  function chartingSubmit(e, ticker_name, benchmark_name) {
     e.preventDefault();
 
     for (let i=0; i < props.data.length; i++) {
-      if (props.data[i].ticker == ticker) {
-        data = props.data[i];
+      if (props.data[i].ticker == ticker_name) {
+        ticker_data = props.data[i];
+      }
+      if (props.data[i].ticker == benchmark_name) {
+        benchmark_data = props.data[i];
       }
     }
 
-    new Charting().updateChart(ticker, data); 
+    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data); 
   }
 
+  // add visualization and shortlist buttons
   for (let i=0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
-    props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, ticker=props.issues[i].ticker)}>Visualize</button>;
+    props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, ticker=props.issues[i].ticker, benchmark=props.issues[i].benchmark_index)}>Visualize</button>;
     props.issues[i].add_basket = <button onClick={(e) => Shortlist(e, ticker=props.issues[i].ticker)}>Shortlist</button>;
   }
+
+  // add main rows with data
   const issueRows = props.issues.map(issue => <IssueRow key={issue.id} issue={issue} />);
-  
+
+  // add sorting columns functionality
+  const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+  const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+      v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+      )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+  document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    const tbody = table.querySelector('tbody');
+    Array.from(tbody.querySelectorAll('tr'))
+      .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+      .forEach(tr => tbody.appendChild(tr) );
+  })));
+
   return (
     <table id="rebalanceTable" className="bordered-table">
-      <thead>
+      <thead bgcolor= "DarkGrey">
         <tr>
           <th>ID</th>
           <th>Charting</th>
@@ -135,32 +155,44 @@ class Charting extends React.Component {
     super();
   }
 
-  updateChart(new_ticker, new_data) {
+  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
 
-    var xValues = new_data.date;
-    var yLineValues = new_data.px_last;
-    var yBarValues = new_data.px_volume;
-      
+    var xValues = new_ticker_data.date;
+    var yLineValues = new_ticker_data.px_last;
+    var yBarValues = new_ticker_data.px_volume;
+
+    var ticker_data_length = xValues.length; 
+    var starting_point = (new_benchmark_data.px_last.length) - ticker_data_length;
+    var benchmark_yValues = new_benchmark_data.px_last.slice(starting_point);
+     
     const data = {
       labels: xValues,
       datasets: [
         {
           type: 'line',
-          label: 'Historical Price',
+          label: new_benchmark_name,
           yAxisID: 'Price',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',
           data: yLineValues,
-          hidden: false,
+        }, {
+          type: 'line',
+          label: new_benchmark_name,
+          yAxisID: 'BenchmarkPrice',
+          backgroundColor: 'transparent',
+          borderColor: 'Blue',
+          borderDash: [5, 8],
+          pointRadius: 0,
+          data: benchmark_yValues,
         }, {
           type: 'bar',
           label: 'Historical Volume',
           yAxisID: 'Volume',
+          backgroundColor: 'DarkGrey',
           data: yBarValues,
-          hidden: false,
         }
       ]
     };
@@ -173,28 +205,34 @@ class Charting extends React.Component {
             type: 'linear',
             position: 'left',
             ticks: {
-              callback: function(value, index, values) {
-                return '$' + value;
-              },
+              callback: function(value, index, values) {return '$' + value},
             },
             title: {
               display: true,
-              text: 'Price',
+              text: 'Ticker Price',
             },
-            }, 
+          }, 
+          BenchmarkPrice: {
+            type: 'linear',
+            position: 'left', 
+            title: {
+              display: true,
+              text: 'Benchmark Price'
+            }
+          },
           Volume: {
             type: 'linear', 
             position: 'right',
             title: {
               display: true,
-              text: 'Volume',
+              text: 'Ticker Volume',
             },
           },
         },
         plugins: {
           title: {
             display: true,
-            text: new_ticker,
+            text: new_ticker_name,
             maintainAspectRatio: false,
             responsive: true,
           }
@@ -208,80 +246,7 @@ class Charting extends React.Component {
     );
   }
 
-  render() {
-    var defaultTicker = '4938 TT Equity';
-
-    for (let i=0; i < this.props.data.length; i++) {  
-      if (this.props.data[i].ticker == defaultTicker) {
-        var xValues = this.props.data[i].date;
-        var yLineValues = this.props.data[i].px_last;
-        var yBarValues = this.props.data[i].px_volume;
-      }
-    }
-  
-    const data = {
-      labels: xValues,
-      datasets: [
-        {
-          type: 'line',
-          label: 'Historical Price',
-          yAxisID: 'Price',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: yLineValues,
-          hidden: false,
-        }, {
-          type: 'bar',
-          label: 'Historical Volume',
-          yAxisID: 'Volume',
-          data: yBarValues,
-          hidden: false,
-        }
-      ]
-    };
-  
-    const config = {
-      data: data,
-      options: {
-        scales: {
-          Price: {
-            type: 'linear',
-            position: 'left',
-            ticks: {
-              callback: function(value, index, values) {
-                return '$' + value;
-              },
-            },
-            title: {
-              display: true,
-              text: 'Price',
-            },
-            }, 
-          Volume: {
-            type: 'linear', 
-            position: 'right',
-            title: {
-              display: true,
-              text: 'Volume',
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: defaultTicker,
-            maintainAspectRatio: false,
-            responsive: true,
-          }
-        }
-      }
-    };
-    
-    new Chart(
-      document.getElementById('myChart'), 
-      config
-    );
-
+  render() {   
     return (
       <div>
         <canvas id="myChart" width="200" height="100" aria-label="myChart" role="img"></canvas>
@@ -343,13 +308,13 @@ class EventFilter extends React.Component {
         value: 'All Events'
       }, {
           id: 2,
-          value: 'FTSE TW50 March'
+          value: 'KOSPI2 June'
       }, {
           id: 3,
-          value: 'ASX50 March'
+          value: 'KOSDAQ150 June'
       }, {
           id: 4,
-          value: 'ASX200 March'
+          value: 'CSI300 June'
       }, {
           id: 5,
           value: 'FTSE China 50 March'
@@ -374,10 +339,10 @@ class CountryFilter extends React.Component {
           value: 'All Countries'
       }, {
           id: 2,
-          value: 'TT'
+          value: 'KS'
       }, {
           id: 3,
-          value: 'AU'
+          value: 'CH'
       }, {
           id: 4,
           value: 'HK'
