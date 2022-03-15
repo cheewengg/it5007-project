@@ -1,5 +1,6 @@
 const fs = require('fs');
 const express = require('express');
+const path = require("path");
 const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
@@ -115,9 +116,12 @@ const server = new ApolloServer({
 const app = express();
 const PORT = process.env.PORT || 3000
 
-app
-  .use(express.static('public'))
-  .set('view engine', 'ejs')
+// app.use(express.static('public'))
+app.use(express.static(path.resolve(__dirname, "../public")));
+app.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "../public", "index.html"));
+});
+
   
 
 

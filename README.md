@@ -3,7 +3,7 @@
 ## To Start New Development Environment
 	1. Docker Pull Image 
 		- docker pull garyngkaiyi/webapp
-		- docker run -dit -p 3000:3000 --name webapp garyngkaiyi/webapp:latest
+		- docker run -dit -p 3000:3000 -p 5000:5000 --name webapp garyngkaiyi/webapp:latest
 
 		- if you need to share local directory with container 
 		- docker run -dit -p 3000:3000 --name webapp -v {"C:/Users/..."}:/rebalance ubuntu
