@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
 
     "heroku-postbuild": "npm install",
-    "start": "nodemon -w server -e js,graphql server/server.js"
+    "start": "mongo indexrebalance scripts/init.mongo.js && nodemon -w server -e js,graphql server/server.js"
   },
   "repository": {
     "type": "git",

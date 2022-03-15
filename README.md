@@ -25,10 +25,12 @@
 	5. Compile Latest Source Code
 		- npx babel src --presets @babel/react --out-dir public
 
-	6. Launch MongoDB Server (Separate Ubuntu CLI) 
+
+## To Deploy Locally (port 3000)
+	1. Launch MongoDB Server (Separate Ubuntu CLI) 
 		- mongod --dbpath ~/data/db
 
-	7. Import and Format csv data to MongoDB Database
+	2. Import and Format csv data to MongoDB Database
 		- mongoimport --db indexrebalance --collection brianfreitas --drop --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
 		
 		- mongoimport --db indexrebalance --collection intropic --drop --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
@@ -37,8 +39,12 @@
 
 		- mongo indexrebalance scripts/init.mongo.js
 
-	8. Launch WebApp Server
+	3. Launch WebApp Server
 		- screen npm start (or npm start) (or screen node server.js)
+
+	4: Enter localhost:3000 in preferred browser (recommended: Chrome)
+
+## To Deploy on Cloud (Heroku & Mongo Atlas)
 
 
 ## To Prepare Windows PC for Development (one-time)

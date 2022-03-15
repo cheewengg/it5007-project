@@ -6,10 +6,11 @@ const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const { MongoClient } = require('mongodb');
 
-const url = 'mongodb://localhost/indexrebalance';
+// Localhost
+const url = 'mongodb://localhost/indexrebalance';   // localhost
 
 // Atlas URL  - replace UUU with user, PPP with password, XXX with hostname
-// const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
+// const url = "mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance?retryWrites=true&w=majority" 
 
 // mLab URL - replace UUU with user, PPP with password, XXX with hostname
 // const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
@@ -100,7 +101,7 @@ function issueAdd(_, { issue }) {
 async function connectToDb() {
   const client = new MongoClient(url, { useNewUrlParser: true });
   await client.connect();
-  console.log('Connected to MongoDB at', url);
+  console.log('Connected to MongoDB Server');
   db = client.db();
 }
 
