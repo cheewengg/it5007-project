@@ -7,10 +7,10 @@ const { Kind } = require('graphql/language');
 const { MongoClient } = require('mongodb');
 
 // Localhost
-const url = 'mongodb://localhost/indexrebalance';   // localhost
+// const url = 'mongodb://localhost/indexrebalance';   // localhost
 
 // Atlas URL  - replace UUU with user, PPP with password, XXX with hostname
-// const url = "mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance?retryWrites=true&w=majority" 
+const url = "mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance?retryWrites=true&w=majority" 
 
 // mLab URL - replace UUU with user, PPP with password, XXX with hostname
 // const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
