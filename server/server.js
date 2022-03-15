@@ -113,16 +113,21 @@ const server = new ApolloServer({
 });
 
 const app = express();
+const PORT = process.env.PORT || 3000
 
-app.use(express.static('public'));
+app
+  .use(express.static('public'))
+  .set('view engine', 'ejs')
+  
+
 
 server.applyMiddleware({ app, path: '/graphql' });
 
 (async function () {
   try {
     await connectToDb();
-    app.listen(3000, function () {
-      console.log('App started on port 3000');
+    app.listen(PORT, function () {
+      console.log(`App Started on ${ PORT }`);
     });
   } catch (err) {
     console.log('ERROR:', err);
