@@ -1,0 +1,12 @@
+type Historical {
+  ticker: String
+  date: [Int]
+  px_last: [Float]
+  px_volume: [Float]
+}
+
+##### Top level declarations
+type Query {
+  historicalData(ticker: String!): Historical
+  allHistoricalData: [Historical]
+}

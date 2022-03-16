@@ -1,0 +1,43 @@
+{
+  "name": "chart-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -w server -e js,graphql server/server.js",
+    "compile": "webpack --mode production",
+    "watch": "webpack --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.17.7",
+    "apollo-server-express": "^2.25.3",
+    "axios": "^0.26.1",
+    "babel-polyfill": "^6.26.0",
+    "express": "^4.17.2",
+    "fs": "^0.0.1-security",
+    "graphql": "^0.13.2",
+    "mongodb": "^4.4.1",
+    "nodemon": "^2.0.15",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-google-charts": "^4.0.0",
+    "styled-components": "^5.3.3",
+    "whatwg-fetch": "^3.6.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.3",
+    "@babel/core": "^7.17.4",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.3",
+    "css-loader": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9"
+  }
+}
