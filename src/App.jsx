@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { StockChart } from "./components/Main.jsx";
+import Main from "./components/Main.jsx";
 
 const App = () => {
   return (
     <div>
-      <StockChart />
+      <Main />
     </div>
   );
 };

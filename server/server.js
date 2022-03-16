@@ -16,22 +16,27 @@ const connectToDb = async () => {
   db = client.db();
 };
 
-const historicalData = async (_, { ticker }) => {
-  const historical = await db
+const historicalData = async (_, { ticker, dateRange }) => {
+  const fetchedData = await db
     .collection("historical")
     .findOne({ ticker: ticker });
 
-  return historical;
-};
+  const rightBound = fetchedData["px_volume"].length;
+  const historicalDataLength = Math.min(rightBound, dateRange);
+  const leftBound = rightBound - historicalDataLength;
 
-const allHistoricalData = async () => {
-  const historical = await db.collection("historical").find({}).toArray();
-  return historical;
+  const historicalData = Object.assign(
+    { ...fetchedData },
+    { date: fetchedData["date"].slice(leftBound, rightBound) },
+    { px_last: fetchedData["px_last"].slice(leftBound, rightBound) },
+    { px_volume: fetchedData["px_volume"].slice(leftBound, rightBound) }
+  );
+
+  return historicalData;
 };
 
 const resolvers = {
   Query: {
-    allHistoricalData,
     historicalData,
   },
 };

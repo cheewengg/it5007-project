@@ -8,17 +8,17 @@ const useQuery = (defaultSearchTerm) => {
     search(defaultSearchTerm);
   }, [defaultSearchTerm]);
 
-  const search = async (ticker) => {
+  const search = async (ticker, dateRange = 100000) => {
     const query = `query {
-          historicalData (ticker: "${ticker}") {
+          historicalData (ticker: "${ticker}", dateRange: ${dateRange}) {
             ticker date px_last px_volume
           }
         }`;
 
-    const {
-      historicalData: { date, px_last, px_volume },
-    } = await graphQLFetch(query);
+    const { historicalData } = await graphQLFetch(query);
+    if (!historicalData) return;
 
+    const { date, px_last, px_volume } = historicalData;
     const res = [["Date", "Close"]];
 
     date.forEach((_, idx) => {

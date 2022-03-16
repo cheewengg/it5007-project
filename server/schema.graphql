@@ -7,6 +7,6 @@ type Historical {
 
 ##### Top level declarations
 type Query {
-  historicalData(ticker: String!): Historical
+  historicalData(ticker: String!, dateRange: Int!): Historical
   allHistoricalData: [Historical]
 }

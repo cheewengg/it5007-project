@@ -9,10 +9,12 @@ export const renderDateTime = (date = new Date()) => {
   return displayDate;
 };
 
-export const jsonDateReviver = (key, value) => {
-  const dateRegex = new RegExp("^\\d\\d\\d\\d-\\d\\d-\\d\\d");
-  if (dateRegex.test(value)) return new Date(value);
-  return value;
+export const dateRangeMapping = {
+  "5D": 5,
+  "1M": 20,
+  "6M": 20 * 6,
+  "1Y": 261,
+  Max: 100000,
 };
 
 export const graphQLFetch = async (query, variables = {}) => {
@@ -22,8 +24,7 @@ export const graphQLFetch = async (query, variables = {}) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
     });
-    const body = await response.text();
-    const result = JSON.parse(body, jsonDateReviver);
+    const result = await response.json();
 
     if (result.errors) {
       const error = result.errors[0];
