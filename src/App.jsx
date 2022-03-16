@@ -173,7 +173,7 @@ class Charting extends React.Component {
       datasets: [
         {
           type: 'line',
-          label: new_benchmark_name,
+          label: new_ticker_name,
           yAxisID: 'Price',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',

@@ -26,25 +26,44 @@
 		- npx babel src --presets @babel/react --out-dir public
 
 
-## To Deploy Locally (port 3000)
-	1. Launch MongoDB Server (Separate Ubuntu CLI) 
+## To Deploy Locally (not recommended)
+	1. Switch MongoDB reference to Local Mode
+		- in server.js, uncomment line 10 and comment-out line 13
+
+	2. Launch MongoDB Server (Separate Ubuntu CLI) 
 		- mongod --dbpath ~/data/db
 
-	2. Import and Format csv data to MongoDB Database
+	3. Import and Format csv data to MongoDB Database
 		- mongoimport --db indexrebalance --collection brianfreitas --drop --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
 		
 		- mongoimport --db indexrebalance --collection intropic --drop --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
 
 		- mongoimport --db indexrebalance --collection historical --drop --type csv --headerline --ignoreBlanks --file data/historical.csv
 
+		(attempt mongodb historical import in json format, to avoid init.mongo.js below)
+		mongoimport --db indexrebalance --collection historical --drop --file data/historical.json --jsonArray
+
+
 		- mongo indexrebalance scripts/init.mongo.js
 
-	3. Launch WebApp Server
+	4. Launch WebApp Server
 		- screen npm start (or npm start) (or screen node server.js)
 
-	4: Enter localhost:3000 in preferred browser (recommended: Chrome)
+	5: Enter localhost:3000 in preferred browser (recommended: Chrome)
 
 ## To Deploy on Cloud (Heroku & Mongo Atlas)
+
+	1. When there is new data, upload csv to MongoDB Cloud
+		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection brianfreitas --drop --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
+
+		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection intropic --drop --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
+
+		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection historical --drop --type json --file data/historical.json --jsonArray
+
+	2. Git Commit with Heroku Build
+		- git add .
+		- git commit -am "commit message"
+		- git push heroku code:main
 
 
 ## To Prepare Windows PC for Development (one-time)
