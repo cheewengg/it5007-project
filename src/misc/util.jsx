@@ -1,20 +1,41 @@
-export const renderDateTime = (date = new Date()) => {
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
-  const hour = `${date.getHours()}`.padStart(2, 0);
-  const min = `${date.getMinutes()}`.padStart(2, 0);
-  const displayDate = `${day}/${month}/${year}, ${hour}:${min}`;
-
-  return displayDate;
-};
-
 export const dateRangeMapping = {
   "5D": 5,
   "1M": 20,
   "6M": 20 * 6,
   "1Y": 261,
   Max: 100000,
+};
+
+export const lookBackRangeMapping = {
+  "1D": 1,
+  "5D": 5,
+  "15D": 15,
+  "30D": 30,
+  "90D": 90,
+};
+
+export const generatePrimaryHeaderData = (primaryData) => {
+  const { ticker, ric, name, benchmark_index, primaryChartData } = primaryData;
+
+  if (!ticker) return {};
+  const mostRecentDate =
+    primaryChartData[primaryChartData.length - 1][0].toString();
+  const leftBound = primaryChartData[1][1];
+  const rightBound = primaryChartData[primaryChartData.length - 1][1];
+
+  const differenceAbs = (rightBound - leftBound).toFixed(2);
+  const differencePercent = ((differenceAbs / leftBound) * 100).toFixed(2);
+
+  return {
+    ticker,
+    ric,
+    name,
+    benchmark_index,
+    mostRecentDate,
+    mostRecentPrice: rightBound,
+    differenceAbs,
+    differencePercent,
+  };
 };
 
 export const graphQLFetch = async (query, variables = {}) => {

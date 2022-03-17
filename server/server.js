@@ -1,8 +1,8 @@
 const fs = require("fs");
 const express = require("express");
-const { ApolloServer, UserInputError } = require("apollo-server-express");
-const { GraphQLScalarType } = require("graphql");
+const { ApolloServer } = require("apollo-server-express");
 const { MongoClient } = require("mongodb");
+const { generatePrimaryData, generateSecondaryData } = require("./helper.js");
 
 const url =
   "mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance?retryWrites=true&w=majority";
@@ -16,28 +16,53 @@ const connectToDb = async () => {
   db = client.db();
 };
 
-const historicalData = async (_, { ticker, dateRange }) => {
-  const fetchedData = await db
+const generateData = async (ticker) => {
+  const historicalTickerData = await db
     .collection("historical")
     .findOne({ ticker: ticker });
 
-  const rightBound = fetchedData["px_volume"].length;
-  const historicalDataLength = Math.min(rightBound, dateRange);
-  const leftBound = rightBound - historicalDataLength;
+  const brianfreitasData = await db
+    .collection("brianfreitas")
+    .findOne({ ticker: ticker });
 
-  const historicalData = Object.assign(
-    { ...fetchedData },
-    { date: fetchedData["date"].slice(leftBound, rightBound) },
-    { px_last: fetchedData["px_last"].slice(leftBound, rightBound) },
-    { px_volume: fetchedData["px_volume"].slice(leftBound, rightBound) }
+  return { historicalTickerData, brianfreitasData };
+};
+
+const primaryData = async (_, { ticker, dateRange }) => {
+  const { historicalTickerData, brianfreitasData } = await generateData(ticker);
+
+  const primaryData = generatePrimaryData(
+    historicalTickerData,
+    brianfreitasData,
+    dateRange
   );
 
-  return historicalData;
+  return primaryData;
+};
+
+const secondaryData = async (_, { ticker, dateRange, lookBackDuration }) => {
+  const { historicalTickerData, brianfreitasData } = await generateData(ticker);
+
+  const { benchmark_index } = brianfreitasData;
+
+  const historicalBenchmarkData = await db
+    .collection("historical")
+    .findOne({ ticker: benchmark_index });
+
+  const secondaryData = generateSecondaryData(
+    historicalTickerData,
+    historicalBenchmarkData,
+    dateRange,
+    lookBackDuration
+  );
+
+  return secondaryData;
 };
 
 const resolvers = {
   Query: {
-    historicalData,
+    primaryData,
+    secondaryData,
   },
 };
 

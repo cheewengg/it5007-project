@@ -1,12 +1,27 @@
-type Historical {
+type PrimaryData {
   ticker: String
+  ric: String
+  name: String
+  benchmark_index: String
   date: [Int]
   px_last: [Float]
   px_volume: [Float]
 }
 
+type SecondaryData {
+  ticker: String
+  benchmark_index: String
+  date: [Int]
+  pxDelta: [Float]
+  pxDeltaVsIdx: [Float]
+}
+
 ##### Top level declarations
 type Query {
-  historicalData(ticker: String!, dateRange: Int!): Historical
-  allHistoricalData: [Historical]
+  primaryData(ticker: String!, dateRange: Int!): PrimaryData
+  secondaryData(
+    ticker: String!
+    dateRange: Int!
+    lookBackDuration: Int!
+  ): SecondaryData
 }
