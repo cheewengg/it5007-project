@@ -53,16 +53,17 @@
 
 ## To Deploy on Cloud (Heroku & Mongo Atlas)
 
-	1. When there is new data, upload csv to MongoDB Cloud
+	1. When there is new data, upload csv or json directly to MongoDB Cloud
 		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection brianfreitas --drop --type csv --headerline --ignoreBlanks --file data/brian_freitas_processed.csv
 
 		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection intropic --drop --type csv --headerline --ignoreBlanks --file data/intropic_processed.csv
 
 		- mongoimport --uri mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance --collection historical --drop --type json --file data/historical.json --jsonArray
 
-	2. Git Commit with Heroku Build
+	2. Git Commit & Git Commit to Heroku
 		- git add .
 		- git commit -am "commit message"
+		- git push 
 		- git push heroku code:main
 
 

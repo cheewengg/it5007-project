@@ -50,7 +50,7 @@ type Issue {
 
 type Historical {
   ticker: String
-  date: [String]
+  date: [Int]
   px_last: [Float]
   px_volume: [Int]
 }

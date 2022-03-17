@@ -159,15 +159,19 @@ class Charting extends React.Component {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
+    var xValues = [];
 
-    var xValues = new_ticker_data.date;
+    for (let i=0; i < new_ticker_data.date.length; i++) {
+      xValues.push(new Date(new_ticker_data.date[i] * 1000).toLocaleDateString('en-US'));
+    }
+
+    // var xValues = new_ticker_data.date;
     var yLineValues = new_ticker_data.px_last;
     var yBarValues = new_ticker_data.px_volume;
 
-    var ticker_data_length = xValues.length; 
-    var starting_point = (new_benchmark_data.px_last.length) - ticker_data_length;
+    var starting_point = (new_benchmark_data.px_last.length) - xValues.length;
     var benchmark_yValues = new_benchmark_data.px_last.slice(starting_point);
-     
+
     const data = {
       labels: xValues,
       datasets: [
