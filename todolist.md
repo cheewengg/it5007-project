@@ -31,8 +31,10 @@
 
 
 ### Changelog (March 17th, 2022)
-    - Intropic and BrianFreitas data now uploads directly to MongoDB cloud
-    - Display chart x-axis dates with correct format
+    - Loaded remaining Intropic API data and corresponding Bloomberg historical data 
+    - Added ticker price / benchmark price ratio to chart (ticker and benchmark raw price hidden by default)
+    - Intropic and BrianFreitas data now uploads directly to MongoDB cloud (backend enhancement)
+    - Display chart x-axis dates with correct "Dates" format
     - Correct chart legend name for ticker (previously displaying index name)
 
 ### Changelog (March 16th, 2022)

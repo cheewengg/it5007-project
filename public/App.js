@@ -94,8 +94,6 @@ class Charting extends React.Component {
       yTickerBenchmarkRatioNormalized.push(yTickerBenchmarkRatio[i] * 100 / yTickerBenchmarkRatio[0]);
     }
 
-    console.log(yTickerBenchmarkRatio);
-    console.log(yTickerBenchmarkRatioNormalized);
     const data = {
       labels: xValues,
       datasets: [{
@@ -104,7 +102,8 @@ class Charting extends React.Component {
         yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
-        data: yTickerPrices
+        data: yTickerPrices,
+        hidden: true
       }, {
         type: 'line',
         label: new_benchmark_name,
@@ -113,20 +112,23 @@ class Charting extends React.Component {
         borderColor: 'Blue',
         borderDash: [5, 8],
         pointRadius: 0,
-        data: yBenchmarkPrices
+        data: yBenchmarkPrices,
+        hidden: true
       }, {
         type: 'line',
         label: 'Ticker/Benchmark Ratio',
         yAxisID: 'TickerBenchmarkRatio',
         backgroundColor: 'BlueViolet',
         borderColor: 'BlueViolet',
-        data: yTickerBenchmarkRatioNormalized
+        data: yTickerBenchmarkRatioNormalized,
+        hidden: false
       }, {
         type: 'bar',
-        label: 'Historical Volume',
+        label: 'Ticker Volume',
         yAxisID: 'Volume',
         backgroundColor: 'DarkGrey',
-        data: yTickerVolumes
+        data: yTickerVolumes,
+        hidden: false
       }]
     };
     const config = {
@@ -137,12 +139,10 @@ class Charting extends React.Component {
             type: 'linear',
             position: 'left',
             ticks: {
-              callback: function (value, index, values) {
-                return '$' + value;
-              }
+              display: false
             },
             title: {
-              display: true,
+              display: false,
               text: 'Ticker Price'
             }
           },
@@ -150,8 +150,11 @@ class Charting extends React.Component {
             type: 'linear',
             position: 'left',
             title: {
-              display: true,
+              display: false,
               text: 'Benchmark Price'
+            },
+            ticks: {
+              display: false
             }
           },
           TickerBenchmarkRatio: {
@@ -177,6 +180,16 @@ class Charting extends React.Component {
             text: new_ticker_name,
             maintainAspectRatio: false,
             responsive: true
+          },
+          legend: {
+            onClick: function (e, legendItem) {
+              var idx = legendItem.datasetIndex;
+              var scalesName = Object.keys(this.chart.config.options.scales)[idx];
+              this.chart.config.data.datasets[idx].hidden = !this.chart.config.data.datasets[idx].hidden;
+              this.chart.config.options.scales[scalesName].ticks.display = !this.chart.config.options.scales[scalesName].ticks.display;
+              this.chart.config.options.scales[scalesName].title.display = !this.chart.config.options.scales[scalesName].title.display;
+              this.chart.update();
+            }
           }
         }
       }

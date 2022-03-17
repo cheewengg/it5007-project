@@ -48,6 +48,7 @@ type Issue {
   creator: String
 }
 
+
 type Historical {
   ticker: String
   date: [Int]
