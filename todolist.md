@@ -6,8 +6,6 @@
 - Add ratio of ticker/idx price to graph (line)
 - Price (left y-axis column): $ Sign for needs to be "KRW" for South Korean Won or "£" for British Pounds (consider adding just KRW, USD, AUD, GBP etc)
 - Price (left y-axis column): Add commas to numbers above 1,000 (usually KRW)
-- Date (x-axis): remove string & format properly
-
 
 ## Table Formatting
 - Format dates properly (currently string)
@@ -33,8 +31,9 @@
 
 
 ### Changelog (March 17th, 2022)
-    - Intropic and BrianFreitas Data direct upload to MongoDB cloud
-    - Correct legend names 
+    - Intropic and BrianFreitas data now uploads directly to MongoDB cloud
+    - Display chart x-axis dates with correct format
+    - Correct chart legend name for ticker (previously displaying index name)
 
 ### Changelog (March 16th, 2022)
     - MongoDB Cloud (Atlas) configured and deployed

@@ -78,10 +78,24 @@ class Charting extends React.Component {
     } // var xValues = new_ticker_data.date;
 
 
-    var yLineValues = new_ticker_data.px_last;
-    var yBarValues = new_ticker_data.px_volume;
+    var yTickerPrices = new_ticker_data.px_last;
+    var yTickerVolumes = new_ticker_data.px_volume;
     var starting_point = new_benchmark_data.px_last.length - xValues.length;
-    var benchmark_yValues = new_benchmark_data.px_last.slice(starting_point);
+    var yBenchmarkPrices = new_benchmark_data.px_last.slice(starting_point);
+    var yTickerBenchmarkRatio = []; // Calculate Ticker / Benchmark Price Ratio 
+
+    var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
+
+    for (let i = 0; i < yTickerPrices.length; i++) {
+      yTickerBenchmarkRatio.push(yTickerPrices[i] / yBenchmarkPrices[i]);
+    }
+
+    for (let i = 0; i < yTickerBenchmarkRatio.length; i++) {
+      yTickerBenchmarkRatioNormalized.push(yTickerBenchmarkRatio[i] * 100 / yTickerBenchmarkRatio[0]);
+    }
+
+    console.log(yTickerBenchmarkRatio);
+    console.log(yTickerBenchmarkRatioNormalized);
     const data = {
       labels: xValues,
       datasets: [{
@@ -90,7 +104,7 @@ class Charting extends React.Component {
         yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
-        data: yLineValues
+        data: yTickerPrices
       }, {
         type: 'line',
         label: new_benchmark_name,
@@ -99,13 +113,20 @@ class Charting extends React.Component {
         borderColor: 'Blue',
         borderDash: [5, 8],
         pointRadius: 0,
-        data: benchmark_yValues
+        data: yBenchmarkPrices
+      }, {
+        type: 'line',
+        label: 'Ticker/Benchmark Ratio',
+        yAxisID: 'TickerBenchmarkRatio',
+        backgroundColor: 'BlueViolet',
+        borderColor: 'BlueViolet',
+        data: yTickerBenchmarkRatioNormalized
       }, {
         type: 'bar',
         label: 'Historical Volume',
         yAxisID: 'Volume',
         backgroundColor: 'DarkGrey',
-        data: yBarValues
+        data: yTickerVolumes
       }]
     };
     const config = {
@@ -131,6 +152,14 @@ class Charting extends React.Component {
             title: {
               display: true,
               text: 'Benchmark Price'
+            }
+          },
+          TickerBenchmarkRatio: {
+            type: 'linear',
+            position: 'left',
+            title: {
+              display: true,
+              text: 'Ticker/Benchmark Ratio'
             }
           },
           Volume: {
