@@ -116,7 +116,7 @@ class Charting extends React.Component {
         hidden: true
       }, {
         type: 'line',
-        label: 'Ticker/Benchmark Ratio',
+        label: 'Ticker/Benchmark Price Ratio',
         yAxisID: 'TickerBenchmarkRatio',
         backgroundColor: 'BlueViolet',
         borderColor: 'BlueViolet',
@@ -251,28 +251,30 @@ function DropdownOptions({
 
 class EventFilter extends React.Component {
   render() {
-    // need to code automated dropdown options i/o hardcode
-    const eventList = [{
-      id: 1,
+    var eventSet = new Set();
+    var eventOptions = [{
+      id: 0,
       value: 'All Events'
-    }, {
-      id: 2,
-      value: 'KOSPI2 June'
-    }, {
-      id: 3,
-      value: 'KOSDAQ150 June'
-    }, {
-      id: 4,
-      value: 'CSI300 June'
-    }, {
-      id: 5,
-      value: 'FTSE China 50 March'
     }];
+    var m = 1;
+
+    for (let i = 0; i < this.props.issues.length; i++) {
+      eventSet.add(this.props.issues[i].event_name);
+    }
+
+    for (const item of Array.from(eventSet).sort()) {
+      eventOptions.push({
+        id: m,
+        value: item
+      });
+      m++;
+    }
+
     return /*#__PURE__*/React.createElement("select", {
       id: "eventDropdown",
       onInput: FilterTable
     }, /*#__PURE__*/React.createElement(DropdownOptions, {
-      options: eventList
+      options: eventOptions
     }));
   }
 
@@ -280,25 +282,33 @@ class EventFilter extends React.Component {
 
 class CountryFilter extends React.Component {
   render() {
-    // need to code out automated dropdown options i/o hardcode
-    const countryList = [{
-      id: 1,
+    var countrySet = new Set();
+    var countryOptions = [{
+      id: 0,
       value: 'All Countries'
-    }, {
-      id: 2,
-      value: 'KS'
-    }, {
-      id: 3,
-      value: 'CH'
-    }, {
-      id: 4,
-      value: 'HK'
     }];
+    var m = 1;
+
+    for (let i = 0; i < this.props.issues.length; i++) {
+      countrySet.add(this.props.issues[i].country);
+    }
+
+    console.log(countrySet);
+
+    for (const item of Array.from(countrySet).sort()) {
+      countryOptions.push({
+        id: m,
+        value: item
+      });
+      m++;
+    }
+
+    console.log(countryOptions);
     return /*#__PURE__*/React.createElement("select", {
       id: "countryDropdown",
       onInput: FilterTable
     }, /*#__PURE__*/React.createElement(DropdownOptions, {
-      options: countryList
+      options: countryOptions
     }));
   }
 
@@ -409,9 +419,11 @@ class IssueList extends React.Component {
   }
 
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watcher (Beta)"), /*#__PURE__*/React.createElement(Charting, {
-      data: this.state.historical
-    }), /*#__PURE__*/React.createElement(EventFilter, null), /*#__PURE__*/React.createElement(CountryFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watcher (Beta)"), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, {
+      issues: this.state.issues
+    }), /*#__PURE__*/React.createElement(CountryFilter, {
+      issues: this.state.issues
+    }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
       issues: this.state.issues,
       data: this.state.historical
     }), /*#__PURE__*/React.createElement("hr", null));

@@ -3,17 +3,16 @@
 - Excess Volume V2 only counts if price % chg vs INDEX matches direction (add vs Index part)
 
 ## Graph & Graph Formatting 
-- Add ratio of ticker/idx price to graph (line)
-- Price (left y-axis column): $ Sign for needs to be "KRW" for South Korean Won or "£" for British Pounds (consider adding just KRW, USD, AUD, GBP etc)
+- Price (left y-axis column): Add Currency to y-axis values (KRW, USD, AUD, GBP, etc)
 - Price (left y-axis column): Add commas to numbers above 1,000 (usually KRW)
 
 ## Table Formatting
-- Format dates properly (currently string)
+- Format dates properly (currently string, change to epoch)
 
 ## Infrastructure
-- Dropdown menus need to function properly
+- Dropdown list should allow multiple dropdown options
 - Shortlist button needs functionality (add to list and master "export to csv" button) 
-- Load graph data only when visualize button for the specific ticker is clicked (right now i'm loading the entire collection which leads to slow startup time)
+- Optimize load graph data (currently loading entire historical datasetleading to slow startup time). Change to load only the ticker that is clicked. 
 - put methods into appropriate Class (organize app.jsx)
 
 
@@ -27,15 +26,14 @@
 - Page3: Track performance from announcement to effective date, from effective date to t+15 etc...
     - Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data
 
-- clean up python code (class Intropic & class BrianFreitas)
-
 
 ### Changelog (March 17th, 2022)
     - Loaded remaining Intropic API data and corresponding Bloomberg historical data 
     - Added ticker price / benchmark price ratio to chart (ticker and benchmark raw price hidden by default)
+    - Dropdown options are now dynamic (include all events and countries)
     - Intropic and BrianFreitas data now uploads directly to MongoDB cloud (backend enhancement)
     - Display chart x-axis dates with correct "Dates" format
-    - Correct chart legend name for ticker (previously displaying index name)
+
 
 ### Changelog (March 16th, 2022)
     - MongoDB Cloud (Atlas) configured and deployed

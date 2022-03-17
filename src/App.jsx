@@ -207,7 +207,7 @@ class Charting extends React.Component {
           hidden: true,
         }, {
           type: 'line',
-          label: 'Ticker/Benchmark Ratio',
+          label: 'Ticker/Benchmark Price Ratio',
           yAxisID: 'TickerBenchmarkRatio',
           backgroundColor: 'BlueViolet',
           borderColor: 'BlueViolet',
@@ -349,30 +349,22 @@ function DropdownOptions({ options }) {
 
 class EventFilter extends React.Component {
   render() {
+    var eventSet = new Set(); 
+    var eventOptions = [{id: 0, value: 'All Events'}];
+    var m = 1; 
 
-    // need to code automated dropdown options i/o hardcode
-    const eventList = [
-      {
-        id: 1,
-        value: 'All Events'
-      }, {
-          id: 2,
-          value: 'KOSPI2 June'
-      }, {
-          id: 3,
-          value: 'KOSDAQ150 June'
-      }, {
-          id: 4,
-          value: 'CSI300 June'
-      }, {
-          id: 5,
-          value: 'FTSE China 50 March'
-      }
-    ];
+    for (let i=0; i < this.props.issues.length; i++) {
+      eventSet.add(this.props.issues[i].event_name);
+    }
+
+    for (const item of Array.from(eventSet).sort()) {
+      eventOptions.push({id:m, value: item});  
+      m++;
+    }
 
     return (
       <select id="eventDropdown" onInput={FilterTable}>
-        <DropdownOptions options={eventList} />
+        <DropdownOptions options={eventOptions} />
       </select>  
     );
   }
@@ -380,27 +372,22 @@ class EventFilter extends React.Component {
 
 class CountryFilter extends React.Component {
   render() {
+    var countrySet = new Set(); 
+    var countryOptions = [{id: 0, value: 'All Countries'}];
+    var m = 1; 
 
-    // need to code out automated dropdown options i/o hardcode
-    const countryList = [
-      {
-          id: 1,
-          value: 'All Countries'
-      }, {
-          id: 2,
-          value: 'KS'
-      }, {
-          id: 3,
-          value: 'CH'
-      }, {
-          id: 4,
-          value: 'HK'
-      }
-    ];
-    
+    for (let i=0; i < this.props.issues.length; i++) {
+      countrySet.add(this.props.issues[i].country);
+    }
+
+    for (const item of Array.from(countrySet).sort()) {
+      countryOptions.push({id:m, value: item});  
+      m++;
+    }
+
     return (
       <select id="countryDropdown" onInput={FilterTable}>
-        <DropdownOptions options={countryList} />
+        <DropdownOptions options={countryOptions} />
       </select>  
     );
   }
@@ -503,9 +490,9 @@ class IssueList extends React.Component {
     return (
       <React.Fragment>
         <h1>Index Rebalance Watcher (Beta)</h1>
-        <Charting data={this.state.historical}/>
-        <EventFilter /> 
-        <CountryFilter /> 
+        <Charting/>
+        <EventFilter issues={this.state.issues}/> 
+        <CountryFilter issues={this.state.issues}/> 
         <hr />
         <IssueTable issues={this.state.issues} data={this.state.historical} />
         <hr />
