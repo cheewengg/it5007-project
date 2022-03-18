@@ -2,10 +2,6 @@
 - Graph: Add Excess Volume Analysis
 - Excess Volume V2 only counts if price % chg vs INDEX matches direction (add vs Index part)
 
-## Graph & Graph Formatting 
-- Price (left y-axis column): Add Currency to y-axis values (KRW, USD, AUD, GBP, etc)
-- Price (left y-axis column): Add commas to numbers above 1,000 (usually KRW)
-
 ## Table Formatting
 - Format dates properly (currently string, change to epoch)
 
@@ -27,20 +23,30 @@
     - Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data
 
 
+### Changelog (March 18th, 2022)
+    - Graphing: Add currency to y-axis price and benchmark titles 
+
 ### Changelog (March 17th, 2022)
-    - Loaded remaining Intropic API data and corresponding Bloomberg historical data 
-    - Added ticker price / benchmark price ratio to chart (ticker and benchmark raw price hidden by default)
-    - Dropdown options are now dynamic (include all events and countries)
-    - Intropic and BrianFreitas data now uploads directly to MongoDB cloud (backend enhancement)
-    - Display chart x-axis dates with correct "Dates" format
-
-
+    - Database: Loaded remaining Intropic API data and corresponding Bloomberg historical data 
+    - Database: Intropic, BrianFreitas, and Bloomberg data may now be uploaded directly to MongoDB cloud
+    - Graphing: Added ticker/benchmark price ratio (ticker and benchmark raw price hidden by default)
+    - Graphing: Display x-axis dates with correct "Dates" format
+    - Interaction: Dropdown options are now dynamic (include all events and countries)
+    
 ### Changelog (March 16th, 2022)
-    - MongoDB Cloud (Atlas) configured and deployed
+    - Deployment: Exposed web application at https://rebalances.herokuapp.com/ 
+    - Database: MongoDB Cloud configured and deployed
 
 ### Changelog (March 14th, 2022) 
-    - Sorting: Columns may now be sorted
+    - DataTable: Columns may now be sorted by clicking column headers 
 
 ### Changelog (March 11, 2022)
-    - Add benchmark data to graph
-    - Moved benchmark period from 9 months ago for 3 months to 6 months ago for 3 months 
+    - Graphing: Add benchmark data to graph (static csv)
+    - Config: Moved benchmark period from 9 months ago for 3 months to 6 months ago for 3 months 
+
+### Changelog (March 9th, 2022)
+    - Graphing: Historical ticker price and volume added to graph (static data from csv)
+    - Interaction: Dropdown menu to filter DataTable added (dropdown options static)
+
+### Changelog (March 7th, 2022)
+    - Initial Commit: Web application skeleton (DataTable) deployed with static data (csv) and locally hosted

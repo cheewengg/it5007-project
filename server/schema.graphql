@@ -13,9 +13,9 @@ type Issue {
   ticker: String
   name: String
   ticker_px_close_1D: Float
-  announcement_date: String
-  trade_date: String
-  prediction_date: String
+  announcement_date: Int
+  trade_date: Int
+  prediction_date: Int
   days_to_announcement: String
   conviction: String
   side: Int
@@ -41,7 +41,7 @@ type Issue {
   excess_volume5D_B: Float
   excess_volume15D_B: Float
   excess_volume30D_B: Float
-  exp_reporting_date: String
+  exp_reporting_date: Int
   benchmark_index: String
   lookback_duration: String
   lookback_end_days_ago: String
@@ -54,6 +54,7 @@ type Historical {
   date: [Int]
   px_last: [Float]
   px_volume: [Int]
+  currency: String
 }
 
 

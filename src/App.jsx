@@ -17,10 +17,10 @@ function IssueRow(props) {
       <td>{issue.country}</td>
       <td>{issue.ticker}</td>
       <td>{issue.name}</td>
-      <td>{issue.ticker_px_close_1D}</td>
-      <td>{issue.announcement_date}</td>
-      <td>{issue.trade_date}</td>
-      <td>{issue.prediction_date}</td>
+      <td>{issue.ticker_px_close_1D}</td>  
+      <td>{new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')}</td>
+      <td>{new Date(issue.trade_date * 1000).toLocaleDateString('en-US')}</td>
+      <td>{new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{issue.days_to_announcement}</td>
       <td>{issue.conviction}</td>
       <td>{issue.side}</td>
@@ -46,7 +46,7 @@ function IssueRow(props) {
       <td>{(100 * issue.excess_volume5D_B).toFixed(2) + '%'}</td>
       <td>{(100 * issue.excess_volume15D_B).toFixed(2) + '%'}</td>
       <td>{(100 * issue.excess_volume30D_B).toFixed(2) + '%'}</td>
-      <td>{issue.exp_reporting_date}</td>
+      <td>{new Date(issue.exp_reporting_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{issue.benchmark_index}</td>
       <td>{issue.lookback_duration}</td>
       <td>{issue.lookback_end_days_ago}</td>
@@ -56,7 +56,7 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  function chartingSubmit(e, ticker_name, benchmark_name) {
+  function chartingSubmit(e, ticker_name, benchmark_name, announcement_date) {
     e.preventDefault();
 
     for (let i=0; i < props.data.length; i++) {
@@ -68,13 +68,13 @@ function IssueTable(props) {
       }
     }
 
-    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data); 
+    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data, announcement_date); 
   }
 
   // add visualization and shortlist buttons
   for (let i=0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
-    props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, ticker=props.issues[i].ticker, benchmark=props.issues[i].benchmark_index)}>Visualize</button>;
+    props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, ticker=props.issues[i].ticker, benchmark=props.issues[i].benchmark_index, announcement_date=props.issues[i].announcement_date)}>Visualize</button>;
     props.issues[i].add_basket = <button onClick={(e) => Shortlist(e, ticker=props.issues[i].ticker)}>Shortlist</button>;
   }
 
@@ -155,23 +155,30 @@ class Charting extends React.Component {
     super();
   }
 
-  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data) {
+  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data, announcement_date) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
     var xValues = [];
 
+    var offset6M = (24*60*60) * 180   // 180 days (i.e. 6 mths ago)
+    var offset3M = (24*60*60) * 90   // 90 days (i.e. 3 mths ago)
+    console.log(new Date(announcement_date * 1000).toLocaleDateString());
+    console.log(new Date((announcement_date - offset3M)* 1000).toLocaleDateString());
+    console.log(new Date((announcement_date - offset6M)* 1000).toLocaleDateString());
+    
+
     for (let i=0; i < new_ticker_data.date.length; i++) {
       xValues.push(new Date(new_ticker_data.date[i] * 1000).toLocaleDateString('en-US'));
     }
 
-    // var xValues = new_ticker_data.date;
     var yTickerPrices = new_ticker_data.px_last;
     var yTickerVolumes = new_ticker_data.px_volume;
+    var yTickerCurrency = new_ticker_data.currency;
 
     var starting_point = (new_benchmark_data.px_last.length) - xValues.length;
     var yBenchmarkPrices = new_benchmark_data.px_last.slice(starting_point);
-
+    var yBenchmarkCurrency = new_benchmark_data.currency; 
     
     var yTickerBenchmarkRatio = [];   // Calculate Ticker / Benchmark Price Ratio 
     var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
@@ -236,7 +243,7 @@ class Charting extends React.Component {
             },
             title: {
               display: false,
-              text: 'Ticker Price',
+              text: 'Ticker Price (' + yTickerCurrency + ')',
             },
           }, 
           BenchmarkPrice: {
@@ -244,7 +251,7 @@ class Charting extends React.Component {
             position: 'left', 
             title: {
               display: false,
-              text: 'Benchmark Price'
+              text: 'Benchmark Price (' + yBenchmarkCurrency + ')'
             },
             ticks: {
               display: false,
@@ -475,6 +482,7 @@ class IssueList extends React.Component {
     const query2 = `query {
       historicalData {
         ticker
+        currency
         date
         px_last
         px_volume

@@ -7,11 +7,11 @@ function jsonDateReviver(key, value) {
 
 function IssueRow(props) {
   const issue = props.issue;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, issue.announcement_date), /*#__PURE__*/React.createElement("td", null, issue.trade_date), /*#__PURE__*/React.createElement("td", null, issue.prediction_date), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, '$' + issue.demand_usd.toFixed(2)), /*#__PURE__*/React.createElement("td", null, issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, issue.demand_adv.toFixed(2)), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.exp_reporting_date), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.trade_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, '$' + issue.demand_usd.toFixed(2)), /*#__PURE__*/React.createElement("td", null, issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, issue.demand_adv.toFixed(2)), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, new Date(issue.exp_reporting_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
 }
 
 function IssueTable(props) {
-  function chartingSubmit(e, ticker_name, benchmark_name) {
+  function chartingSubmit(e, ticker_name, benchmark_name, announcement_date) {
     e.preventDefault();
 
     for (let i = 0; i < props.data.length; i++) {
@@ -24,14 +24,14 @@ function IssueTable(props) {
       }
     }
 
-    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data);
+    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data, announcement_date);
   } // add visualization and shortlist buttons
 
 
   for (let i = 0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
     props.issues[i].visualize = /*#__PURE__*/React.createElement("button", {
-      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker, benchmark = props.issues[i].benchmark_index)
+      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker, benchmark = props.issues[i].benchmark_index, announcement_date = props.issues[i].announcement_date)
     }, "Visualize");
     props.issues[i].add_basket = /*#__PURE__*/React.createElement("button", {
       onClick: e => Shortlist(e, ticker = props.issues[i].ticker)
@@ -66,22 +66,30 @@ class Charting extends React.Component {
     super();
   }
 
-  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data) {
+  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data, announcement_date) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
 
     var xValues = [];
+    var offset6M = 24 * 60 * 60 * 180; // 180 days (i.e. 6 mths ago)
+
+    var offset3M = 24 * 60 * 60 * 90; // 90 days (i.e. 3 mths ago)
+
+    console.log(new Date(announcement_date * 1000).toLocaleDateString());
+    console.log(new Date((announcement_date - offset3M) * 1000).toLocaleDateString());
+    console.log(new Date((announcement_date - offset6M) * 1000).toLocaleDateString());
 
     for (let i = 0; i < new_ticker_data.date.length; i++) {
       xValues.push(new Date(new_ticker_data.date[i] * 1000).toLocaleDateString('en-US'));
-    } // var xValues = new_ticker_data.date;
-
+    }
 
     var yTickerPrices = new_ticker_data.px_last;
     var yTickerVolumes = new_ticker_data.px_volume;
+    var yTickerCurrency = new_ticker_data.currency;
     var starting_point = new_benchmark_data.px_last.length - xValues.length;
     var yBenchmarkPrices = new_benchmark_data.px_last.slice(starting_point);
+    var yBenchmarkCurrency = new_benchmark_data.currency;
     var yTickerBenchmarkRatio = []; // Calculate Ticker / Benchmark Price Ratio 
 
     var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
@@ -143,7 +151,7 @@ class Charting extends React.Component {
             },
             title: {
               display: false,
-              text: 'Ticker Price'
+              text: 'Ticker Price (' + yTickerCurrency + ')'
             }
           },
           BenchmarkPrice: {
@@ -151,7 +159,7 @@ class Charting extends React.Component {
             position: 'left',
             title: {
               display: false,
-              text: 'Benchmark Price'
+              text: 'Benchmark Price (' + yBenchmarkCurrency + ')'
             },
             ticks: {
               display: false
@@ -293,8 +301,6 @@ class CountryFilter extends React.Component {
       countrySet.add(this.props.issues[i].country);
     }
 
-    console.log(countrySet);
-
     for (const item of Array.from(countrySet).sort()) {
       countryOptions.push({
         id: m,
@@ -303,7 +309,6 @@ class CountryFilter extends React.Component {
       m++;
     }
 
-    console.log(countryOptions);
     return /*#__PURE__*/React.createElement("select", {
       id: "countryDropdown",
       onInput: FilterTable
@@ -405,6 +410,7 @@ class IssueList extends React.Component {
     const query2 = `query {
       historicalData {
         ticker
+        currency
         date
         px_last
         px_volume
