@@ -4,6 +4,7 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
   const {
     ric,
     name,
+    currency,
     mostRecentDate,
     mostRecentPrice,
     differenceAbs,
@@ -16,6 +17,7 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
       <div>{name}</div>
       <div style={{ display: "flex", gap: "10px" }}>
         <div>{mostRecentPrice}</div>
+        <div>{currency}</div>
         <div>{differenceAbs}</div>
         <div>{differencePercent} %</div>
       </div>

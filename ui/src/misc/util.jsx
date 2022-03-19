@@ -15,7 +15,8 @@ export const lookBackRangeMapping = {
 };
 
 export const generatePrimaryHeaderData = (primaryData) => {
-  const { ticker, ric, name, benchmark_index, primaryChartData } = primaryData;
+  const { ticker, ric, name, benchmark_index, currency, primaryChartData } =
+    primaryData;
 
   if (!ticker) return {};
   const mostRecentDate =
@@ -31,6 +32,7 @@ export const generatePrimaryHeaderData = (primaryData) => {
     ric,
     name,
     benchmark_index,
+    currency,
     mostRecentDate,
     mostRecentPrice: rightBound,
     differenceAbs,
@@ -40,7 +42,7 @@ export const generatePrimaryHeaderData = (primaryData) => {
 
 export const graphQLFetch = async (query, variables = {}) => {
   try {
-    const response = await fetch("/graphql", {
+    const response = await fetch(window.ENV.UI_API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),

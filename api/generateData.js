@@ -1,3 +1,5 @@
+const { getDb } = require("./db.js");
+
 const sliceHistoricalData = (historicalData, dateRange) => {
   const rightBound = historicalData["px_volume"].length;
   const primaryDataLength = Math.min(rightBound, dateRange);
@@ -15,15 +17,29 @@ const sliceHistoricalData = (historicalData, dateRange) => {
   return slicedData;
 };
 
+const generateData = async (ticker) => {
+  const db = getDb();
+
+  const historicalTickerData = await db
+    .collection("historical")
+    .findOne({ ticker: ticker });
+
+  const brianfreitasData = await db
+    .collection("brianfreitas")
+    .findOne({ ticker: ticker });
+
+  return { historicalTickerData, brianfreitasData };
+};
+
 const generatePrimaryData = (historicalTickerData, analystData, dateRange) => {
   const { RIC: ric, name, benchmark_index } = analystData;
 
   const slicedData = sliceHistoricalData(historicalTickerData, dateRange);
+
   const primaryData = Object.assign(
     { ...slicedData },
     { ric, name, benchmark_index }
   );
-
   return primaryData;
 };
 
@@ -42,7 +58,7 @@ const generateSecondaryData = (
     historicalBenchmarkData,
     actualDateRange
   );
-
+  console.log(slicedHistoricalBenchmarkData);
   const {
     ticker,
     date: tickerDate,
@@ -106,6 +122,7 @@ const generateSecondaryData = (
 };
 
 module.exports = {
+  generateData,
   generatePrimaryData,
   generateSecondaryData,
 };

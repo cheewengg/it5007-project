@@ -11,15 +11,23 @@ const usePrimaryData = (defaultSearchTerm) => {
   const searchPrimaryData = async (searchQuery, dateRange = 100000) => {
     const query = `query {
           primaryData (ticker: "${searchQuery}", dateRange: ${dateRange}) {
-            ticker ric name benchmark_index date px_last px_volume
+            ticker ric name benchmark_index currency date px_last px_volume
           }
         }`;
 
     const { primaryData } = await graphQLFetch(query);
     if (!primaryData) return;
 
-    const { ticker, ric, name, benchmark_index, date, px_last, px_volume } =
-      primaryData;
+    const {
+      ticker,
+      ric,
+      name,
+      benchmark_index,
+      currency,
+      date,
+      px_last,
+      px_volume,
+    } = primaryData;
     const primaryChartData = [["Date", "Close"]];
 
     date.forEach((_, idx) => {
@@ -29,7 +37,14 @@ const usePrimaryData = (defaultSearchTerm) => {
       primaryChartData.push([currentDate, currentPx]);
     });
 
-    const res = { ticker, ric, name, benchmark_index, primaryChartData };
+    const res = {
+      ticker,
+      ric,
+      name,
+      benchmark_index,
+      currency,
+      primaryChartData,
+    };
     setPrimaryData(res);
   };
 

@@ -3,6 +3,7 @@ type PrimaryData {
   ric: String
   name: String
   benchmark_index: String
+  currency: String
   date: [Int]
   px_last: [Float]
   px_volume: [Float]

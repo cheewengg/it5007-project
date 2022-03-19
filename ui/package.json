@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -w server -e js,graphql server/server.js",
+    "start": "nodemon -w uiserver.js -w .env uiserver.js",
     "compile": "webpack --mode production",
     "watch": "webpack --watch"
   },
@@ -12,15 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.17.7",
-    "apollo-server-express": "^2.25.3",
-    "axios": "^0.26.1",
     "babel-polyfill": "^6.26.0",
+    "dotenv": "^6.2.0",
     "express": "^4.17.2",
-    "fs": "^0.0.1-security",
-    "graphql": "^0.13.2",
-    "mongodb": "^4.4.1",
+    "http-proxy-middleware": "^0.21.0",
     "nodemon": "^2.0.15",
-    "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-charts": "^4.0.0",
