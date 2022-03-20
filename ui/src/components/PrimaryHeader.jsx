@@ -7,6 +7,7 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
     currency,
     mostRecentDate,
     mostRecentPrice,
+    announcementDate,
     differenceAbs,
     differencePercent,
   } = primaryHeaderData;
@@ -21,7 +22,8 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
         <div>{differenceAbs}</div>
         <div>{differencePercent} %</div>
       </div>
-      <div>{mostRecentDate}</div>
+      <div>Last Updated: {mostRecentDate}</div>
+      <div>Announcement Date: {announcementDate}</div>
     </div>
   );
 };

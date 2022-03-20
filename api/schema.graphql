@@ -4,12 +4,13 @@ type PrimaryData {
   name: String
   benchmark_index: String
   currency: String
+  announcement_date: Int
   date: [Int]
   px_last: [Float]
   px_volume: [Float]
 }
 
-type SecondaryData {
+type SecondaryDataPx {
   ticker: String
   benchmark_index: String
   date: [Int]
@@ -17,12 +18,25 @@ type SecondaryData {
   pxDeltaVsIdx: [Float]
 }
 
+type SecondaryDataVol {
+  ticker: String
+  announcement_date: Int
+  demand_shares: Float
+  date: [Int]
+  excessVol: [Float]
+}
+
 ##### Top level declarations
 type Query {
   primaryData(ticker: String!, dateRange: Int!): PrimaryData
-  secondaryData(
+  secondaryDataPx(
     ticker: String!
     dateRange: Int!
     lookBackDuration: Int!
-  ): SecondaryData
+  ): SecondaryDataPx
+  secondaryDataVol(
+    ticker: String!
+    dateRange: Int!
+    lookBackDuration: Int!
+  ): SecondaryDataVol
 }

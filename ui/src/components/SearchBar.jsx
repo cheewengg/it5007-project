@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const SearchBar = ({
   currentDateRange,
-  currentLookBackRange,
-  searchPrimaryData,
-  searchSecondaryData,
+  currentLookBackRangePx,
+  searchData,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { searchPrimaryData, searchSecondaryDataPx } = searchData;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     searchPrimaryData(searchQuery, currentDateRange);
-    searchSecondaryData(searchQuery, currentDateRange, currentLookBackRange);
+    searchSecondaryDataPx(
+      searchQuery,
+      currentDateRange,
+      currentLookBackRangePx
+    );
   };
 
   return (

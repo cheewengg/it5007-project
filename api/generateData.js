@@ -32,18 +32,18 @@ const generateData = async (ticker) => {
 };
 
 const generatePrimaryData = (historicalTickerData, analystData, dateRange) => {
-  const { RIC: ric, name, benchmark_index } = analystData;
+  const { RIC: ric, name, benchmark_index, announcement_date } = analystData;
 
   const slicedData = sliceHistoricalData(historicalTickerData, dateRange);
 
   const primaryData = Object.assign(
     { ...slicedData },
-    { ric, name, benchmark_index }
+    { ric, name, benchmark_index, announcement_date }
   );
   return primaryData;
 };
 
-const generateSecondaryData = (
+const generateSecondaryDataPx = (
   historicalTickerData,
   historicalBenchmarkData,
   dateRange,
@@ -58,22 +58,21 @@ const generateSecondaryData = (
     historicalBenchmarkData,
     actualDateRange
   );
-  console.log(slicedHistoricalBenchmarkData);
+
   const {
     ticker,
     date: tickerDate,
     px_last: tickerPx,
-    px_volume: tickerVol,
   } = slicedHistoricalTickerData;
 
   const {
     ticker: benchmark,
     date: benchmarkDate,
     px_last: benchmarkPx,
-    px_volume: benchmarkVol,
   } = slicedHistoricalBenchmarkData;
 
-  const reconciledDate = [];
+  const reconciledIdx = benchmarkDate.length - tickerDate.length;
+  const date = [];
   const pxDelta = [];
   const pxDeltaVsIdx = [];
 
@@ -83,7 +82,7 @@ const generateSecondaryData = (
   tickerDate.forEach((_, idx) => {
     const currentDate = tickerDate[idx];
     const currentTickerPx = tickerPx[idx];
-    const currentBenchmarkPx = benchmarkPx[idx];
+    const currentBenchmarkPx = benchmarkPx[idx + reconciledIdx];
 
     if (idx < lookBackDuration) {
       tickerPxAcc += currentTickerPx;
@@ -101,28 +100,88 @@ const generateSecondaryData = (
       100;
     const currentPxDeltaVsIdx = currentTickerPxDelta - currentBenchmarkPxDelta;
 
-    reconciledDate.push(currentDate);
+    date.push(currentDate);
     pxDelta.push(currentTickerPxDelta.toFixed(2));
     pxDeltaVsIdx.push(currentPxDeltaVsIdx.toFixed(2));
 
     tickerPxAcc -= tickerPx[idx - lookBackDuration];
     tickerPxAcc += currentTickerPx;
 
-    benchmarkPxAcc -= benchmarkPx[idx - lookBackDuration];
+    benchmarkPxAcc -= benchmarkPx[idx + reconciledIdx - lookBackDuration];
     benchmarkPxAcc += currentBenchmarkPx;
   });
 
   return {
     ticker,
     benchmark_index: benchmark,
-    date: reconciledDate,
+    date,
     pxDelta,
     pxDeltaVsIdx,
+  };
+};
+
+const generateSecondaryDataVol = (
+  historicalTickerData,
+  historicalBenchmarkData,
+  dateRange,
+  lookBackDuration
+) => {
+  const actualDateRange = dateRange + 6 * 20;
+  const {
+    ticker,
+    date: tickerDate,
+    px_volume: tickerVol,
+  } = sliceHistoricalData(historicalTickerData, actualDateRange);
+  const { announcement_date, demand_shares } = historicalBenchmarkData;
+
+  const windowSpan = 3 * 20; // 3 months
+
+  const startIdx = 6 * 20;
+  let leftBound = startIdx - lookBackDuration;
+  let historyAcc = 0;
+  let lookBackAcc = 0;
+
+  const date = [];
+  const excessVol = [];
+
+  tickerDate.forEach((_, idx) => {
+    if (idx < windowSpan) historyAcc += tickerVol[idx];
+
+    const rightBound = idx + windowSpan;
+    if (rightBound < leftBound || rightBound >= tickerDate.length) return;
+    if (rightBound >= leftBound && rightBound < startIdx) {
+      lookBackAcc += tickerVol[rightBound];
+      return;
+    }
+
+    const currentDate = tickerDate[rightBound];
+    const avgHistoryVol = historyAcc / windowSpan;
+    const currentExcessVol =
+      ((lookBackAcc - avgHistoryVol * lookBackDuration) / demand_shares) * 100;
+
+    date.push(currentDate);
+    excessVol.push(currentExcessVol.toFixed(2));
+
+    lookBackAcc -= tickerVol[leftBound];
+    leftBound++;
+    lookBackAcc += tickerVol[rightBound];
+
+    historyAcc -= tickerVol[idx - windowSpan];
+    historyAcc += tickerVol[idx];
+  });
+
+  return {
+    ticker,
+    announcement_date,
+    demand_shares,
+    date,
+    excessVol,
   };
 };
 
 module.exports = {
   generateData,
   generatePrimaryData,
-  generateSecondaryData,
+  generateSecondaryDataPx,
+  generateSecondaryDataVol,
 };

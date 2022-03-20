@@ -1,7 +1,8 @@
 const {
   generateData,
   generatePrimaryData,
-  generateSecondaryData,
+  generateSecondaryDataPx,
+  generateSecondaryDataVol,
 } = require("./generateData.js");
 const { getDb } = require("./db.js");
 
@@ -17,7 +18,7 @@ const primaryData = async (_, { ticker, dateRange }) => {
   return primaryData;
 };
 
-const secondaryData = async (_, { ticker, dateRange, lookBackDuration }) => {
+const secondaryDataPx = async (_, { ticker, dateRange, lookBackDuration }) => {
   const db = getDb();
 
   const { historicalTickerData, brianfreitasData } = await generateData(ticker);
@@ -27,17 +28,31 @@ const secondaryData = async (_, { ticker, dateRange, lookBackDuration }) => {
     .collection("historical")
     .findOne({ ticker: benchmark_index });
 
-  const secondaryData = generateSecondaryData(
+  const secondaryDataPx = generateSecondaryDataPx(
     historicalTickerData,
     historicalBenchmarkData,
     dateRange,
     lookBackDuration
   );
 
-  return secondaryData;
+  return secondaryDataPx;
+};
+
+const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
+  const { historicalTickerData, brianfreitasData } = await generateData(ticker);
+
+  const secondaryDataVol = generateSecondaryDataVol(
+    historicalTickerData,
+    brianfreitasData,
+    dateRange,
+    lookBackDuration
+  );
+
+  return secondaryDataVol;
 };
 
 module.exports = {
   primaryData,
-  secondaryData,
+  secondaryDataPx,
+  secondaryDataVol,
 };

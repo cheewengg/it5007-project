@@ -1,12 +1,17 @@
 require("dotenv").config();
 const fs = require("fs");
 const { ApolloServer } = require("apollo-server-express");
-const { primaryData, secondaryData } = require("./resolvers.js");
+const {
+  primaryData,
+  secondaryDataPx,
+  secondaryDataVol,
+} = require("./resolvers.js");
 
 const resolvers = {
   Query: {
     primaryData,
-    secondaryData,
+    secondaryDataPx,
+    secondaryDataVol,
   },
 };
 
