@@ -1,3 +1,4 @@
+import "../styles/styles.css";
 import React from "react";
 
 const RangeSelector = ({ rangeMap, config }) => {
@@ -13,11 +14,12 @@ const RangeSelector = ({ rangeMap, config }) => {
   const renderBtnRangeSelector = (primaryRange) => {
     return Object.keys(rangeMap).map((range) => {
       const currentValue = rangeMap[range];
-      const style = {
-        backgroundColor: currentValue === primaryRange ? "yellow" : "",
-      };
+      const className =
+        currentValue === primaryRange
+          ? "rangeSelector__btn--selected rangeSelector__btn"
+          : "rangeSelector__btn";
       return (
-        <button style={style} key={range} value={currentValue}>
+        <button className={className} key={range} value={currentValue}>
           {range}
         </button>
       );
@@ -33,7 +35,9 @@ const RangeSelector = ({ rangeMap, config }) => {
   };
 
   return (
-    <div onClick={handleClick}>{renderBtnRangeSelector(primaryRange)}</div>
+    <div className="section__rangeSelector" onClick={handleClick}>
+      {renderBtnRangeSelector(primaryRange)}
+    </div>
   );
 };
 

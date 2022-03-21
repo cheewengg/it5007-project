@@ -1,3 +1,6 @@
+import "../styles/general.css";
+import "../styles/styles.css";
+
 import React, { useState } from "react";
 import SearchBar from "./SearchBar.jsx";
 import PrimaryHeader from "./PrimaryHeader.jsx";
@@ -18,7 +21,8 @@ import {
   lookBackRangeVolMap,
   generatePrimaryHeaderData,
   primaryChartOptions,
-  secondaryChartOptions,
+  secondaryChartPxOptions,
+  secondaryChartVolOptions,
 } from "../misc/util.jsx";
 
 const Main = () => {
@@ -124,7 +128,7 @@ const Main = () => {
       <StockChart
         chartType="LineChart"
         chartData={secondaryChartDataPx}
-        options={secondaryChartOptions}
+        options={secondaryChartPxOptions}
       />
       <RangeSelector
         rangeMap={lookBackRangeVolMap}
@@ -133,7 +137,7 @@ const Main = () => {
       <StockChart
         chartType="LineChart"
         chartData={secondaryChartDataVol}
-        options={secondaryChartOptions}
+        options={secondaryChartVolOptions}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+import "../styles/styles.css";
 import React, { useState } from "react";
 
 const SearchBar = ({
@@ -19,9 +20,12 @@ const SearchBar = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Search </label>
-      <input onChange={(event) => setSearchQuery(event.target.value)} />
+    <form className="section__searchBar" onSubmit={handleSubmit}>
+      <input
+        placeholder="Search for a ticker"
+        className="searchBar__input"
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
     </form>
   );
 };

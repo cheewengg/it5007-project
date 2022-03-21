@@ -3,7 +3,7 @@ export const dateRangeMap = {
   "1M": 20,
   "6M": 20 * 6,
   "1Y": 261,
-  Max: 100000,
+  MAX: 100000,
 };
 
 export const lookBackRangePxMap = {
@@ -66,48 +66,67 @@ export const generatePrimaryHeaderData = (primaryData) => {
 };
 // const chartColor = upslope ? "#37b24d" : "#f03e3e";
 // areaOpacity: 0.1,
-// colors: [chartColor],
+// animation: {
+//   startup: true,
+//   easing: "out",
+//   duration: 300,
+// },
 
-export const generateChartOptions = ({ darkTheme }) => {
-  const backgroundColor = darkTheme ? "#171a1d" : "";
-  const gridLineColor = darkTheme ? "#495057" : "transparent";
+export const generateChartOptions = ({
+  chartColors,
+  darkTheme,
+  upSlope,
+  vAxisFormat,
+}) => {
   const axisLabelColor = darkTheme ? "#ced4da" : "#495057";
+  const backgroundColor = darkTheme ? "#171a1d" : "";
+  // const colors =
+  //   upSlope === undefined ? chartColors : upSlope ? ["#37b24d"] : ["#f03e3e"];
   const crossHairColor = darkTheme ? "#ced4da" : "#495057";
+  const gridLineColor = darkTheme ? "#495057" : "transparent";
 
   return {
-    legend: { position: "none" },
     backgroundColor: { fill: backgroundColor },
-    focusTarget: "category",
+    colors: chartColors,
     crosshair: {
-      trigger: "focus",
       color: crossHairColor,
-      orientation: "vertical",
       opacity: 0.3,
+      orientation: "vertical",
+      trigger: "focus",
     },
-    legend: {
-      position: "none",
-    },
+    focusTarget: "category",
     hAxis: {
+      format: "MMM y",
       gridlines: { color: "transparent" },
       minorGridlines: { color: "transparent" },
-      textStyle: { color: axisLabelColor },
-      format: "MMM dd, y",
-      showTextEvery: 2,
+      showTextEvery: 30,
+      textStyle: { color: axisLabelColor, fontName: "Rubik", fontSize: 14 },
+      viewWindowMode: "maximized",
     },
+    height: "200px",
+    legend: { position: "none" },
     vAxis: {
+      format: vAxisFormat,
       gridlines: { color: gridLineColor },
       minorGridlines: { color: "transparent" },
-      textStyle: { color: axisLabelColor },
+      textStyle: { color: axisLabelColor, fontName: "Rubik", fontSize: 14 },
     },
     width: "100%",
-    height: "200px",
   };
 };
 
 export const primaryChartOptions = generateChartOptions({
+  chartColors: ["#4263eb"],
+  darkTheme: false,
+  vAxisFormat: "short",
+});
+
+export const secondaryChartPxOptions = generateChartOptions({
+  chartColors: ["#4263eb", "#f03e3e"],
   darkTheme: false,
 });
 
-export const secondaryChartOptions = generateChartOptions({
+export const secondaryChartVolOptions = generateChartOptions({
+  chartColors: ["#4263eb"],
   darkTheme: false,
 });

@@ -1,0 +1,88 @@
+/* section__searchbar */
+.section__searchBar {
+  margin: 1.2rem 3.2rem;
+  font-size: 1.6rem;
+}
+
+.searchBar__input {
+  color: inherit;
+  font-family: inherit;
+  padding: 0.4rem;
+  width: 50%;
+}
+
+/* section__primaryheader */
+.section__primaryHeader {
+  color: #333;
+  margin: 1.6rem 3.2rem 2rem 3.2rem;
+}
+
+.primaryHeader__ric {
+  font-weight: 600;
+  font-size: 1.6rem;
+}
+
+.primaryHeader__tickerName {
+  font-weight: 500;
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.primaryHeader__main {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0.4rem;
+}
+
+.primaryHeader__main--px {
+  font-weight: 600;
+  font-size: 3rem;
+  margin-right: 0.4rem;
+}
+
+.primaryHeader__main--currency {
+  font-size: 1rem;
+  padding-bottom: 0.3rem;
+  margin-right: 3.2rem;
+}
+
+.primaryHeader__main--pxChangeAbs {
+  font-size: 1.4rem;
+  padding-bottom: 0.3rem;
+  margin-right: 0.6rem;
+}
+
+.primaryHeader__main--pxChangePercent {
+  font-size: 1.4rem;
+  padding-bottom: 0.3rem;
+}
+
+.primaryHeader__date {
+  font-size: 1rem;
+}
+
+/* section__rangeSelector */
+.section__rangeSelector {
+  display: flex;
+  gap: 1.6rem;
+  margin: 0.8rem 3.2rem 0 3.2rem;
+}
+
+.rangeSelector__btn {
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  color: #666;
+  font-size: 1.2rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.rangeSelector__btn:hover {
+  color: #000;
+}
+
+.rangeSelector__btn--selected {
+  color: #1c7ed6;
+}

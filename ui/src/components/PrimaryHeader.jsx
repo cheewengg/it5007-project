@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import "../styles/styles.css";
+import React from "react";
 
 const PrimaryHeader = ({ primaryHeaderData }) => {
   const {
@@ -13,17 +14,21 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
   } = primaryHeaderData;
 
   return (
-    <div style={{ margin: "10px 0" }}>
-      <div>{ric}</div>
-      <div>{name}</div>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <div>{mostRecentPrice}</div>
-        <div>{currency}</div>
-        <div>{differenceAbs}</div>
-        <div>{differencePercent} %</div>
+    <div className="section__primaryHeader">
+      <div className="primaryHeader__ric">{ric}</div>
+      <div className="primaryHeader__tickerName">{name}</div>
+      <div className="primaryHeader__main">
+        <div className="primaryHeader__main--px">
+          {mostRecentPrice ? mostRecentPrice.toFixed(2) : ""}
+        </div>
+        <div className="primaryHeader__main--currency">{currency}</div>
+        <div className="primaryHeader__main--pxChangeAbs">{differenceAbs}</div>
+        <div className="primaryHeader__main--pxChangePercent">
+          {differencePercent}%
+        </div>
       </div>
-      <div>Last Updated: {mostRecentDate}</div>
-      <div>Announcement Date: {announcementDate}</div>
+      <div className="primaryHeader__date">{mostRecentDate}</div>
+      {/* <div>Announcement Date: {announcementDate}</div> */}
     </div>
   );
 };
