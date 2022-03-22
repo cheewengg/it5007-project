@@ -1,4 +1,4 @@
-import "../styles/styles.css";
+import "../css/styles.css";
 import React from "react";
 
 const RangeSelector = ({ rangeMap, config }) => {

@@ -1,29 +1,42 @@
 type PrimaryData {
   ticker: String
   ric: String
-  name: String
-  benchmark_index: String
+  companyName: String
+  benchmarkIdx: String
   currency: String
-  announcement_date: Int
-  date: [Int]
-  px_last: [Float]
-  px_volume: [Float]
+  announcementDate: Int
+  closeDate: [Int]
+  closePx: [Float]
+  closeVol: [Float]
 }
 
 type SecondaryDataPx {
   ticker: String
-  benchmark_index: String
-  date: [Int]
+  benchmarkIdx: String
+  closeDate: [Int]
   pxDelta: [Float]
   pxDeltaVsIdx: [Float]
 }
 
 type SecondaryDataVol {
   ticker: String
-  announcement_date: Int
-  demand_shares: Float
-  date: [Int]
+  announcementDate: Int
+  demandShare: Float
+  closeDate: [Int]
   excessVol: [Float]
+}
+
+type TableEntry {
+  eventName: String
+  ticker: String
+  name: String
+  announcementDate: Int
+  tradeDate: Int
+  predictionDate: Int
+  conviction: String
+  side: Int
+  demandUSD: Float
+  demandShare: Float
 }
 
 ##### Top level declarations
@@ -39,4 +52,5 @@ type Query {
     dateRange: Int!
     lookBackDuration: Int!
   ): SecondaryDataVol
+  tableData: [TableEntry]
 }

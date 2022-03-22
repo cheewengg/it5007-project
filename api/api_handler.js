@@ -5,6 +5,7 @@ const {
   primaryData,
   secondaryDataPx,
   secondaryDataVol,
+  tableData,
 } = require("./resolvers.js");
 
 const resolvers = {
@@ -12,6 +13,7 @@ const resolvers = {
     primaryData,
     secondaryDataPx,
     secondaryDataVol,
+    tableData,
   },
 };
 

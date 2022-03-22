@@ -1,47 +1,54 @@
-import "../styles/general.css";
-import "../styles/styles.css";
+import "../css/general.css";
+import "../css/styles.css";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar.jsx";
 import PrimaryHeader from "./PrimaryHeader.jsx";
 import RangeSelector from "./RangeSelector.jsx";
 import StockChart from "./StockChart.jsx";
+import DataTable from "./DataTable.jsx";
 
 import useQuery from "../hooks/useQuery.jsx";
 
-import {
-  searchPrimaryDataConfig,
-  searchSecondaryDataPxConfig,
-  searchSecondaryDataVolConfig,
-} from "../misc/search.jsx";
+import { getTableData } from "../misc/search.jsx";
+import { generatePrimaryHeaderData } from "../misc/util.jsx";
 
 import {
+  DEFAULT_QUERY,
   dateRangeMap,
   lookBackRangePxMap,
   lookBackRangeVolMap,
-  generatePrimaryHeaderData,
+  searchPrimaryDataConfig,
+  searchSecondaryDataPxConfig,
+  searchSecondaryDataVolConfig,
   primaryChartOptions,
   secondaryChartPxOptions,
   secondaryChartVolOptions,
-} from "../misc/util.jsx";
+} from "../misc/config.jsx";
 
 const Main = () => {
   const [primaryData, searchPrimaryData] = useQuery(
-    "000070 KS Equity",
+    DEFAULT_QUERY,
     searchPrimaryDataConfig
   );
   const [secondaryDataPx, searchSecondaryDataPx] = useQuery(
-    "000070 KS Equity",
+    DEFAULT_QUERY,
     searchSecondaryDataPxConfig
   );
   const [secondaryDataVol, searchSecondaryDataVol] = useQuery(
-    "000070 KS Equity",
+    DEFAULT_QUERY,
     searchSecondaryDataVolConfig
   );
 
+  const [tableData, setTableData] = useState([]);
   const [dateRange, setDateRange] = useState(100000);
   const [lookBackRangePx, setLookBackRangePx] = useState(90);
   const [lookBackRangeVol, setLookBackRangeVol] = useState(1);
+
+  useEffect(async () => {
+    const data = await getTableData();
+    setTableData(data);
+  }, []);
 
   const { ticker, primaryChartData } = primaryData;
   const { secondaryChartDataPx } = secondaryDataPx;
@@ -103,7 +110,11 @@ const Main = () => {
     searchData: handleSearchLookBackRangeVol,
   };
 
-  const searchData = { searchPrimaryData, searchSecondaryDataPx };
+  const searchData = {
+    searchPrimaryData,
+    searchSecondaryDataPx,
+    searchSecondaryDataVol,
+  };
 
   const primaryHeaderData = generatePrimaryHeaderData(primaryData);
 
@@ -112,6 +123,7 @@ const Main = () => {
       <SearchBar
         currentDateRange={dateRange}
         currentLookBackRangePx={lookBackRangePx}
+        currentLookBackRangeVol={lookBackRangeVol}
         searchData={searchData}
       />
       <PrimaryHeader primaryHeaderData={primaryHeaderData} />
@@ -139,6 +151,7 @@ const Main = () => {
         chartData={secondaryChartDataVol}
         options={secondaryChartVolOptions}
       />
+      <DataTable tableData={tableData} setTableData={setTableData} />
     </div>
   );
 };

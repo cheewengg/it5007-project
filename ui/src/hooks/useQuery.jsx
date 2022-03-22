@@ -20,7 +20,8 @@ const useQuery = (
     lookBackDuration = defaultLookBackDuration
   ) => {
     const res = await searchData(searchQuery, dateRange, lookBackDuration);
-    setData(res);
+
+    if (res) setData(res);
   };
 
   return [data, searchAndUpdate];

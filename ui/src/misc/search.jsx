@@ -1,33 +1,9 @@
-import { createToolTipPrimaryChart, renderDate } from "./util.jsx";
+import { formatDate, formatFloat, graphQLFetch, renderDate } from "./util.jsx";
 
-const graphQLFetch = async (query, variables = {}) => {
-  try {
-    const response = await fetch(window.ENV.UI_API_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, variables }),
-    });
-    const result = await response.json();
-
-    if (result.errors) {
-      const error = result.errors[0];
-      if (error.extensions.code == "BAD_USER_INPUT") {
-        const details = error.extensions.errors.join("\n ");
-        alert(`${error.message}:\n ${details}`);
-      } else {
-        alert(`${error.extensions.code}: ${error.message}`);
-      }
-    }
-    return result.data;
-  } catch (e) {
-    alert(`Error in sending data to server: ${e.message}`);
-  }
-};
-
-const searchPrimaryData = async (searchQuery, dateRange) => {
+export const searchPrimaryData = async (searchQuery, dateRange) => {
   const query = `query {
           primaryData (ticker: "${searchQuery}", dateRange: ${dateRange}) {
-            ticker ric name benchmark_index currency announcement_date date px_last px_volume
+            ticker ric companyName benchmarkIdx currency announcementDate closeDate closePx closeVol
           }
         }`;
 
@@ -37,59 +13,57 @@ const searchPrimaryData = async (searchQuery, dateRange) => {
   const {
     ticker,
     ric,
-    name,
-    benchmark_index: benchMarkIdx,
+    companyName,
+    benchmarkIdx,
     currency,
-    announcement_date: announcementDate,
-    date,
-    px_last,
-    px_volume,
+    announcementDate,
+    closeDate,
+    closePx,
   } = primaryData;
+
   const primaryChartData = [["Date", "Close"]];
 
-  date.forEach((_, idx) => {
-    const currentDate = renderDate(date[idx]);
-    const currentPx = px_last[idx];
+  closeDate.forEach((_, idx) => {
+    const currentDate = formatDate(closeDate[idx]);
+    const currentPx = closePx[idx];
 
     primaryChartData.push([currentDate, currentPx]);
   });
 
-  const res = {
+  return {
     ticker,
     ric,
-    name,
-    benchMarkIdx,
+    companyName,
+    benchmarkIdx,
     currency,
-    announcementDate: renderDate(announcementDate),
+    announcementDate: formatDate(announcementDate),
     primaryChartData,
   };
-
-  return res;
 };
 
-const searchSecondaryDataPx = async (
+export const searchSecondaryDataPx = async (
   searchQuery,
   dateRange,
   lookBackDuration
 ) => {
   const query = `query {
             secondaryDataPx (ticker: "${searchQuery}", dateRange: ${dateRange}, lookBackDuration: ${lookBackDuration}) {
-                ticker benchmark_index date pxDelta pxDeltaVsIdx
+                ticker benchmarkIdx closeDate pxDelta pxDeltaVsIdx
             }
           }`;
 
   const { secondaryDataPx } = await graphQLFetch(query);
   if (!secondaryDataPx) return;
 
-  const { ticker, benchmark_index, date, pxDelta, pxDeltaVsIdx } =
+  const { ticker, benchmarkIdx, closeDate, pxDelta, pxDeltaVsIdx } =
     secondaryDataPx;
 
   const secondaryChartDataPx = [["Date", "pxDelta", "pxDeltaVsIdx"]];
 
-  date.forEach((_, idx) => {
-    const currentDate = renderDate(date[idx]);
-    const currentPxDelta = pxDelta[idx];
-    const currentPxDeltaVsIdx = pxDeltaVsIdx[idx];
+  closeDate.forEach((_, idx) => {
+    const currentDate = formatDate(closeDate[idx]);
+    const currentPxDelta = formatFloat(pxDelta[idx]);
+    const currentPxDeltaVsIdx = formatFloat(pxDeltaVsIdx[idx]);
     secondaryChartDataPx.push([
       currentDate,
       currentPxDelta,
@@ -97,57 +71,51 @@ const searchSecondaryDataPx = async (
     ]);
   });
 
-  const res = { ticker, benchmark_index, secondaryChartDataPx };
-  return res;
+  return { ticker, benchmarkIdx, secondaryChartDataPx };
 };
 
-const searchSecondaryDataVol = async (
+export const searchSecondaryDataVol = async (
   searchQuery,
   dateRange,
   lookBackDuration
 ) => {
   const query = `query {
             secondaryDataVol (ticker: "${searchQuery}", dateRange: ${dateRange}, lookBackDuration: ${lookBackDuration}) {
-                ticker announcement_date demand_shares date excessVol
+                ticker announcementDate demandShare closeDate excessVol
             }
           }`;
 
   const { secondaryDataVol } = await graphQLFetch(query);
   if (!secondaryDataVol) return;
 
-  const { ticker, announcement_date, demand_shares, date, excessVol } =
+  const { ticker, announcementDate, demandShare, closeDate, excessVol } =
     secondaryDataVol;
 
   const secondaryChartDataVol = [["Date", "excessVol"]];
 
-  date.forEach((_, idx) => {
-    const currentDate = renderDate(date[idx]);
-    const currentExcessVol = excessVol[idx];
+  closeDate.forEach((_, idx) => {
+    const currentDate = formatDate(closeDate[idx]);
+    const currentExcessVol = formatFloat(excessVol[idx]);
     secondaryChartDataVol.push([currentDate, currentExcessVol]);
   });
 
-  const res = {
+  return {
     ticker,
-    announcement_date,
-    demand_shares,
+    announcementDate,
+    demandShare,
     secondaryChartDataVol,
   };
-  return res;
 };
 
-export const searchPrimaryDataConfig = {
-  searchData: searchPrimaryData,
-  dateRange: 100000,
-};
+export const getTableData = async () => {
+  const query = `query {
+    tableData {
+      eventName ticker name announcementDate tradeDate predictionDate conviction side demandUSD demandShare
+    }
+  }`;
 
-export const searchSecondaryDataPxConfig = {
-  searchData: searchSecondaryDataPx,
-  dateRange: 100000,
-  lookBackDuration: 90,
-};
+  const { tableData } = await graphQLFetch(query);
+  if (!tableData) return;
 
-export const searchSecondaryDataVolConfig = {
-  searchData: searchSecondaryDataVol,
-  dateRange: 100000,
-  lookBackDuration: 1,
+  return tableData;
 };

@@ -5,7 +5,7 @@ const StockChart = ({ chartType, chartData, options }) => {
   return (
     <Chart
       chartType={chartType}
-      data={!chartData ? [] : chartData}
+      data={!chartData || chartData.length === 1 ? [] : chartData}
       options={options}
     />
   );

@@ -1,23 +1,23 @@
 const { getDb } = require("./db.js");
 
-const sliceHistoricalData = (historicalData, dateRange) => {
+const sliceData = (historicalData, dateRange) => {
   const rightBound = historicalData["px_volume"].length;
   const primaryDataLength = Math.min(rightBound, dateRange);
   const leftBound = rightBound - primaryDataLength;
 
   const slicedData = Object.assign(
     { ...historicalData },
-    { date: historicalData["date"].slice(leftBound, rightBound) },
-    { px_last: historicalData["px_last"].slice(leftBound, rightBound) },
+    { closeDate: historicalData["date"].slice(leftBound, rightBound) },
+    { closePx: historicalData["px_last"].slice(leftBound, rightBound) },
     {
-      px_volume: historicalData["px_volume"].slice(leftBound, rightBound),
+      closeVol: historicalData["px_volume"].slice(leftBound, rightBound),
     }
   );
 
   return slicedData;
 };
 
-const generateData = async (ticker) => {
+const fetchData = async (ticker) => {
   const db = getDb();
 
   const historicalTickerData = await db
@@ -32,13 +32,18 @@ const generateData = async (ticker) => {
 };
 
 const generatePrimaryData = (historicalTickerData, analystData, dateRange) => {
-  const { RIC: ric, name, benchmark_index, announcement_date } = analystData;
+  const {
+    RIC: ric,
+    name: companyName,
+    benchmark_index: benchmarkIdx,
+    announcement_date: announcementDate,
+  } = analystData;
 
-  const slicedData = sliceHistoricalData(historicalTickerData, dateRange);
+  const slicedData = sliceData(historicalTickerData, dateRange);
 
   const primaryData = Object.assign(
     { ...slicedData },
-    { ric, name, benchmark_index, announcement_date }
+    { ric, companyName, benchmarkIdx, announcementDate }
   );
   return primaryData;
 };
@@ -50,25 +55,25 @@ const generateSecondaryDataPx = (
   lookBackDuration
 ) => {
   const actualDateRange = dateRange + lookBackDuration;
-  const slicedHistoricalTickerData = sliceHistoricalData(
+  const slicedHistoricalTickerData = sliceData(
     historicalTickerData,
     actualDateRange
   );
-  const slicedHistoricalBenchmarkData = sliceHistoricalData(
+  const slicedHistoricalBenchmarkData = sliceData(
     historicalBenchmarkData,
     actualDateRange
   );
 
   const {
     ticker,
-    date: tickerDate,
-    px_last: tickerPx,
+    closeDate: tickerDate,
+    closePx: tickerPx,
   } = slicedHistoricalTickerData;
 
   const {
     ticker: benchmark,
-    date: benchmarkDate,
-    px_last: benchmarkPx,
+    closeDate: benchmarkDate,
+    closePx: benchmarkPx,
   } = slicedHistoricalBenchmarkData;
 
   const reconciledIdx = benchmarkDate.length - tickerDate.length;
@@ -101,8 +106,8 @@ const generateSecondaryDataPx = (
     const currentPxDeltaVsIdx = currentTickerPxDelta - currentBenchmarkPxDelta;
 
     date.push(currentDate);
-    pxDelta.push(currentTickerPxDelta.toFixed(2));
-    pxDeltaVsIdx.push(currentPxDeltaVsIdx.toFixed(2));
+    pxDelta.push(currentTickerPxDelta);
+    pxDeltaVsIdx.push(currentPxDeltaVsIdx);
 
     tickerPxAcc -= tickerPx[idx - lookBackDuration];
     tickerPxAcc += currentTickerPx;
@@ -113,8 +118,8 @@ const generateSecondaryDataPx = (
 
   return {
     ticker,
-    benchmark_index: benchmark,
-    date,
+    benchmarkIdx: benchmark,
+    closeDate: date,
     pxDelta,
     pxDeltaVsIdx,
   };
@@ -127,12 +132,18 @@ const generateSecondaryDataVol = (
   lookBackDuration
 ) => {
   const actualDateRange = dateRange + 6 * 20;
+  const slicedHistoricalTickerData = sliceData(
+    historicalTickerData,
+    actualDateRange
+  );
+
   const {
     ticker,
-    date: tickerDate,
-    px_volume: tickerVol,
-  } = sliceHistoricalData(historicalTickerData, actualDateRange);
-  const { announcement_date, demand_shares } = historicalBenchmarkData;
+    closeDate: tickerDate,
+    closeVol: tickerVol,
+  } = slicedHistoricalTickerData;
+  const { announcement_date: announcementDate, demand_shares: demandShare } =
+    historicalBenchmarkData;
 
   const windowSpan = 3 * 20; // 3 months
 
@@ -157,10 +168,10 @@ const generateSecondaryDataVol = (
     const currentDate = tickerDate[rightBound];
     const avgHistoryVol = historyAcc / windowSpan;
     const currentExcessVol =
-      ((lookBackAcc - avgHistoryVol * lookBackDuration) / demand_shares) * 100;
+      ((lookBackAcc - avgHistoryVol * lookBackDuration) / demandShare) * 100;
 
     date.push(currentDate);
-    excessVol.push(currentExcessVol.toFixed(2));
+    excessVol.push(currentExcessVol);
 
     lookBackAcc -= tickerVol[leftBound];
     leftBound++;
@@ -172,16 +183,47 @@ const generateSecondaryDataVol = (
 
   return {
     ticker,
-    announcement_date,
-    demand_shares,
-    date,
+    announcementDate,
+    demandShare,
+    closeDate: date,
     excessVol,
   };
 };
 
+const generateTableData = (analystData) => {
+  return analystData.map((data) => {
+    const {
+      event_name: eventName,
+      ticker,
+      name,
+      announcement_date: announcementDate,
+      trade_date: tradeDate,
+      prediction_date: predictionDate,
+      conviction,
+      side,
+      demand_usd: demandUSD,
+      demand_shares: demandShare,
+    } = data;
+
+    return {
+      eventName,
+      ticker,
+      name,
+      announcementDate,
+      tradeDate,
+      predictionDate,
+      conviction,
+      side,
+      demandUSD,
+      demandShare,
+    };
+  });
+};
+
 module.exports = {
-  generateData,
+  fetchData,
   generatePrimaryData,
   generateSecondaryDataPx,
   generateSecondaryDataVol,
+  generateTableData,
 };

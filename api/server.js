@@ -11,8 +11,8 @@ const port = process.env.API_SERVER_PORT || 3000;
 (async function () {
   try {
     await connectToDb();
-    app.listen(3000, function () {
-      console.log("App started on port 3000");
+    app.listen(port, function () {
+      console.log(`App started on port ${port}`);
     });
   } catch (err) {
     console.log("ERROR:", err);

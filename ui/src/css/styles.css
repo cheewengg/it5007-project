@@ -1,4 +1,6 @@
+/***********************************/
 /* section__searchbar */
+/***********************************/
 .section__searchBar {
   margin: 1.2rem 3.2rem;
   font-size: 1.6rem;
@@ -9,9 +11,12 @@
   font-family: inherit;
   padding: 0.4rem;
   width: 50%;
+  border: 1px solid #777;
 }
 
+/***********************************/
 /* section__primaryheader */
+/***********************************/
 .section__primaryHeader {
   color: #333;
   margin: 1.6rem 3.2rem 2rem 3.2rem;
@@ -60,8 +65,9 @@
 .primaryHeader__date {
   font-size: 1rem;
 }
-
+/***********************************/
 /* section__rangeSelector */
+/***********************************/
 .section__rangeSelector {
   display: flex;
   gap: 1.6rem;
@@ -85,4 +91,31 @@
 
 .rangeSelector__btn--selected {
   color: #1c7ed6;
+}
+/***********************************/
+/* section__dataTable */
+/***********************************/
+.section__dataTable {
+  color: #333;
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+  overflow-y: scroll;
+  height: 25rem;
+  margin: 2rem 3.2rem;
+}
+
+.dataTable__header {
+  font-size: 1.2rem;
+  font-weight: 450;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+}
+
+.dataTable__row {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.dataTable__row:hover {
+  background-color: #eee;
 }

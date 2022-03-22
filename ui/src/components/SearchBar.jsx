@@ -1,13 +1,15 @@
-import "../styles/styles.css";
+import "../css/styles.css";
 import React, { useState } from "react";
 
 const SearchBar = ({
   currentDateRange,
   currentLookBackRangePx,
+  currentLookBackRangeVol,
   searchData,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { searchPrimaryData, searchSecondaryDataPx } = searchData;
+  const { searchPrimaryData, searchSecondaryDataPx, searchSecondaryDataVol } =
+    searchData;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,6 +18,11 @@ const SearchBar = ({
       searchQuery,
       currentDateRange,
       currentLookBackRangePx
+    );
+    searchSecondaryDataVol(
+      searchQuery,
+      currentDateRange,
+      currentLookBackRangeVol
     );
   };
 
