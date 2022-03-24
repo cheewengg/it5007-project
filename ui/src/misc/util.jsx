@@ -77,31 +77,33 @@ export const generatePrimaryHeaderData = (primaryData) => {
   };
 };
 
-// const chartColor = upslope ? "#37b24d" : "#f03e3e";
-// areaOpacity: 0.1,
-// animation: {
-//   startup: true,
-//   easing: "out",
-//   duration: 300,
-// },
 export const generateChartOptions = ({
   chartColors,
-  darkTheme,
-  upSlope,
   vAxisFormat,
+  dualYAxis,
+  series,
 }) => {
-  const axisLabelColor = darkTheme ? "#ced4da" : "#495057";
-  const backgroundColor = darkTheme ? "#171a1d" : "";
-  // const colors =
-  //   upSlope === undefined ? chartColors : upSlope ? ["#37b24d"] : ["#f03e3e"];
-  const crossHairColor = darkTheme ? "#ced4da" : "#495057";
-  const gridLineColor = darkTheme ? "#495057" : "transparent";
+  const vAxisConfig = {
+    baselineColor: "#555",
+    format: vAxisFormat,
+    gridlines: { color: "transparent" },
+    minorGridlines: { color: "transparent" },
+    textStyle: {
+      color: "#495057",
+      fontName: "Rubik",
+      fontSize: 14,
+    },
+  };
+
+  const vAxes = dualYAxis
+    ? { 0: vAxisConfig, 1: vAxisConfig }
+    : { 0: vAxisConfig };
 
   return {
-    backgroundColor: { fill: backgroundColor },
     colors: chartColors,
+    curveType: "function",
     crosshair: {
-      color: crossHairColor,
+      color: "#495057",
       opacity: 0.3,
       orientation: "vertical",
       trigger: "focus",
@@ -113,28 +115,19 @@ export const generateChartOptions = ({
       minorGridlines: { color: "transparent" },
       showTextEvery: 30,
       textStyle: {
-        color: axisLabelColor,
+        color: "#495057",
         fontName: "Rubik",
         fontSize: 14,
       },
     },
     height: "200px",
     legend: { position: "none" },
-    vAxis: {
-      baselineColor: "#555",
-      format: vAxisFormat,
-      gridlines: { color: gridLineColor },
-      minorGridlines: { color: "transparent" },
-      textStyle: {
-        color: axisLabelColor,
-        fontName: "Rubik",
-        fontSize: 14,
-      },
-    },
+    series,
+    vAxes,
     tooltip: {
       textStyle: {
         bold: false,
-        color: axisLabelColor,
+        color: "#495057",
         fontName: "Rubik",
         fontSize: 14,
       },

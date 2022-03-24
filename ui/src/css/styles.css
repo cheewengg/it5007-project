@@ -107,8 +107,12 @@
 .dataTable__header {
   font-size: 1.2rem;
   font-weight: 450;
-  margin-bottom: 0.6rem;
+  padding: 0.5rem 0;
+  margin-bottom: 0.3rem;
   cursor: pointer;
+  position: sticky;
+  top: 0;
+  background-color: #f9f9fa;
 }
 
 .dataTable__row {

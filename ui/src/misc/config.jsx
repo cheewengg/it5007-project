@@ -49,9 +49,21 @@ export const searchSecondaryDataVolConfig = {
 };
 
 export const primaryChartOptions = generateChartOptions({
-  chartColors: ["#4263eb"],
   darkTheme: false,
   vAxisFormat: "short",
+  dualYAxis: true,
+  series: {
+    0: {
+      type: "line",
+      targetAxisIndex: 0,
+      color: "#4263eb",
+    },
+    1: {
+      type: "bars",
+      targetAxisIndex: 1,
+      color: "#868e96",
+    },
+  },
 });
 
 export const secondaryChartPxOptions = generateChartOptions({
@@ -60,6 +72,12 @@ export const secondaryChartPxOptions = generateChartOptions({
 });
 
 export const secondaryChartVolOptions = generateChartOptions({
-  chartColors: ["#4263eb"],
   darkTheme: false,
+  series: {
+    0: {
+      type: "bars",
+      targetAxisIndex: 0,
+      color: "#4263eb",
+    },
+  },
 });

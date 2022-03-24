@@ -129,7 +129,7 @@ const Main = () => {
       <PrimaryHeader primaryHeaderData={primaryHeaderData} />
       <RangeSelector rangeMap={dateRangeMap} config={dateRangeConfig} />
       <StockChart
-        chartType="LineChart"
+        chartType="ComboChart"
         chartData={primaryChartData}
         options={primaryChartOptions}
       />
@@ -147,7 +147,7 @@ const Main = () => {
         config={lookBackRangeVolConfig}
       />
       <StockChart
-        chartType="LineChart"
+        chartType="ComboChart"
         chartData={secondaryChartDataVol}
         options={secondaryChartVolOptions}
       />

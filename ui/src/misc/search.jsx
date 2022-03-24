@@ -19,15 +19,17 @@ export const searchPrimaryData = async (searchQuery, dateRange) => {
     announcementDate,
     closeDate,
     closePx,
+    closeVol,
   } = primaryData;
 
-  const primaryChartData = [["Date", "Close"]];
+  const primaryChartData = [["Date", `closePx`, "closeVol"]];
 
   closeDate.forEach((_, idx) => {
     const currentDate = formatDate(closeDate[idx]);
     const currentPx = closePx[idx];
+    const currentVol = closeVol[idx];
 
-    primaryChartData.push([currentDate, currentPx]);
+    primaryChartData.push([currentDate, currentPx, currentVol]);
   });
 
   return {
