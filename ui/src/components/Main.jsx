@@ -2,7 +2,6 @@ import "../css/general.css";
 import "../css/styles.css";
 
 import React, { useEffect, useState } from "react";
-import SearchBar from "./SearchBar.jsx";
 import PrimaryHeader from "./PrimaryHeader.jsx";
 import RangeSelector from "./RangeSelector.jsx";
 import StockChart from "./StockChart.jsx";
@@ -110,7 +109,10 @@ const Main = () => {
     searchData: handleSearchLookBackRangeVol,
   };
 
-  const searchData = {
+  const searchDataConfig = {
+    currentDateRange: dateRange,
+    currentLookBackRangePx: lookBackRangePx,
+    currentLookBackRangeVol: lookBackRangeVol,
     searchPrimaryData,
     searchSecondaryDataPx,
     searchSecondaryDataVol,
@@ -120,12 +122,6 @@ const Main = () => {
 
   return (
     <div>
-      <SearchBar
-        currentDateRange={dateRange}
-        currentLookBackRangePx={lookBackRangePx}
-        currentLookBackRangeVol={lookBackRangeVol}
-        searchData={searchData}
-      />
       <PrimaryHeader primaryHeaderData={primaryHeaderData} />
       <RangeSelector rangeMap={dateRangeMap} config={dateRangeConfig} />
       <StockChart
@@ -151,7 +147,11 @@ const Main = () => {
         chartData={secondaryChartDataVol}
         options={secondaryChartVolOptions}
       />
-      <DataTable tableData={tableData} setTableData={setTableData} />
+      <DataTable
+        searchDataConfig={searchDataConfig}
+        tableData={tableData}
+        setTableData={setTableData}
+      />
     </div>
   );
 };

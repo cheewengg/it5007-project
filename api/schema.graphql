@@ -52,5 +52,5 @@ type Query {
     dateRange: Int!
     lookBackDuration: Int!
   ): SecondaryDataVol
-  tableData: [TableEntry]
+  tableData(match: String!): [TableEntry]
 }

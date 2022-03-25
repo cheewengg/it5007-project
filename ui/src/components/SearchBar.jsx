@@ -1,39 +1,28 @@
 import "../css/styles.css";
-import React, { useState } from "react";
 
-const SearchBar = ({
-  currentDateRange,
-  currentLookBackRangePx,
-  currentLookBackRangeVol,
-  searchData,
-}) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { searchPrimaryData, searchSecondaryDataPx, searchSecondaryDataVol } =
-    searchData;
+import React, { useState, useEffect } from "react";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    searchPrimaryData(searchQuery, currentDateRange);
-    searchSecondaryDataPx(
-      searchQuery,
-      currentDateRange,
-      currentLookBackRangePx
-    );
-    searchSecondaryDataVol(
-      searchQuery,
-      currentDateRange,
-      currentLookBackRangeVol
-    );
-  };
+const SearchBar = ({ setSearchTerm }) => {
+  const [searchBuffer, setSearchBuffer] = useState("");
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setSearchTerm(searchBuffer);
+    }, 300);
+
+    return () => clearTimeout(timerId);
+  }, [searchBuffer]);
 
   return (
-    <form className="section__searchBar" onSubmit={handleSubmit}>
+    <div className="section__searchBar">
       <input
         placeholder="Search for a ticker"
         className="searchBar__input"
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          setSearchBuffer(e.target.value);
+        }}
       />
-    </form>
+    </div>
   );
 };
 

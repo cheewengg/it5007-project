@@ -5,7 +5,7 @@ import {
   searchSecondaryDataVol,
 } from "./search.jsx";
 
-export const DEFAULT_QUERY = "114090 KS Equity";
+export const DEFAULT_QUERY = "383220 KS Equity";
 
 export const dateRangeMap = {
   "5D": 5,
@@ -81,3 +81,16 @@ export const secondaryChartVolOptions = generateChartOptions({
     },
   },
 });
+
+export const tableHeader = {
+  eventName: "Event Name",
+  ticker: "Ticker",
+  name: "Company",
+  announcementDate: "Announcement Date",
+  tradeDate: "Trade Date",
+  predictionDate: "Prediction Date",
+  conviction: "Conviction",
+  side: "Side",
+  demandUSD: "Demand (USD)",
+  demandShare: "Demand (Shares)",
+};

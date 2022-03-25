@@ -109,9 +109,9 @@ export const searchSecondaryDataVol = async (
   };
 };
 
-export const getTableData = async () => {
+export const getTableData = async (match = "") => {
   const query = `query {
-    tableData {
+    tableData(match: "${match}") {
       eventName ticker name announcementDate tradeDate predictionDate conviction side demandUSD demandShare
     }
   }`;

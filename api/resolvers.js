@@ -53,11 +53,16 @@ const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
   return secondaryDataVol;
 };
 
-const tableData = async () => {
+const tableData = async (_, { match }) => {
   const db = getDb();
+
+  const options = !match
+    ? {}
+    : { ticker: { $regex: `^${match}`, $options: "i" } };
+
   const brianfreitasData = await db
     .collection("brianfreitas")
-    .find({})
+    .find(options)
     .toArray();
   const tableData = generateTableData(brianfreitasData);
 

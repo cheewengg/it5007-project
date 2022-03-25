@@ -99,25 +99,58 @@
   color: #333;
   display: grid;
   grid-template-columns: repeat(10, auto);
+  align-content: start;
   overflow-y: scroll;
   height: 25rem;
   margin: 2rem 3.2rem;
 }
 
 .dataTable__header {
+  display: flex;
+  align-items: center;
+
   font-size: 1.2rem;
   font-weight: 450;
   padding: 0.5rem 0;
   margin-bottom: 0.3rem;
-  cursor: pointer;
+  background-color: #f9f9fa;
+
   position: sticky;
   top: 0;
-  background-color: #f9f9fa;
+}
+
+.header__sortBtns {
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 0.3rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.btn__sort {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .dataTable__row {
   font-size: 1.1rem;
   margin-bottom: 0.4rem;
+}
+
+.col__default {
+  cursor: default;
+}
+
+.col__ticker {
+  cursor: pointer;
+}
+
+.col__ticker span {
+  background-color: yellow;
+  font-weight: bold;
 }
 
 .dataTable__row:hover {
