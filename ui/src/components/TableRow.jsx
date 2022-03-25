@@ -7,9 +7,9 @@ import { formatFloat, renderDate } from "../misc/util.jsx";
 
 const TableRow = ({ rowData, searchDataConfig, searchTerm }) => {
   const {
-    currentDateRange,
-    currentLookBackRangePx,
-    currentLookBackRangeVol,
+    dateRange,
+    lookBackRangePx,
+    lookBackRangeVol,
     searchPrimaryData,
     searchSecondaryDataPx,
     searchSecondaryDataVol,
@@ -37,9 +37,9 @@ const TableRow = ({ rowData, searchDataConfig, searchTerm }) => {
   };
 
   const handleSearchTicker = (ticker) => {
-    searchPrimaryData(ticker, currentDateRange);
-    searchSecondaryDataPx(ticker, currentDateRange, currentLookBackRangePx);
-    searchSecondaryDataVol(ticker, currentDateRange, currentLookBackRangeVol);
+    searchPrimaryData(ticker, dateRange);
+    searchSecondaryDataPx(ticker, dateRange, lookBackRangePx);
+    searchSecondaryDataVol(ticker, dateRange, lookBackRangeVol);
   };
 
   const renderColTicker = (ticker) => {

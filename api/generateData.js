@@ -1,4 +1,5 @@
 const { getDb } = require("./db.js");
+const { asyncFlatMap, asyncMap, flatten } = require("./helper.js");
 
 const sliceData = (historicalData, dateRange) => {
   const rightBound = historicalData["px_volume"].length;
@@ -17,6 +18,29 @@ const sliceData = (historicalData, dateRange) => {
   return slicedData;
 };
 
+const findAnalystData = async (ticker) => {
+  const db = getDb();
+  const analystData =
+    (await db.collection("brianfreitas").findOne({ ticker: ticker })) ||
+    (await db.collection("intropic").findOne({ ticker: ticker })) ||
+    (await db.collection("mizuho").findOne({ ticker: ticker }));
+
+  return analystData;
+};
+
+const fetchAllAnalystData = async (options) => {
+  const db = getDb();
+  const allAnalyst = ["brianfreitas", "intropic", "mizuho"];
+
+  const allAnalystData = await asyncFlatMap(allAnalyst, async (analyst) => {
+    const data = await db.collection(analyst).find(options).toArray();
+
+    return data;
+  });
+
+  return allAnalystData;
+};
+
 const fetchData = async (ticker) => {
   const db = getDb();
 
@@ -24,11 +48,9 @@ const fetchData = async (ticker) => {
     .collection("historical")
     .findOne({ ticker: ticker });
 
-  const brianfreitasData = await db
-    .collection("brianfreitas")
-    .findOne({ ticker: ticker });
+  const analystData = await findAnalystData(ticker);
 
-  return { historicalTickerData, brianfreitasData };
+  return { historicalTickerData, analystData };
 };
 
 const generatePrimaryData = (historicalTickerData, analystData, dateRange) => {
@@ -203,6 +225,7 @@ const generateTableData = (analystData) => {
       side,
       demand_usd: demandUSD,
       demand_shares: demandShare,
+      creator,
     } = data;
 
     return {
@@ -216,12 +239,14 @@ const generateTableData = (analystData) => {
       side,
       demandUSD,
       demandShare,
+      creator,
     };
   });
 };
 
 module.exports = {
   fetchData,
+  fetchAllAnalystData,
   generatePrimaryData,
   generateSecondaryDataPx,
   generateSecondaryDataVol,

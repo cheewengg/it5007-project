@@ -1,20 +1,4 @@
 /***********************************/
-/* section__searchbar */
-/***********************************/
-.section__searchBar {
-  margin: 1.2rem 3.2rem;
-  font-size: 1.6rem;
-}
-
-.searchBar__input {
-  color: inherit;
-  font-family: inherit;
-  padding: 0.4rem;
-  width: 50%;
-  border: 1px solid #777;
-}
-
-/***********************************/
 /* section__primaryheader */
 /***********************************/
 .section__primaryHeader {
@@ -65,6 +49,14 @@
 .primaryHeader__date {
   font-size: 1rem;
 }
+
+/***********************************/
+/* section__allCharts */
+/***********************************/
+.section__allCharts {
+  margin-bottom: 1.2rem;
+}
+
 /***********************************/
 /* section__rangeSelector */
 /***********************************/
@@ -92,13 +84,30 @@
 .rangeSelector__btn--selected {
   color: #1c7ed6;
 }
+
+/***********************************/
+/* section__searchbar */
+/***********************************/
+.section__searchBar {
+  margin: 0 3.2rem;
+  font-size: 1.6rem;
+}
+
+.searchBar__input {
+  color: inherit;
+  font-family: inherit;
+  padding: 0.4rem;
+  width: 50%;
+  border: 1px solid #777;
+}
+
 /***********************************/
 /* section__dataTable */
 /***********************************/
 .section__dataTable {
   color: #333;
   display: grid;
-  grid-template-columns: repeat(10, auto);
+  grid-template-columns: repeat(11, auto);
   align-content: start;
   overflow-y: scroll;
   height: 25rem;
@@ -109,9 +118,9 @@
   display: flex;
   align-items: center;
 
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 450;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
   margin-bottom: 0.3rem;
   background-color: #f9f9fa;
 
@@ -124,8 +133,6 @@
   flex-direction: column;
 
   margin-left: 0.3rem;
-  font-size: 1rem;
-  font-weight: 400;
 }
 
 .btn__sort {
@@ -133,11 +140,13 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
+  font-size: 0.5rem;
 }
 
 .dataTable__row {
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 0.4rem;
+  padding: 0 1rem;
 }
 
 .col__default {

@@ -1,5 +1,6 @@
 const {
   fetchData,
+  fetchAllAnalystData,
   generatePrimaryData,
   generateSecondaryDataPx,
   generateSecondaryDataVol,
@@ -8,11 +9,11 @@ const {
 const { getDb } = require("./db.js");
 
 const primaryData = async (_, { ticker, dateRange }) => {
-  const { historicalTickerData, brianfreitasData } = await fetchData(ticker);
+  const { historicalTickerData, analystData } = await fetchData(ticker);
 
   const primaryData = generatePrimaryData(
     historicalTickerData,
-    brianfreitasData,
+    analystData,
     dateRange
   );
 
@@ -22,9 +23,9 @@ const primaryData = async (_, { ticker, dateRange }) => {
 const secondaryDataPx = async (_, { ticker, dateRange, lookBackDuration }) => {
   const db = getDb();
 
-  const { historicalTickerData, brianfreitasData } = await fetchData(ticker);
+  const { historicalTickerData, analystData } = await fetchData(ticker);
 
-  const { benchmark_index } = brianfreitasData;
+  const { benchmark_index } = analystData;
 
   const historicalBenchmarkData = await db
     .collection("historical")
@@ -41,11 +42,11 @@ const secondaryDataPx = async (_, { ticker, dateRange, lookBackDuration }) => {
 };
 
 const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
-  const { historicalTickerData, brianfreitasData } = await fetchData(ticker);
+  const { historicalTickerData, analystData } = await fetchData(ticker);
 
   const secondaryDataVol = generateSecondaryDataVol(
     historicalTickerData,
-    brianfreitasData,
+    analystData,
     dateRange,
     lookBackDuration
   );
@@ -54,17 +55,13 @@ const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
 };
 
 const tableData = async (_, { match }) => {
-  const db = getDb();
-
   const options = !match
     ? {}
     : { ticker: { $regex: `^${match}`, $options: "i" } };
 
-  const brianfreitasData = await db
-    .collection("brianfreitas")
-    .find(options)
-    .toArray();
-  const tableData = generateTableData(brianfreitasData);
+  const analystData = await fetchAllAnalystData(options);
+
+  const tableData = generateTableData(analystData);
 
   return tableData;
 };

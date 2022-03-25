@@ -37,6 +37,7 @@ type TableEntry {
   side: Int
   demandUSD: Float
   demandShare: Float
+  creator: String
 }
 
 ##### Top level declarations

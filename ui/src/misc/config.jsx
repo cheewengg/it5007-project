@@ -93,4 +93,5 @@ export const tableHeader = {
   side: "Side",
   demandUSD: "Demand (USD)",
   demandShare: "Demand (Shares)",
+  creator: "Creator",
 };
