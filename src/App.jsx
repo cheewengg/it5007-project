@@ -163,14 +163,26 @@ class Charting extends React.Component {
 
     var offset6M = (24*60*60) * 180   // 180 days (i.e. 6 mths ago)
     var offset3M = (24*60*60) * 90   // 90 days (i.e. 3 mths ago)
-    console.log(new Date(announcement_date * 1000).toLocaleDateString());
-    console.log(new Date((announcement_date - offset3M)* 1000).toLocaleDateString());
-    console.log(new Date((announcement_date - offset6M)* 1000).toLocaleDateString());
+
+    // Give a try using today instead of announcement date minus 6 / 9 months 
+    //var lookbackStDt = new Date((announcement_date - offset3M)* 1000).toLocaleDateString('en-US'); 
+    //var lookbackEndDt = new Date((announcement_date - offset6M)* 1000).toLocaleDateString('en-US');
+
+    var refDate = new Date();
+    var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).toLocaleDateString('en-US');
+    var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).toLocaleDateString('en-US');
     
+    console.log(lookbackStDt);
+    console.log(lookbackEndDt);
+    
+    // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
+
 
     for (let i=0; i < new_ticker_data.date.length; i++) {
       xValues.push(new Date(new_ticker_data.date[i] * 1000).toLocaleDateString('en-US'));
     }
+
+    
 
     var yTickerPrices = new_ticker_data.px_last;
     var yTickerVolumes = new_ticker_data.px_volume;

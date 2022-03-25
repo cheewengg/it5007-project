@@ -69,7 +69,11 @@ function setAboutMessage(_, { message }) {
 async function issueList() {
   const issues = await db.collection('brianfreitas').find({}).toArray();
   const issues2 = await db.collection('intropic').find({}).toArray();
-  return issues.concat(issues2);
+  const issues3 = await db.collection('mizuho').find({}).toArray();
+
+  const res = issues.concat(issues2);
+  const res_updated = res.concat(issues3);
+  return res_updated;
 }
 
 async function historicalData() {
