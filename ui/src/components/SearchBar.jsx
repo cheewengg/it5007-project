@@ -2,12 +2,12 @@ import "../css/styles.css";
 
 import React, { useState, useEffect } from "react";
 
-const SearchBar = ({ setSearchTerm }) => {
+const SearchBar = ({ setQuery, placeHolder }) => {
   const [searchBuffer, setSearchBuffer] = useState("");
 
   useEffect(() => {
     const timerId = setTimeout(() => {
-      setSearchTerm(searchBuffer);
+      setQuery(searchBuffer);
     }, 300);
 
     return () => clearTimeout(timerId);
@@ -16,7 +16,7 @@ const SearchBar = ({ setSearchTerm }) => {
   return (
     <div className="section__searchBar">
       <input
-        placeholder="Search for a ticker"
+        placeholder={placeHolder}
         className="searchBar__input"
         onChange={(e) => {
           setSearchBuffer(e.target.value);

@@ -5,8 +5,6 @@ import {
   searchSecondaryDataVol,
 } from "./search.jsx";
 
-export const DEFAULT_QUERY = "383220 KS Equity";
-
 export const dateRangeMap = {
   "5D": 5,
   "1M": 20,

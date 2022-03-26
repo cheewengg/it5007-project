@@ -53,5 +53,5 @@ type Query {
     dateRange: Int!
     lookBackDuration: Int!
   ): SecondaryDataVol
-  tableData(match: String!): [TableEntry]
+  tableData(eventName: String!, ticker: String!, creator: String!): [TableEntry]
 }

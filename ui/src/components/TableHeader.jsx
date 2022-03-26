@@ -12,8 +12,9 @@ const TableHeader = ({ tableData, setTableData }) => {
       const leftVal = left[sortKey];
       const rightVal = right[sortKey];
 
-      if (ascending) return leftVal <= rightVal ? -1 : 1;
-      return leftVal >= rightVal ? -1 : 1;
+      if (leftVal === rightVal) return 0;
+      if (ascending) return leftVal < rightVal ? -1 : 1;
+      return leftVal > rightVal ? -1 : 1;
     });
 
     setTableData(tableDataCopy);

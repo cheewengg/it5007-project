@@ -5,7 +5,7 @@ import React from "react";
 import { tableHeader as header } from "../misc/config.jsx";
 import { formatFloat, renderDate } from "../misc/util.jsx";
 
-const TableRow = ({ rowData, searchDataConfig, searchTerm }) => {
+const TableRow = ({ rowData, searchDataConfig, queryConfig }) => {
   const {
     dateRange,
     lookBackRangePx,
@@ -14,6 +14,8 @@ const TableRow = ({ rowData, searchDataConfig, searchTerm }) => {
     searchSecondaryDataPx,
     searchSecondaryDataVol,
   } = searchDataConfig;
+
+  const { queryEventName, queryTicker, queryCreator } = queryConfig;
 
   const formatDataRow = (rowData) => {
     const {
@@ -42,38 +44,51 @@ const TableRow = ({ rowData, searchDataConfig, searchTerm }) => {
     searchSecondaryDataVol(ticker, dateRange, lookBackRangeVol);
   };
 
-  const renderColTicker = (ticker) => {
-    const splitIdx = searchTerm.length;
-    const leftSubString = ticker.substring(0, splitIdx);
-    const rightSubString = ticker.substring(splitIdx);
+  const renderInnerHTML = (key, content) => {
+    if (!content) return [undefined, undefined];
+    const contentString = content.toString();
+    let splitIdx;
 
-    return (
-      <div
-        key="ticker"
-        onClick={() => handleSearchTicker(ticker)}
-        className="col__ticker dataTable__row"
-      >
-        <span>{leftSubString}</span>
-        {rightSubString}
-      </div>
-    );
+    switch (key) {
+      case "eventName":
+        splitIdx = queryEventName.length;
+        break;
+      case "ticker":
+        splitIdx = queryTicker.length;
+        break;
+      case "creator":
+        splitIdx = queryCreator.length;
+        break;
+      default:
+        splitIdx = 0;
+        break;
+    }
+
+    const leftSubString = contentString.substring(0, splitIdx);
+    const rightSubString = contentString.substring(splitIdx);
+
+    return [leftSubString, rightSubString];
   };
 
   const renderRowContent = (rowData) => {
     const headerKeys = Object.keys(header);
     const formattedData = formatDataRow(rowData);
-    const rowContent = [];
 
-    headerKeys.forEach((key) => {
-      const colContent =
-        key === "ticker" ? (
-          renderColTicker(formattedData[key])
-        ) : (
-          <div key={key} className="col__default dataTable__row">
-            {formattedData[key]}
-          </div>
-        );
-      rowContent.push(colContent);
+    const rowContent = headerKeys.map((key) => {
+      const colContent = formattedData[key];
+      const onClick =
+        key === "ticker" ? () => handleSearchTicker(colContent) : null;
+      const className = `dataTable__row ${
+        key === "ticker" ? "col__ticker" : "col__default"
+      }`;
+      const [leftSubString, rightSubString] = renderInnerHTML(key, colContent);
+
+      return (
+        <div key={key} onClick={onClick} className={className}>
+          <span>{leftSubString}</span>
+          {rightSubString}
+        </div>
+      );
     });
     return rowContent;
   };

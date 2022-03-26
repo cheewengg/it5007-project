@@ -1,14 +1,15 @@
 const {
-  fetchData,
-  fetchAllAnalystData,
   generatePrimaryData,
   generateSecondaryDataPx,
   generateSecondaryDataVol,
   generateTableData,
 } = require("./generateData.js");
+const { fetchData, fetchAllAnalystData } = require("./fetchData.js");
 const { getDb } = require("./db.js");
 
 const primaryData = async (_, { ticker, dateRange }) => {
+  if (!ticker) return;
+
   const { historicalTickerData, analystData } = await fetchData(ticker);
 
   const primaryData = generatePrimaryData(
@@ -21,10 +22,10 @@ const primaryData = async (_, { ticker, dateRange }) => {
 };
 
 const secondaryDataPx = async (_, { ticker, dateRange, lookBackDuration }) => {
+  if (!ticker) return;
+
   const db = getDb();
-
   const { historicalTickerData, analystData } = await fetchData(ticker);
-
   const { benchmark_index } = analystData;
 
   const historicalBenchmarkData = await db
@@ -42,8 +43,9 @@ const secondaryDataPx = async (_, { ticker, dateRange, lookBackDuration }) => {
 };
 
 const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
-  const { historicalTickerData, analystData } = await fetchData(ticker);
+  if (!ticker) return;
 
+  const { historicalTickerData, analystData } = await fetchData(ticker);
   const secondaryDataVol = generateSecondaryDataVol(
     historicalTickerData,
     analystData,
@@ -54,13 +56,21 @@ const secondaryDataVol = async (_, { ticker, dateRange, lookBackDuration }) => {
   return secondaryDataVol;
 };
 
-const tableData = async (_, { match }) => {
-  const options = !match
+const tableData = async (_, { eventName, ticker, creator }) => {
+  const eventNameOption = !eventName
     ? {}
-    : { ticker: { $regex: `^${match}`, $options: "i" } };
+    : { event_name: { $regex: `^${eventName}`, $options: "i" } };
+  const tickerOption = !ticker
+    ? {}
+    : { ticker: { $regex: `^${ticker}`, $options: "i" } };
+  const creatorOption = !creator
+    ? {}
+    : { creator: { $regex: `^${creator}`, $options: "i" } };
 
-  const analystData = await fetchAllAnalystData(options);
-
+  const allOptions = {
+    $and: [eventNameOption, tickerOption, creatorOption],
+  };
+  const analystData = await fetchAllAnalystData(allOptions);
   const tableData = generateTableData(analystData);
 
   return tableData;

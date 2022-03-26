@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
 
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 450;
   padding: 0.5rem 1rem;
   margin-bottom: 0.3rem;
@@ -157,7 +157,7 @@
   cursor: pointer;
 }
 
-.col__ticker span {
+.dataTable__row span {
   background-color: yellow;
   font-weight: bold;
 }

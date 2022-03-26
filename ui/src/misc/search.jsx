@@ -109,9 +109,13 @@ export const searchSecondaryDataVol = async (
   };
 };
 
-export const getTableData = async (match = "") => {
+export const getTableData = async (
+  eventName = "",
+  ticker = "",
+  creator = ""
+) => {
   const query = `query {
-    tableData(match: "${match}") {
+    tableData(eventName: "${eventName}", ticker: "${ticker}", creator: "${creator}") {
       eventName ticker name announcementDate tradeDate predictionDate conviction side demandUSD demandShare creator
     }
   }`;

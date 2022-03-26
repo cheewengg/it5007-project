@@ -4,14 +4,13 @@ import "../css/styles.css";
 import React, { useEffect, useState } from "react";
 import PrimaryHeader from "./PrimaryHeader.jsx";
 import AllCharts from "./AllCharts.jsx";
-import DataTable from "./DataTable.jsx";
+import TableData from "./TableData.jsx";
 
 import useQuery from "../hooks/useQuery.jsx";
 
 import { getTableData } from "../misc/search.jsx";
 import { generatePrimaryHeaderData } from "../misc/util.jsx";
 import {
-  DEFAULT_QUERY,
   searchPrimaryDataConfig,
   searchSecondaryDataPxConfig,
   searchSecondaryDataVolConfig,
@@ -19,15 +18,15 @@ import {
 
 const Main = () => {
   const [primaryData, searchPrimaryData] = useQuery(
-    DEFAULT_QUERY,
+    "",
     searchPrimaryDataConfig
   );
   const [secondaryDataPx, searchSecondaryDataPx] = useQuery(
-    DEFAULT_QUERY,
+    "",
     searchSecondaryDataPxConfig
   );
   const [secondaryDataVol, searchSecondaryDataVol] = useQuery(
-    DEFAULT_QUERY,
+    "",
     searchSecondaryDataVolConfig
   );
 
@@ -39,6 +38,11 @@ const Main = () => {
   useEffect(async () => {
     const data = await getTableData();
     setTableData(data);
+
+    const defaultQuery = data[0].ticker;
+    searchPrimaryData(defaultQuery);
+    searchSecondaryDataPx(defaultQuery);
+    searchSecondaryDataVol(defaultQuery);
   }, []);
 
   const { ticker, primaryChartData } = primaryData;
@@ -72,7 +76,7 @@ const Main = () => {
     <div>
       <PrimaryHeader primaryHeaderData={primaryHeaderData} />
       <AllCharts allChartsConfig={allChartsConfig} />
-      <DataTable
+      <TableData
         searchDataConfig={searchDataConfig}
         tableData={tableData}
         setTableData={setTableData}
