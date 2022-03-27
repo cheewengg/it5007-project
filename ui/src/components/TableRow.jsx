@@ -2,10 +2,17 @@ import "../css/general.css";
 import "../css/styles.css";
 
 import React from "react";
+import Checkbox from "./Checkbox.jsx";
 import { tableHeader as header } from "../misc/config.jsx";
 import { formatFloat, renderDate } from "../misc/util.jsx";
 
-const TableRow = ({ rowData, searchDataConfig, queryConfig }) => {
+const TableRow = ({
+  rowData,
+  setCheckStatus,
+  modifyExportData,
+  searchDataConfig,
+  queryConfig,
+}) => {
   const {
     dateRange,
     lookBackRangePx,
@@ -74,7 +81,17 @@ const TableRow = ({ rowData, searchDataConfig, queryConfig }) => {
     const headerKeys = Object.keys(header);
     const formattedData = formatDataRow(rowData);
 
-    const rowContent = headerKeys.map((key) => {
+    const checkStatus = setCheckStatus(rowData);
+    const rowContent = [
+      <Checkbox
+        key={checkStatus}
+        predefinedClassName="dataTable__row"
+        checkStatus={checkStatus}
+        modifyExportData={modifyExportData([rowData])}
+      />,
+    ];
+
+    headerKeys.forEach((key) => {
       const colContent = formattedData[key];
       const onClick =
         key === "ticker" ? () => handleSearchTicker(colContent) : null;
@@ -83,7 +100,7 @@ const TableRow = ({ rowData, searchDataConfig, queryConfig }) => {
       }`;
       const [leftSubString, rightSubString] = renderInnerHTML(key, colContent);
 
-      return (
+      rowContent.push(
         <div key={key} onClick={onClick} className={className}>
           <span>{leftSubString}</span>
           {rightSubString}

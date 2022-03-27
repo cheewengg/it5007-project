@@ -1,10 +1,17 @@
 import "../css/general.css";
 import "../css/styles.css";
+import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
 import React from "react";
+import Checkbox from "./Checkbox.jsx";
 import { tableHeader as header } from "../misc/config.jsx";
 
-const TableHeader = ({ tableData, setTableData }) => {
+const TableHeader = ({
+  tableData,
+  setTableData,
+  setCheckStatus,
+  modifyExportData,
+}) => {
   const handleSort = (sortKey, ascending) => {
     const tableDataCopy = [...tableData];
 
@@ -38,7 +45,16 @@ const TableHeader = ({ tableData, setTableData }) => {
 
   const renderTableHeader = (header) => {
     const headerKeys = Object.keys(header);
-    const headerContent = [];
+
+    const checkStatus = setCheckStatus();
+    const headerContent = [
+      <Checkbox
+        key={checkStatus}
+        predefinedClassName="dataTable__header"
+        checkStatus={checkStatus}
+        modifyExportData={modifyExportData(tableData)}
+      />,
+    ];
 
     headerKeys.forEach((key) => {
       const colContent = (

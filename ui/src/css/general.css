@@ -76,6 +76,7 @@ body {
 /***********************************/
 /* width */
 .section__dataTable::-webkit-scrollbar {
+  height: 0.2rem;
   width: 0.2rem;
 }
 

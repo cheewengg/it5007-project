@@ -2,7 +2,8 @@ import "../css/general.css";
 import "../css/styles.css";
 
 import React, { useEffect, useState } from "react";
-import AllFilters from "./AllFilters.jsx";
+
+import TableUtil from "./TableUtil.jsx";
 import Table from "./Table.jsx";
 
 import { getTableData } from "../misc/search.jsx";
@@ -11,6 +12,7 @@ const TableData = ({ tableData, setTableData, searchDataConfig }) => {
   const [queryEventName, setQueryEventName] = useState("");
   const [queryTicker, setQueryTicker] = useState("");
   const [queryCreator, setQueryCreator] = useState("");
+  const [exportData, setExportData] = useState(new Set());
 
   const queryConfig = {
     queryEventName,
@@ -26,12 +28,18 @@ const TableData = ({ tableData, setTableData, searchDataConfig }) => {
     setTableData(data);
   }, [queryEventName, queryTicker, queryCreator]);
 
+  // const stringJSON = JSON.stringify([...exportData]);
+  // console.log(exportData);
+  // console.log((stringJSON.length * 2) / 1024 / 1024);
+
   return (
     <div>
-      <AllFilters queryConfig={queryConfig} />
+      <TableUtil exportData={exportData} queryConfig={queryConfig} />
       <Table
         tableData={tableData}
         setTableData={setTableData}
+        exportData={exportData}
+        setExportData={setExportData}
         searchDataConfig={searchDataConfig}
         queryConfig={queryConfig}
       />

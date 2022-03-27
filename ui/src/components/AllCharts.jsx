@@ -2,7 +2,7 @@ import "../css/general.css";
 import "../css/styles.css";
 
 import React from "react";
-import RangeSelector from "./RangeSelector.jsx";
+import ChartHeader from "./ChartHeader.jsx";
 import StockChart from "./StockChart.jsx";
 
 import {
@@ -89,14 +89,19 @@ const AllCharts = ({ allChartsConfig }) => {
 
   return (
     <div className="section__allCharts">
-      <RangeSelector rangeMap={dateRangeMap} config={dateRangeConfig} />
+      <ChartHeader
+        rangeMap={dateRangeMap}
+        chartTitle="Close Price/Volume"
+        config={dateRangeConfig}
+      />
       <StockChart
         chartType="ComboChart"
         chartData={primaryChartData}
         options={primaryChartOptions}
       />
-      <RangeSelector
+      <ChartHeader
         rangeMap={lookBackRangePxMap}
+        chartTitle="Price Spillover (%)"
         config={lookBackRangePxConfig}
       />
       <StockChart
@@ -104,8 +109,9 @@ const AllCharts = ({ allChartsConfig }) => {
         chartData={secondaryChartDataPx}
         options={secondaryChartPxOptions}
       />
-      <RangeSelector
+      <ChartHeader
         rangeMap={lookBackRangeVolMap}
+        chartTitle="Excess Volume (%)"
         config={lookBackRangeVolConfig}
       />
       <StockChart

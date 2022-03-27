@@ -7,7 +7,7 @@ const AllFilters = ({ queryConfig }) => {
   const { setQueryEventName, setQueryTicker, setQueryCreator } = queryConfig;
 
   return (
-    <div>
+    <div className="section__allFilters">
       <SearchBar placeHolder="Search by event" setQuery={setQueryEventName} />
       <SearchBar placeHolder="Search by ticker" setQuery={setQueryTicker} />
       <SearchBar placeHolder="Search by creator" setQuery={setQueryCreator} />

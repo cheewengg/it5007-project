@@ -58,8 +58,15 @@
 }
 
 /***********************************/
-/* section__rangeSelector */
+/* section__chartHeader */
 /***********************************/
+.section__chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-right: 12rem;
+}
+
 .section__rangeSelector {
   display: flex;
   gap: 1.6rem;
@@ -86,10 +93,21 @@
 }
 
 /***********************************/
-/* section__searchbar */
+/* section__tableutil */
 /***********************************/
-.section__searchBar {
+.section__tableUtil {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   margin: 0 3.2rem;
+}
+
+.section__allFilters {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.section__searchBar {
   font-size: 1.6rem;
 }
 
@@ -97,8 +115,25 @@
   color: inherit;
   font-family: inherit;
   padding: 0.4rem;
-  width: 50%;
   border: 1px solid #777;
+}
+
+.btn__exportCSV {
+  border: none;
+  background-color: #4dabf7;
+  padding: 0.6rem 0.8rem;
+
+  font-family: inherit;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 400;
+
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn__exportCSV:hover {
+  color: #000;
 }
 
 /***********************************/
@@ -107,7 +142,7 @@
 .section__dataTable {
   color: #333;
   display: grid;
-  grid-template-columns: repeat(11, auto);
+  grid-template-columns: repeat(12, auto);
   align-content: start;
   overflow-y: scroll;
   height: 25rem;
@@ -136,7 +171,7 @@
 }
 
 .btn__sort {
-  background-color: white;
+  background-color: inherit;
   border: none;
   cursor: pointer;
   font-family: inherit;
