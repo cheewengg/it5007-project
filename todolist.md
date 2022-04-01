@@ -23,6 +23,10 @@
     - Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data
 
 
+### Changelog (April 1st, 2022) 
+    - Optimization: Improved ticker data api call performance
+    - Optimization: Removed error message on initial load 
+
 ### Changelog (March 18th, 2022)
     - Graphing: Add currency to y-axis price and benchmark titles 
     - DataTable: correct dates from string to "Dates" format

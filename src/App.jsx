@@ -181,7 +181,7 @@ function DropdownOptions({ options }) {
       </option>
     )
   );
-};
+}
 
 async function graphQLFetch(query, variables = {}) {
   try {
@@ -209,16 +209,295 @@ async function graphQLFetch(query, variables = {}) {
   }
 }
 
+function plotLineChart(tickerData, benchmarkData) {
+  if (Chart.getChart('lineChart')) {
+    Chart.getChart('lineChart').destroy();
+  }
+   
+  var yTickerBenchmarkRatio = [];   // Calculate Ticker / Benchmark Price Ratio 
+  var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
+
+  for (let i=0; i < tickerData.px_last.length; i++) {
+    yTickerBenchmarkRatio.push(tickerData.px_last[i] / benchmarkData.px_last[i]);
+  }
+
+  for (let i=0; i < yTickerBenchmarkRatio.length; i++) {
+    yTickerBenchmarkRatioNormalized.push(yTickerBenchmarkRatio[i] * 100 / yTickerBenchmarkRatio[0]);
+  }
+
+  const data = {
+    labels: tickerData.stringDates,
+    datasets: [
+      {
+        type: 'line',
+        label: tickerData.ticker,
+        yAxisID: 'Price',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: tickerData.px_last,
+        hidden: true,
+      }, {
+        type: 'line',
+        label: benchmarkData.ticker,
+        yAxisID: 'BenchmarkPrice',
+        backgroundColor: 'transparent',
+        borderColor: 'Blue',
+        borderDash: [5, 8],
+        pointRadius: 0,
+        data: benchmarkData.px_last,
+        hidden: true,
+      }, {
+        type: 'line',
+        label: 'Ticker/Benchmark Price Ratio',
+        yAxisID: 'TickerBenchmarkRatio',
+        backgroundColor: 'BlueViolet',
+        borderColor: 'BlueViolet',
+        data: yTickerBenchmarkRatioNormalized,
+        hidden: false,
+      }, {
+        type: 'bar',
+        label: 'Ticker Volume',
+        yAxisID: 'Volume',
+        backgroundColor: 'DarkGrey',
+        data: tickerData.px_volume,
+        hidden: false,
+      }
+    ]
+  };
+
+  const config = {
+    data: data,
+    options: {
+      scales: {
+        Price: {
+          type: 'linear',
+          position: 'left',
+          ticks: {
+            display: false,
+          },
+          title: {
+            display: false,
+            
+          },
+        }, 
+        BenchmarkPrice: {
+          type: 'linear',
+          position: 'left', 
+          title: {
+            display: false,
+            text: 'Benchmark Price (' + benchmarkData.currency + ')'
+          },
+          ticks: {
+            display: false,
+          }
+        },
+        TickerBenchmarkRatio: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Ticker/Benchmark Ratio'
+          }
+        },
+        Volume: {
+          type: 'linear', 
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Ticker Volume',
+          },
+        },
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: tickerData.ticker,
+          maintainAspectRatio: false,
+          responsive: true,
+        },
+        legend: {
+          onClick: function(e, legendItem) {
+            var idx = legendItem.datasetIndex;
+            var scalesName = Object.keys(this.chart.config.options.scales)[idx]; 
+
+            this.chart.config.data.datasets[idx].hidden = !this.chart.config.data.datasets[idx].hidden;
+            this.chart.config.options.scales[scalesName].ticks.display = !this.chart.config.options.scales[scalesName].ticks.display;
+            this.chart.config.options.scales[scalesName].title.display = !this.chart.config.options.scales[scalesName].title.display;
+            this.chart.update();
+          }
+        },
+      },
+    }
+  };
+  
+  new Chart(document.getElementById('lineChart'), config);
+}
+
+function plotExcessVolume(tickerData, benchmarkData) {
+  if (Chart.getChart('excessVolumeChart')) {
+    Chart.getChart('excessVolumeChart').destroy();
+  }
+
+  var refDate = new Date();
+  var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).getTime() / 1000;
+  var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).getTime() / 1000;
+
+  // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
+
+  const average = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+  
+  var averageVolume = []
+  for (let i=0; i < tickerData.date.length; i++) {
+      if (
+        tickerData.date[i] <= lookbackEndDt &&
+        tickerData.date[i] >= lookbackStDt
+      ) {
+      averageVolume.push(tickerData.px_volume[i]);
+    }
+  }
+  averageVolume = average(averageVolume)
+
+  var excessVolDaily = [];
+  var excessVolCumulative = []
+  var excessVolCumulativeTotal = 0 
+  var excessVolDates = [];
+
+  for (let i=0; i < tickerData.date.length; i++) {
+    if (tickerData.date[i] > lookbackEndDt) {
+      excessVolDaily.push(tickerData.px_volume[i] - averageVolume);
+      excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+      
+      excessVolCumulativeTotal = excessVolCumulativeTotal + (tickerData.px_volume[i] - averageVolume);
+      excessVolCumulative.push(excessVolCumulativeTotal);
+    }
+  }
+
+  controlStTitle = new Date(lookbackStDt * 1000).toLocaleDateString('en-US');
+  controlEndTitle = new Date(lookbackEndDt * 1000).toLocaleDateString('en-US');
+  
+  console.log('lookback start', controlStTitle);
+  console.log('lookback end', controlEndTitle);
+  console.log(averageVolume);
+
+  console.log(excessVolDaily);
+  console.log(excessVolCumulative);
+
+  tickerData.excessVolCumulative = excessVolCumulative;
+  tickerData.excessVolDates = excessVolDates;
+
+  const data = {
+    labels: excessVolDates,
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Ticker Volume',
+        yAxisID: 'Volume',
+        backgroundColor: 'Black',
+        data: excessVolDaily,
+        hidden: false,
+      }
+    ]
+  };
+
+  const config = {
+    data: data,
+    options: {
+      scales: {
+        Volume: {
+          type: 'linear', 
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Ticker Volume',
+          },
+        },
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "3 Month Excess Volume Analysis [Control Period: " + controlStTitle + " to " + controlEndTitle,
+          maintainAspectRatio: false,
+          responsive: true,
+        },
+        legend: {
+          onClick: function(e, legendItem) {
+            var idx = legendItem.datasetIndex;
+            var scalesName = Object.keys(this.chart.config.options.scales)[idx]; 
+
+            this.chart.config.data.datasets[idx].hidden = !this.chart.config.data.datasets[idx].hidden;
+            this.chart.config.options.scales[scalesName].ticks.display = !this.chart.config.options.scales[scalesName].ticks.display;
+            this.chart.config.options.scales[scalesName].title.display = !this.chart.config.options.scales[scalesName].title.display;
+            this.chart.update();
+          }
+        },
+      },
+    }
+  };
+  new Chart(document.getElementById('excessVolumeChart'), config);
+}
+
+function plotExcessVolumeCumulative(tickerData) {
+  if (Chart.getChart('excessVolumeCumulativeChart')) {
+    Chart.getChart('excessVolumeCumulativeChart').destroy();
+  }
+
+  const data = {
+    labels: tickerData.excessVolDates,
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Ticker Volume',
+        yAxisID: 'Volume',
+        backgroundColor: 'Black',
+        data: tickerData.excessVolCumulative,
+        hidden: false,
+      }
+    ]
+  };
+
+  const config = {
+    data: data,
+    options: {
+      scales: {
+        Volume: {
+          type: 'linear', 
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Ticker Volume',
+          },
+        },
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "3 Month Excess Volume Cumulative Analysis",
+          maintainAspectRatio: false,
+          responsive: true,
+        },
+        legend: {
+          onClick: function(e, legendItem) {
+            var idx = legendItem.datasetIndex;
+            var scalesName = Object.keys(this.chart.config.options.scales)[idx]; 
+
+            this.chart.config.data.datasets[idx].hidden = !this.chart.config.data.datasets[idx].hidden;
+            this.chart.config.options.scales[scalesName].ticks.display = !this.chart.config.options.scales[scalesName].ticks.display;
+            this.chart.config.options.scales[scalesName].title.display = !this.chart.config.options.scales[scalesName].title.display;
+            this.chart.update();
+          }
+        },
+      },
+    }
+  };
+  new Chart(document.getElementById('excessVolumeCumulativeChart'), config);
+}
+
 class Charting extends React.Component {
   constructor() {
     super();
   }
   
   async updateChart(issue) {
-    if (Chart.getChart('myChart')) {
-      Chart.getChart('myChart').destroy();
-    }
-
     var ticker = issue.ticker; 
     var benchmark = issue.benchmark_index;
   
@@ -244,146 +523,26 @@ class Charting extends React.Component {
 
     var tickerData = await graphQLFetch(tickerQuery, { ticker: ticker });
     var benchmarkData = await graphQLFetch(benchmarkQuery, { ticker: benchmark });
-    
+
     tickerData = tickerData.queryData;
     benchmarkData = benchmarkData.queryData;
+
+    var starting_point = (tickerData.px_last.length) - tickerData.date.length;
+    benchmarkData.px_last = benchmarkData.px_last.slice(starting_point);
+    benchmarkData.date = benchmarkData.date.slice(starting_point);
+    tickerData.date = tickerData.date.slice(starting_point);
+
     
-    var refDate = new Date();
-    var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).toLocaleDateString('en-US');
-    var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).toLocaleDateString('en-US');
-
-    // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
-
-    var xValues = [];
+    var stringDates = [];
     for (let i=0; i < tickerData.date.length; i++) {
-      xValues.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+      stringDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
     }
+    tickerData.stringDates = stringDates;
+    benchmarkData.stringDates = stringDates; 
 
-    var yTickerPrices = tickerData.px_last;
-    var yTickerVolumes = tickerData.px_volume;
-    var yTickerCurrency = tickerData.currency;
-
-    var starting_point = (tickerData.px_last.length) - xValues.length;
-    var yBenchmarkPrices = benchmarkData.px_last.slice(starting_point);
-    var yBenchmarkCurrency = benchmarkData.currency; 
-    
-    var yTickerBenchmarkRatio = [];   // Calculate Ticker / Benchmark Price Ratio 
-    var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
-
-    for (let i=0; i < yTickerPrices.length; i++) {
-      yTickerBenchmarkRatio.push(yTickerPrices[i] / yBenchmarkPrices[i]);
-    }
-
-    for (let i=0; i < yTickerBenchmarkRatio.length; i++) {
-      yTickerBenchmarkRatioNormalized.push(yTickerBenchmarkRatio[i] * 100 / yTickerBenchmarkRatio[0]);
-    }
-
-    const data = {
-      labels: xValues,
-      datasets: [
-        {
-          type: 'line',
-          label: tickerData.ticker,
-          yAxisID: 'Price',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: yTickerPrices,
-          hidden: true,
-        }, {
-          type: 'line',
-          label: benchmarkData.ticker,
-          yAxisID: 'BenchmarkPrice',
-          backgroundColor: 'transparent',
-          borderColor: 'Blue',
-          borderDash: [5, 8],
-          pointRadius: 0,
-          data: yBenchmarkPrices,
-          hidden: true,
-        }, {
-          type: 'line',
-          label: 'Ticker/Benchmark Price Ratio',
-          yAxisID: 'TickerBenchmarkRatio',
-          backgroundColor: 'BlueViolet',
-          borderColor: 'BlueViolet',
-          data: yTickerBenchmarkRatioNormalized,
-          hidden: false,
-        }, {
-          type: 'bar',
-          label: 'Ticker Volume',
-          yAxisID: 'Volume',
-          backgroundColor: 'DarkGrey',
-          data: yTickerVolumes,
-          hidden: false,
-        }
-      ]
-    };
-  
-    const config = {
-      data: data,
-      options: {
-        scales: {
-          Price: {
-            type: 'linear',
-            position: 'left',
-            ticks: {
-              display: false,
-            },
-            title: {
-              display: false,
-              text: 'Ticker Price (' + yTickerCurrency + ')',
-            },
-          }, 
-          BenchmarkPrice: {
-            type: 'linear',
-            position: 'left', 
-            title: {
-              display: false,
-              text: 'Benchmark Price (' + yBenchmarkCurrency + ')'
-            },
-            ticks: {
-              display: false,
-            }
-          },
-          TickerBenchmarkRatio: {
-            type: 'linear',
-            position: 'left',
-            title: {
-              display: true,
-              text: 'Ticker/Benchmark Ratio'
-            }
-          },
-          Volume: {
-            type: 'linear', 
-            position: 'right',
-            title: {
-              display: true,
-              text: 'Ticker Volume',
-            },
-          },
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: tickerData.ticker,
-            maintainAspectRatio: false,
-            responsive: true,
-          },
-          legend: {
-            onClick: function(e, legendItem) {
-              var idx = legendItem.datasetIndex;
-              var scalesName = Object.keys(this.chart.config.options.scales)[idx]; 
-
-              this.chart.config.data.datasets[idx].hidden = !this.chart.config.data.datasets[idx].hidden;
-              this.chart.config.options.scales[scalesName].ticks.display = !this.chart.config.options.scales[scalesName].ticks.display;
-              this.chart.config.options.scales[scalesName].title.display = !this.chart.config.options.scales[scalesName].title.display;
-              this.chart.update();
-            }
-          },
-        },
-      }
-    };
-    
-    new Chart(document.getElementById('myChart'), config);
+    plotLineChart(tickerData, benchmarkData);
+    plotExcessVolume(tickerData, benchmarkData); 
+    plotExcessVolumeCumulative(tickerData); 
   }
 
   
@@ -391,7 +550,9 @@ class Charting extends React.Component {
   render() {   
     return (
       <div>
-        <canvas id="myChart" width="200" height="100" aria-label="myChart" role="img"></canvas>
+        <canvas id="lineChart" width="200" height="100" aria-label="lineChart" role="img"></canvas>
+        <canvas id="excessVolumeChart" width="200" height="100" aria-label="excessVolumeChart" role="img"></canvas>
+        <canvas id="excessVolumeCumulativeChart" width="200" height="100" aria-label="excessVolumeCumulativeChart" role="img"></canvas>
       </div>
     );
   }
@@ -446,7 +607,7 @@ class CountryFilter extends React.Component {
 class IssueList extends React.Component {
   constructor() {
     super();
-    this.state = { issues: []};
+    this.state = { issues: [], tickerObj: {}, benchmarkObj: {} };
   }
 
   componentDidMount() {
