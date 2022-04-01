@@ -24,6 +24,7 @@
 
 
 ### Changelog (April 1st, 2022) 
+    - Charting: Excess Volume Analysis Added 
     - Optimization: Improved ticker data api call performance
     - Optimization: Removed error message on initial load 
 

@@ -270,16 +270,15 @@ function plotExcessVolume(tickerData, benchmarkData) {
       excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
       excessVolCumulativeTotal = excessVolCumulativeTotal + (tickerData.px_volume[i] - averageVolume);
       excessVolCumulative.push(excessVolCumulativeTotal);
+    } else {
+      excessVolDaily.push(0);
+      excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+      excessVolCumulative.push(0);
     }
   }
 
   controlStTitle = new Date(lookbackStDt * 1000).toLocaleDateString('en-US');
   controlEndTitle = new Date(lookbackEndDt * 1000).toLocaleDateString('en-US');
-  console.log('lookback start', controlStTitle);
-  console.log('lookback end', controlEndTitle);
-  console.log(averageVolume);
-  console.log(excessVolDaily);
-  console.log(excessVolCumulative);
   tickerData.excessVolCumulative = excessVolCumulative;
   tickerData.excessVolDates = excessVolDates;
   const data = {
