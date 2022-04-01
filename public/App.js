@@ -11,27 +11,16 @@ function IssueRow(props) {
 }
 
 function IssueTable(props) {
-  function chartingSubmit(e, ticker_name, benchmark_name, announcement_date) {
+  function chartingSubmit(e, issues) {
     e.preventDefault();
-
-    for (let i = 0; i < props.data.length; i++) {
-      if (props.data[i].ticker == ticker_name) {
-        ticker_data = props.data[i];
-      }
-
-      if (props.data[i].ticker == benchmark_name) {
-        benchmark_data = props.data[i];
-      }
-    }
-
-    new Charting().updateChart(ticker_name, ticker_data, benchmark_name, benchmark_data, announcement_date);
+    new Charting().updateChart(issues);
   } // add visualization and shortlist buttons
 
 
   for (let i = 0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
     props.issues[i].visualize = /*#__PURE__*/React.createElement("button", {
-      onClick: e => chartingSubmit(e, ticker = props.issues[i].ticker, benchmark = props.issues[i].benchmark_index, announcement_date = props.issues[i].announcement_date)
+      onClick: e => chartingSubmit(e, issues = props.issues[i])
     }, "Visualize");
     props.issues[i].add_basket = /*#__PURE__*/React.createElement("button", {
       onClick: e => Shortlist(e, ticker = props.issues[i].ticker)
@@ -61,40 +50,132 @@ function IssueTable(props) {
   }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand USD $m"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
 }
 
+function Shortlist() {
+  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket');
+}
+
+function FilterTable() {
+  let table, rows, cells;
+  let event, eventFilter, eventBool;
+  let country, countryFilter, countryBool;
+  table = document.getElementById("rebalanceTable");
+  rows = table.getElementsByTagName('tr');
+  eventFilter = document.getElementById("eventDropdown").value;
+  countryFilter = document.getElementById("countryDropdown").value;
+
+  for (let row of rows) {
+    cells = row.getElementsByTagName("td");
+    event = cells[3] || null; // be careful, identification of value is index-based
+
+    country = cells[4] || null;
+    eventBool = eventFilter === "All Events" || !event || eventFilter === event.textContent;
+    countryBool = countryFilter === "All Countries" || !country || countryFilter === country.textContent;
+
+    if (eventBool && countryBool) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  }
+}
+
+function DropdownOptions({
+  options
+}) {
+  return options.map(option => /*#__PURE__*/React.createElement("option", {
+    key: option.id,
+    value: option.value
+  }, option.value));
+}
+
+;
+
+async function graphQLFetch(query, variables = {}) {
+  try {
+    const response = await fetch('/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query,
+        variables
+      })
+    });
+    const body = await response.text();
+    const result = JSON.parse(body, jsonDateReviver);
+
+    if (result.errors) {
+      const error = result.errors[0];
+
+      if (error.extensions.code == 'BAD_USER_INPUT') {
+        const details = error.extensions.exception.errors.join('\n ');
+        alert(`${error.message}:\n ${details}`);
+      } else {
+        alert(`${error.extensions.code}: ${error.message}`);
+      }
+    }
+
+    return result.data;
+  } catch (e) {
+    alert(`Error in sending data to server: ${e.message}`);
+  }
+}
+
 class Charting extends React.Component {
   constructor() {
     super();
   }
 
-  updateChart(new_ticker_name, new_ticker_data, new_benchmark_name, new_benchmark_data, announcement_date) {
+  async updateChart(issue) {
     if (Chart.getChart('myChart')) {
       Chart.getChart('myChart').destroy();
     }
 
-    var xValues = [];
-    var offset6M = 24 * 60 * 60 * 180; // 180 days (i.e. 6 mths ago)
-
-    var offset3M = 24 * 60 * 60 * 90; // 90 days (i.e. 3 mths ago)
-    // Give a try using today instead of announcement date minus 6 / 9 months 
-    //var lookbackStDt = new Date((announcement_date - offset3M)* 1000).toLocaleDateString('en-US'); 
-    //var lookbackEndDt = new Date((announcement_date - offset6M)* 1000).toLocaleDateString('en-US');
-
+    var ticker = issue.ticker;
+    var benchmark = issue.benchmark_index;
+    const tickerQuery = `mutation queryData($ticker: String) {
+      queryData(ticker: $ticker) {
+        ticker 
+        currency
+        date
+        px_last
+        px_volume
+      }
+    }`;
+    const benchmarkQuery = `mutation queryData($ticker: String) {
+      queryData(ticker: $ticker) {
+        ticker 
+        currency
+        date
+        px_last
+        px_volume
+      }
+    }`;
+    var tickerData = await graphQLFetch(tickerQuery, {
+      ticker: ticker
+    });
+    var benchmarkData = await graphQLFetch(benchmarkQuery, {
+      ticker: benchmark
+    });
+    tickerData = tickerData.queryData;
+    benchmarkData = benchmarkData.queryData;
     var refDate = new Date();
     var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).toLocaleDateString('en-US');
-    var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).toLocaleDateString('en-US');
-    console.log(lookbackStDt);
-    console.log(lookbackEndDt); // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
+    var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).toLocaleDateString('en-US'); // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
 
-    for (let i = 0; i < new_ticker_data.date.length; i++) {
-      xValues.push(new Date(new_ticker_data.date[i] * 1000).toLocaleDateString('en-US'));
+    var xValues = [];
+
+    for (let i = 0; i < tickerData.date.length; i++) {
+      xValues.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
     }
 
-    var yTickerPrices = new_ticker_data.px_last;
-    var yTickerVolumes = new_ticker_data.px_volume;
-    var yTickerCurrency = new_ticker_data.currency;
-    var starting_point = new_benchmark_data.px_last.length - xValues.length;
-    var yBenchmarkPrices = new_benchmark_data.px_last.slice(starting_point);
-    var yBenchmarkCurrency = new_benchmark_data.currency;
+    var yTickerPrices = tickerData.px_last;
+    var yTickerVolumes = tickerData.px_volume;
+    var yTickerCurrency = tickerData.currency;
+    var starting_point = tickerData.px_last.length - xValues.length;
+    var yBenchmarkPrices = benchmarkData.px_last.slice(starting_point);
+    var yBenchmarkCurrency = benchmarkData.currency;
     var yTickerBenchmarkRatio = []; // Calculate Ticker / Benchmark Price Ratio 
 
     var yTickerBenchmarkRatioNormalized = []; // Normalized (by Factor 100)
@@ -111,7 +192,7 @@ class Charting extends React.Component {
       labels: xValues,
       datasets: [{
         type: 'line',
-        label: new_ticker_name,
+        label: tickerData.ticker,
         yAxisID: 'Price',
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
@@ -119,7 +200,7 @@ class Charting extends React.Component {
         hidden: true
       }, {
         type: 'line',
-        label: new_benchmark_name,
+        label: benchmarkData.ticker,
         yAxisID: 'BenchmarkPrice',
         backgroundColor: 'transparent',
         borderColor: 'Blue',
@@ -190,7 +271,7 @@ class Charting extends React.Component {
         plugins: {
           title: {
             display: true,
-            text: new_ticker_name,
+            text: tickerData.ticker,
             maintainAspectRatio: false,
             responsive: true
           },
@@ -221,46 +302,6 @@ class Charting extends React.Component {
   }
 
 }
-
-function Shortlist() {
-  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket');
-}
-
-function FilterTable() {
-  let table, rows, cells;
-  let event, eventFilter, eventBool;
-  let country, countryFilter, countryBool;
-  table = document.getElementById("rebalanceTable");
-  rows = table.getElementsByTagName('tr');
-  eventFilter = document.getElementById("eventDropdown").value;
-  countryFilter = document.getElementById("countryDropdown").value;
-
-  for (let row of rows) {
-    cells = row.getElementsByTagName("td");
-    event = cells[3] || null; // be careful, identification of value is index-based
-
-    country = cells[4] || null;
-    eventBool = eventFilter === "All Events" || !event || eventFilter === event.textContent;
-    countryBool = countryFilter === "All Countries" || !country || countryFilter === country.textContent;
-
-    if (eventBool && countryBool) {
-      row.style.display = "";
-    } else {
-      row.style.display = "none";
-    }
-  }
-}
-
-function DropdownOptions({
-  options
-}) {
-  return options.map(option => /*#__PURE__*/React.createElement("option", {
-    key: option.id,
-    value: option.value
-  }, option.value));
-}
-
-;
 
 class EventFilter extends React.Component {
   render() {
@@ -324,44 +365,11 @@ class CountryFilter extends React.Component {
 
 }
 
-async function graphQLFetch(query, variables = {}) {
-  try {
-    const response = await fetch('/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query,
-        variables
-      })
-    });
-    const body = await response.text();
-    const result = JSON.parse(body, jsonDateReviver);
-
-    if (result.errors) {
-      const error = result.errors[0];
-
-      if (error.extensions.code == 'BAD_USER_INPUT') {
-        const details = error.extensions.exception.errors.join('\n ');
-        alert(`${error.message}:\n ${details}`);
-      } else {
-        alert(`${error.extensions.code}: ${error.message}`);
-      }
-    }
-
-    return result.data;
-  } catch (e) {
-    alert(`Error in sending data to server: ${e.message}`);
-  }
-}
-
 class IssueList extends React.Component {
   constructor() {
     super();
     this.state = {
-      issues: [],
-      historical: []
+      issues: []
     };
   }
 
@@ -412,20 +420,9 @@ class IssueList extends React.Component {
         creator
       }
     }`;
-    const query2 = `query {
-      historicalData {
-        ticker
-        currency
-        date
-        px_last
-        px_volume
-      }
-    }`;
     const data = await graphQLFetch(query);
-    const data2 = await graphQLFetch(query2);
     this.setState({
-      issues: data.issueList,
-      historical: data2.historicalData
+      issues: data.issueList
     });
   }
 
@@ -435,8 +432,7 @@ class IssueList extends React.Component {
     }), /*#__PURE__*/React.createElement(CountryFilter, {
       issues: this.state.issues
     }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(IssueTable, {
-      issues: this.state.issues,
-      data: this.state.historical
+      issues: this.state.issues
     }), /*#__PURE__*/React.createElement("hr", null));
   }
 

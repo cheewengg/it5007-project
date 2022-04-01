@@ -25,6 +25,7 @@
 
 ### Changelog (March 18th, 2022)
     - Graphing: Add currency to y-axis price and benchmark titles 
+    - DataTable: correct dates from string to "Dates" format
 
 ### Changelog (March 17th, 2022)
     - Database: Loaded remaining Intropic API data and corresponding Bloomberg historical data 

@@ -5,31 +5,9 @@ const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const { MongoClient } = require('mongodb');
-
-// Localhost
-// const url = 'mongodb://localhost/indexrebalance';   // localhost
-
-// Atlas URL  - replace UUU with user, PPP with password, XXX with hostname
 const url = "mongodb+srv://gary:PZMpNYgdUM3LysH8@indexrebalance.qhnra.mongodb.net/indexrebalance?retryWrites=true&w=majority" 
 
-// mLab URL - replace UUU with user, PPP with password, XXX with hostname
-// const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
-
 let db;
-let aboutMessage = "Index Rebalance Watcher API v1.0";
-
-const issuesDB = [
-  {
-    id: 1, status: 'New', owner: 'Gary', effort: 5,
-    created: new Date('2019-01-15'), due: undefined,
-    title: 'Error in console when clicking Add',
-  },
-  {
-    id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-    created: new Date('2019-01-16'), due: new Date('2019-02-01'),
-    title: 'Missing bottom border on panel',
-  },
-];
 
 const GraphQLDate = new GraphQLScalarType({
   name: 'GraphQLDate',
@@ -51,20 +29,13 @@ const GraphQLDate = new GraphQLScalarType({
 
 const resolvers = {
   Query: {
-    about: () => aboutMessage,
     issueList,
-    historicalData,
   },
   Mutation: {
-    setAboutMessage,
-    issueAdd,
+    queryData,
   },
   GraphQLDate,
 };
-
-function setAboutMessage(_, { message }) {
-  return aboutMessage = message;
-}
 
 async function issueList() {
   const issues = await db.collection('brianfreitas').find({}).toArray();
@@ -76,30 +47,9 @@ async function issueList() {
   return res_updated;
 }
 
-async function historicalData() {
-  const historical = await db.collection('historical').find({}).toArray();
+async function queryData(_, issue) {
+  const historical = await db.collection('historical').findOne({ticker: issue.ticker});
   return historical;
-}
-
-function issueValidate(issue) {
-  const errors = [];
-  if (issue.title.length < 3) {
-    errors.push('Field "title" must be at least 3 characters long.');
-  }
-  if (issue.status === 'Assigned' && !issue.owner) {
-    errors.push('Field "owner" is required when status is "Assigned"');
-  }
-  if (errors.length > 0) {
-    throw new UserInputError('Invalid input(s)', { errors });
-  }
-}
-
-function issueAdd(_, { issue }) {
-  issueValidate(issue);
-  issue.created = new Date();
-  issue.id = issuesDB.length + 1;
-  issuesDB.push(issue);
-  return issue;
 }
 
 async function connectToDb() {
@@ -121,14 +71,8 @@ const server = new ApolloServer({
 const app = express();
 const PORT = process.env.PORT || 3000
 
-// app.use(express.static('public'))
 app.use(express.static(path.resolve(__dirname, "../public")));
-app.get("*", function (request, response) {
-  response.sendFile(path.resolve(__dirname, "../public", "index.html"));
-});
-
-  
-
+app.get("*", function (request, response) {response.sendFile(path.resolve(__dirname, "../public", "index.html"))});
 
 server.applyMiddleware({ app, path: '/graphql' });
 
