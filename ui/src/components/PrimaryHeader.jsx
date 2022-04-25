@@ -21,7 +21,7 @@ const PrimaryHeader = ({ primaryHeaderData }) => {
         <div className="primaryHeader__main--currency">{currency}</div>
         <div className="primaryHeader__main--pxChangeAbs">{differenceAbs}</div>
         <div className="primaryHeader__main--pxChangePercent">
-          {differencePercent}%
+          {differencePercent} {differencePercent ? "%" : ""}
         </div>
       </div>
       <div className="primaryHeader__date">{mostRecentDate}</div>

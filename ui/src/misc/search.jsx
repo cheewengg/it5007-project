@@ -22,7 +22,7 @@ export const searchPrimaryData = async (searchQuery, dateRange) => {
     closeVol,
   } = primaryData;
 
-  const primaryChartData = [["Date", `closePx`, "closeVol"]];
+  const primaryChartData = [["Date", `Close Price`, "Close Volume"]];
 
   closeDate.forEach((_, idx) => {
     const currentDate = formatDate(closeDate[idx]);
@@ -60,7 +60,9 @@ export const searchSecondaryDataPx = async (
   const { ticker, benchmarkIdx, closeDate, pxDelta, pxDeltaVsIdx } =
     secondaryDataPx;
 
-  const secondaryChartDataPx = [["Date", "pxDelta", "pxDeltaVsIdx"]];
+  const secondaryChartDataPx = [
+    ["Date", "Price Change", "Price Change vs Benchmark"],
+  ];
 
   closeDate.forEach((_, idx) => {
     const currentDate = formatDate(closeDate[idx]);
@@ -93,7 +95,7 @@ export const searchSecondaryDataVol = async (
   const { ticker, announcementDate, demandShare, closeDate, excessVol } =
     secondaryDataVol;
 
-  const secondaryChartDataVol = [["Date", "excessVol"]];
+  const secondaryChartDataVol = [["Date", "Excess Volume"]];
 
   closeDate.forEach((_, idx) => {
     const currentDate = formatDate(closeDate[idx]);

@@ -101,7 +101,7 @@ const AllCharts = ({ allChartsConfig }) => {
       />
       <ChartHeader
         rangeMap={lookBackRangePxMap}
-        chartTitle="Price Spillover (%)"
+        chartTitle="Price Change (%)"
         config={lookBackRangePxConfig}
       />
       <StockChart

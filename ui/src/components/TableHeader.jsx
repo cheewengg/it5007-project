@@ -1,6 +1,5 @@
 import "../css/general.css";
 import "../css/styles.css";
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
 import React from "react";
 import Checkbox from "./Checkbox.jsx";
@@ -31,13 +30,13 @@ const TableHeader = ({
     return (
       <div className="header__sortBtns">
         <button onClick={() => handleSort(sortKey, true)} className="btn__sort">
-          a
+          <>&#x25B2;</>
         </button>
         <button
           onClick={() => handleSort(sortKey, false)}
           className="btn__sort"
         >
-          d
+          <>&#x25BC;</>
         </button>
       </div>
     );
