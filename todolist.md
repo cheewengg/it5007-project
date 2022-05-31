@@ -1,30 +1,35 @@
 ## Must Add / Change 
-- Graph: Add Excess Volume Analysis
-- Excess Volume V2 only counts if price % chg vs INDEX matches direction (add vs Index part)
+    - 
 
 ## Table Formatting
-- Format dates properly (currently string, change to epoch)
+    - 
+
+## Charting 
+    - 
 
 ## Infrastructure
-- Dropdown list should allow multiple dropdown options
-- Shortlist button needs functionality (add to list and master "export to csv" button) 
-- Optimize load graph data (currently loading entire historical datasetleading to slow startup time). Change to load only the ticker that is clicked. 
-- put methods into appropriate Class (organize app.jsx)
+    - Dropdown list should allow multiple dropdown options
+    - Shortlist button needs functionality (add to list and master "export to csv" button) 
 
 
 ## Add New (if time)
-- Page2: Where do analysts have the similarities? (on ticker name) 
-    - Add a master conviction column that aggregates all analysts recommmendations (if same name)
-    - For now 100% = 4/4 analysts rank this with full confidence
+    - Page2: Where do analysts have the similarities? (on ticker name).Add a master conviction column that aggregates all analysts recommmendations (if same name). For now 100% = 3/3 analysts rank this with full confidence. Problem/Question: Is there really overlap from our current analysts (intropic, brian, miz)? 
     
-    
-- Page2: What has changed since last analyst prediction? (need change data or at least last prediction)
-- Page3: Track performance from announcement to effective date, from effective date to t+15 etc...
-    - Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data
+    - Page2: What has changed since last analyst prediction? (need change data or at least last prediction)
 
+    - Page3: Track performance from announcement to effective date, from effective date to t+15. Performance is measured in volume, ie."OFFICIAL_CLOSE_AUCTION_VOLUME" will be the value to compare to our "Demand Shares" data.
+
+
+### Changelog (May 31st, 2022) 
+    - Added control period start & end vertical lines for context
+    - Added average volume horizontal line for context
+    - Excess Volume analysis upgraded to V2 (only counts if ticker % chg vs Benchmark % chg matches add/delete direction)
+
+### Changelog (May 30th, 2022) 
+    - Revisit app and added Creator dropdown filter 
 
 ### Changelog (April 1st, 2022) 
-    - Charting: Excess Volume Analysis Added 
+    - Charting: Excess volume analysis added 
     - Optimization: Improved ticker data api call performance
     - Optimization: Removed error message on initial load 
 
@@ -33,7 +38,6 @@
     - DataTable: correct dates from string to "Dates" format
 
 ### Changelog (March 17th, 2022)
-    - Database: Loaded remaining Intropic API data and corresponding Bloomberg historical data 
     - Database: Intropic, BrianFreitas, and Bloomberg data may now be uploaded directly to MongoDB cloud
     - Graphing: Added ticker/benchmark price ratio (ticker and benchmark raw price hidden by default)
     - Graphing: Display x-axis dates with correct "Dates" format

@@ -43,7 +43,6 @@
 		(attempt mongodb historical import in json format, to avoid init.mongo.js below)
 		mongoimport --db indexrebalance --collection historical --drop --file data/historical.json --jsonArray
 
-
 		- mongo indexrebalance scripts/init.mongo.js
 
 	4. Launch WebApp Server

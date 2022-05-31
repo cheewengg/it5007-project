@@ -148,23 +148,27 @@ function FilterTable() {
   let table, rows, cells; 
   let event, eventFilter, eventBool;
   let country, countryFilter, countryBool;
+  let creator, creatorFilter, creatorBool;
    
   table = document.getElementById("rebalanceTable");
   rows = table.getElementsByTagName('tr');  
   
   eventFilter = document.getElementById("eventDropdown").value;
   countryFilter = document.getElementById("countryDropdown").value;
+  creatorFilter = document.getElementById("creatorDropdown").value;
 
   for (let row of rows) { 
     cells = row.getElementsByTagName("td");
 
     event = cells[3] || null;   // be careful, identification of value is index-based
     country = cells[4] || null;
+    creator = cells[40] || null;
 
     eventBool = ((eventFilter === ("All Events") || !event || (eventFilter === event.textContent)))
     countryBool = ((countryFilter === "All Countries") || !country || (countryFilter === country.textContent))
+    creatorBool = ((creatorFilter === "All Creators") || !creator || (creatorFilter === creator.textContent))
     
-    if (eventBool && countryBool) {
+    if (eventBool && countryBool && creatorBool) {
         row.style.display = "";
     }
     else {
@@ -232,16 +236,16 @@ function plotLineChart(tickerData, benchmarkData) {
         type: 'line',
         label: tickerData.ticker,
         yAxisID: 'Price',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'Blue',
+        borderColor: 'Blue',
         data: tickerData.px_last,
         hidden: true,
       }, {
         type: 'line',
         label: benchmarkData.ticker,
         yAxisID: 'BenchmarkPrice',
-        backgroundColor: 'transparent',
-        borderColor: 'Blue',
+        backgroundColor: 'Red',
+        borderColor: 'Red',
         borderDash: [5, 8],
         pointRadius: 0,
         data: benchmarkData.px_last,
@@ -250,15 +254,15 @@ function plotLineChart(tickerData, benchmarkData) {
         type: 'line',
         label: 'Ticker/Benchmark Price Ratio',
         yAxisID: 'TickerBenchmarkRatio',
-        backgroundColor: 'BlueViolet',
-        borderColor: 'BlueViolet',
+        backgroundColor: 'Green',
+        borderColor: 'Green',
         data: yTickerBenchmarkRatioNormalized,
         hidden: false,
       }, {
         type: 'bar',
         label: 'Ticker Volume',
         yAxisID: 'Volume',
-        backgroundColor: 'DarkGrey',
+        backgroundColor: 'Grey',
         data: tickerData.px_volume,
         hidden: false,
       }
@@ -311,7 +315,7 @@ function plotLineChart(tickerData, benchmarkData) {
       plugins: {
         title: {
           display: true,
-          text: tickerData.ticker,
+          text: tickerData.ticker + ' (Side = ' + tickerData.side + ')',
           maintainAspectRatio: false,
           responsive: true,
         },
@@ -333,48 +337,77 @@ function plotLineChart(tickerData, benchmarkData) {
   new Chart(document.getElementById('lineChart'), config);
 }
 
-function plotExcessVolume(tickerData, benchmarkData) {
+function plotExcessVolume(tickerData) {
   if (Chart.getChart('excessVolumeChart')) {
     Chart.getChart('excessVolumeChart').destroy();
   }
 
   var refDate = new Date();
   var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).getTime() / 1000;
-  var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).getTime() / 1000;
-
-  // continue excess volume coding here (calculate average volume, line 171 brianfreitas)
+  var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).getTime() / 1000;  
+  var maxVertical = 0
+  var averageVolume = []
 
   const average = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-  
-  var averageVolume = []
+
   for (let i=0; i < tickerData.date.length; i++) {
-      if (
-        tickerData.date[i] <= lookbackEndDt &&
-        tickerData.date[i] >= lookbackStDt
+    if (
+        tickerData.date[i] >= lookbackStDt && tickerData.date[i] <= lookbackEndDt
       ) {
       averageVolume.push(tickerData.px_volume[i]);
     }
+    if (
+      tickerData.px_volume[i] > maxVertical
+    ) {
+      maxVertical = tickerData.px_volume[i];
+    }
   }
   averageVolume = average(averageVolume)
-
+  
   var excessVolDaily = [];
-  var excessVolCumulative = []
-  var excessVolCumulativeTotal = 0 
+  var originalVolDaily = []; 
+  
+  var excessVolCumulative = [];
+  var excessVolCumulativeTotal = 0 ;
+  
+  var averageHorizontalLine = [];
+
+  var controlStartPos = Infinity;
+  var controlEndPos = Infinity;
+  var controlStartVerticalBar = [];
+  var controlEndVerticalBar = [];
+
   var excessVolDates = [];
 
   for (let i=0; i < tickerData.date.length; i++) {
-    if (tickerData.date[i] > lookbackEndDt) {
-      excessVolDaily.push(tickerData.px_volume[i] - averageVolume);
-      excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
-      
-      excessVolCumulativeTotal = excessVolCumulativeTotal + (tickerData.px_volume[i] - averageVolume);
-      excessVolCumulative.push(excessVolCumulativeTotal);
-    } else {
-      excessVolDaily.push(0);
-      excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
-      excessVolCumulative.push(0);
+    if (
+      tickerData.date[i] > lookbackEndDt && 
+      Math.sign(tickerData.pctChgvsIdx[i]) == Math.sign(tickerData.side)
+      ) {
+        excessVolDaily.push(tickerData.px_volume[i] - averageVolume);
+        excessVolCumulativeTotal = excessVolCumulativeTotal + (tickerData.px_volume[i] - averageVolume);
+        excessVolCumulative.push(excessVolCumulativeTotal);
+        originalVolDaily.push(tickerData.px_volume[i]);
+      } else {
+        excessVolDaily.push(0);
+        excessVolCumulative.push(0);
+        originalVolDaily.push(tickerData.px_volume[i]); 
+      }
+
+    if (tickerData.date[i] >= lookbackStDt && i < controlStartPos) {
+      controlStartPos = i;
+    } 
+    if (tickerData.date[i] >= lookbackEndDt && i < controlEndPos) {
+      controlEndPos = i;
     }
+    
+    excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+    averageHorizontalLine.push(averageVolume); 
+    controlStartVerticalBar.push(null);
+    controlEndVerticalBar.push(null);
   }
+  controlStartVerticalBar[controlStartPos] = maxVertical;
+  controlEndVerticalBar[controlEndPos] = maxVertical;
 
   controlStTitle = new Date(lookbackStDt * 1000).toLocaleDateString('en-US');
   controlEndTitle = new Date(lookbackEndDt * 1000).toLocaleDateString('en-US');
@@ -387,12 +420,39 @@ function plotExcessVolume(tickerData, benchmarkData) {
     datasets: [
       {
         type: 'bar',
-        label: 'Ticker Volume',
+        label: 'Ticker Excess Volume',
         yAxisID: 'Volume',
         backgroundColor: 'Black',
         data: excessVolDaily,
         hidden: false,
+      },
+      {
+        type: 'bar',
+        label: 'Ticker Original Volume',
+        backgroundColor: 'Grey',
+        data: originalVolDaily,
+      },
+      {
+        type: 'line',
+        label: '3 Mth Average Volume',
+        backgroundColor: 'Green', 
+        data: averageHorizontalLine,
+        borderWidth: 1,
+        pointRadius: 1,
+      },
+      {
+        type: 'bar',
+        label: 'Control Period Start',
+        backgroundColor: 'Green',
+        data: controlStartVerticalBar,
+      },
+      {
+        type: 'bar',
+        label: 'Control Period End',
+        backgroundColor: 'Green',
+        data: controlEndVerticalBar,
       }
+
     ]
   };
 
@@ -438,6 +498,20 @@ function plotExcessVolumeCumulative(tickerData) {
     Chart.getChart('excessVolumeCumulativeChart').destroy();
   }
 
+  var excessVolCumulativePadded = [0, ]
+  var previous = 0 
+
+  for (let i=1; i < tickerData.excessVolCumulative.length; i++) {
+    if (tickerData.excessVolCumulative[i] == 0) {
+      excessVolCumulativePadded.push(previous);
+    } else {
+      excessVolCumulativePadded.push(tickerData.excessVolCumulative[i]);
+      previous = excessVolCumulativePadded[i];
+    }
+  }
+
+  tickerData.excessVolCumulativePadded = excessVolCumulativePadded;
+
   const data = {
     labels: tickerData.excessVolDates,
     datasets: [
@@ -446,7 +520,7 @@ function plotExcessVolumeCumulative(tickerData) {
         label: 'Ticker Volume',
         yAxisID: 'Volume',
         backgroundColor: 'Black',
-        data: tickerData.excessVolCumulative,
+        data: tickerData.excessVolCumulativePadded,
         hidden: false,
       }
     ]
@@ -518,6 +592,7 @@ class Charting extends React.Component {
       }
     }`;
 
+    var side = issue.side;
     var tickerData = await graphQLFetch(tickerQuery, { ticker: ticker });
     var benchmarkData = await graphQLFetch(benchmarkQuery, { ticker: benchmark });
 
@@ -529,20 +604,38 @@ class Charting extends React.Component {
     benchmarkData.date = benchmarkData.date.slice(starting_point);
     tickerData.date = tickerData.date.slice(starting_point);
 
-    
     var stringDates = [];
+    var tickerPctChg = [null, ];
+    var benchmarkPctChg = [null, ];
+
+    
+
     for (let i=0; i < tickerData.date.length; i++) {
       stringDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+      if (i >= 1 && i != tickerData.date.length) {
+        tickerPctChg.push((tickerData.px_last[i] - tickerData.px_last[i-1]) / tickerData.px_last[i-1]);
+        benchmarkPctChg.push((benchmarkData.px_last[i] - benchmarkData.px_last[i-1]) / benchmarkData.px_last[i-1]);
+      }
     }
+
+    var pctChgvsIdx = [null, ] 
+    for (let i=1; i < tickerPctChg.length; i++) {
+      pctChgvsIdx.push(tickerPctChg[i] - benchmarkPctChg[i]);
+    }
+
+    tickerData.side = side 
     tickerData.stringDates = stringDates;
+    tickerData.pctChg = tickerPctChg;
+    tickerData.pctChgvsIdx = pctChgvsIdx;
+
     benchmarkData.stringDates = stringDates; 
+    benchmarkData.pctChg = benchmarkPctChg;
 
     plotLineChart(tickerData, benchmarkData);
-    plotExcessVolume(tickerData, benchmarkData); 
+    plotExcessVolume(tickerData); 
     plotExcessVolumeCumulative(tickerData); 
   }
 
-  
 
   render() {   
     return (
@@ -597,6 +690,29 @@ class CountryFilter extends React.Component {
       <select id="countryDropdown" onInput={FilterTable}>
         <DropdownOptions options={countryOptions} />
       </select>  
+    );
+  }
+}
+
+class CreatorFilter extends React.Component {
+  render() {
+    var creatorSet = new Set(); 
+    var creatorOptions = [{id: 0, value: 'All Creators'}];
+    var m = 1
+
+    for (let i=0; i < this.props.issues.length; i++) { 
+      creatorSet.add(this.props.issues[i].creator);
+    }
+
+    for (const item of Array.from(creatorSet).sort()) {
+      creatorOptions.push({id: m, value: item});
+      m++
+    }
+
+    return (
+      <select id="creatorDropdown" onInput={FilterTable}>
+        <DropdownOptions options={creatorOptions} />
+      </select>
     );
   }
 }
@@ -666,6 +782,7 @@ class IssueList extends React.Component {
         <Charting/>
         <EventFilter issues={this.state.issues}/> 
         <CountryFilter issues={this.state.issues}/> 
+        <CreatorFilter issues={this.state.issues}/> 
         <hr />
         <IssueTable issues={this.state.issues}/>
         <hr />

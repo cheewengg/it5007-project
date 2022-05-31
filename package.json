@@ -7,7 +7,6 @@
     "compile": "babel src --out-dir public",
     "watch": "babel src --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
-
     "heroku-postbuild": "npm install",
     "start": "nodemon -w server -e js,graphql server/server.js"
   },
