@@ -1,13 +1,12 @@
-const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
-
 function jsonDateReviver(key, value) {
+  const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
   if (dateRegex.test(value)) return new Date(value);
   return value;
 }
 
 function IssueRow(props) {
   const issue = props.issue;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.trade_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, '$' + issue.demand_usd.toFixed(2)), /*#__PURE__*/React.createElement("td", null, issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, issue.demand_adv.toFixed(2)), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, new Date(issue.exp_reporting_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, issue.id), /*#__PURE__*/React.createElement("td", null, issue.visualize), /*#__PURE__*/React.createElement("td", null, issue.add_basket), /*#__PURE__*/React.createElement("td", null, issue.event_name), /*#__PURE__*/React.createElement("td", null, issue.country), /*#__PURE__*/React.createElement("td", null, issue.ticker), /*#__PURE__*/React.createElement("td", null, issue.name), /*#__PURE__*/React.createElement("td", null, issue.ticker_px_close_1D), /*#__PURE__*/React.createElement("td", null, new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, new Date(issue.trade_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.days_to_announcement), /*#__PURE__*/React.createElement("td", null, issue.conviction), /*#__PURE__*/React.createElement("td", null, issue.side), /*#__PURE__*/React.createElement("td", null, '$' + issue.demand_usd.toFixed(2)), /*#__PURE__*/React.createElement("td", null, issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, issue.demand_adv.toFixed(2)), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_1D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_5D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_90D).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_A).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume1D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume5D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume15D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, (100 * issue.excess_volume30D_B).toFixed(2) + '%'), /*#__PURE__*/React.createElement("td", null, new Date(issue.exp_reporting_date * 1000).toLocaleDateString('en-US')), /*#__PURE__*/React.createElement("td", null, issue.benchmark_index), /*#__PURE__*/React.createElement("td", null, issue.lookback_duration), /*#__PURE__*/React.createElement("td", null, issue.lookback_end_days_ago), /*#__PURE__*/React.createElement("td", null, issue.creator));
 }
 
 function IssueTable(props) {
@@ -47,7 +46,7 @@ function IssueTable(props) {
     className: "bordered-table"
   }, /*#__PURE__*/React.createElement("thead", {
     bgcolor: "DarkGrey"
-  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Prediction Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand USD $m"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "ID"), /*#__PURE__*/React.createElement("th", null, "Charting"), /*#__PURE__*/React.createElement("th", null, "Trade Basket"), /*#__PURE__*/React.createElement("th", null, "Event Name"), /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", null, "Ticker"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Last Px"), /*#__PURE__*/React.createElement("th", null, "Review Cut-Off Date"), /*#__PURE__*/React.createElement("th", null, "Announcement Date"), /*#__PURE__*/React.createElement("th", null, "Trade Date"), /*#__PURE__*/React.createElement("th", null, "Days to Announce"), /*#__PURE__*/React.createElement("th", null, "Conviction"), /*#__PURE__*/React.createElement("th", null, "Side"), /*#__PURE__*/React.createElement("th", null, "Demand USD $m"), /*#__PURE__*/React.createElement("th", null, "Demand Shares"), /*#__PURE__*/React.createElement("th", null, "Days to Trade"), /*#__PURE__*/React.createElement("th", null, "1D%Chg"), /*#__PURE__*/React.createElement("th", null, "5D%Chg"), /*#__PURE__*/React.createElement("th", null, "30D%Chg"), /*#__PURE__*/React.createElement("th", null, "90D%Chg"), /*#__PURE__*/React.createElement("th", null, "1D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "5D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "90D%Chg vsIdx"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA"), /*#__PURE__*/React.createElement("th", null, "30D%Chg preA vsIdx"), /*#__PURE__*/React.createElement("th", null, "Avg Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv1 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "1Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "5Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "15Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "30Dv2 Excess Volume"), /*#__PURE__*/React.createElement("th", null, "Exp Reporting Date"), /*#__PURE__*/React.createElement("th", null, "Benchmark"), /*#__PURE__*/React.createElement("th", null, "Benchmark Duration"), /*#__PURE__*/React.createElement("th", null, "Benchmark End (days ago)"), /*#__PURE__*/React.createElement("th", null, "Creator"))), /*#__PURE__*/React.createElement("tbody", null, issueRows));
 }
 
 function Shortlist() {
@@ -248,9 +247,8 @@ function plotExcessVolume(tickerData) {
     Chart.getChart('excessVolumeChart').destroy();
   }
 
-  var refDate = new Date();
-  var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).getTime() / 1000;
-  var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).getTime() / 1000;
+  var lookbackStDt = new Date(tickerData.announcement_date * 1000).addDays(-120).getTime() / 1000;
+  var lookbackEndDt = new Date(tickerData.announcement_date * 1000).addDays(-30).getTime() / 1000;
   var maxVertical = 0;
   var averageVolume = [];
 
@@ -274,12 +272,17 @@ function plotExcessVolume(tickerData) {
   var averageHorizontalLine = [];
   var controlStartPos = Infinity;
   var controlEndPos = Infinity;
+  var predictionPos = tickerData.completeDates.length;
+  var announcePos = tickerData.completeDates.length;
+  var tradePos = tickerData.completeDates.length;
   var controlStartVerticalBar = [];
   var controlEndVerticalBar = [];
-  var excessVolDates = [];
+  var predictionVerticalBar = [];
+  var announceVerticalBar = [];
+  var tradeVerticalBar = [];
 
-  for (let i = 0; i < tickerData.date.length; i++) {
-    if (tickerData.date[i] > lookbackEndDt && Math.sign(tickerData.pctChgvsIdx[i]) == Math.sign(tickerData.side)) {
+  for (let i = 0; i < tickerData.completeDates.length; i++) {
+    if (tickerData.completeDates[i] > lookbackEndDt && Math.sign(tickerData.pctChgvsIdx[i]) == Math.sign(tickerData.side)) {
       excessVolDaily.push(tickerData.px_volume[i] - averageVolume);
       excessVolCumulativeTotal = excessVolCumulativeTotal + (tickerData.px_volume[i] - averageVolume);
       excessVolCumulative.push(excessVolCumulativeTotal);
@@ -290,28 +293,49 @@ function plotExcessVolume(tickerData) {
       originalVolDaily.push(tickerData.px_volume[i]);
     }
 
-    if (tickerData.date[i] >= lookbackStDt && i < controlStartPos) {
+    if (tickerData.completeDates[i] >= lookbackStDt && i < controlStartPos) {
       controlStartPos = i;
     }
 
-    if (tickerData.date[i] >= lookbackEndDt && i < controlEndPos) {
+    if (tickerData.completeDates[i] >= lookbackEndDt && i < controlEndPos) {
       controlEndPos = i;
     }
 
-    excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+    if (tickerData.completeDates[i] >= tickerData.prediction_date && i < predictionPos) {
+      predictionPos = i;
+    }
+
+    if (tickerData.completeDates[i] >= tickerData.announcement_date && i < announcePos) {
+      announcePos = i;
+    }
+
+    if (tickerData.completeDates[i] >= tickerData.trade_date && i < tradePos) {
+      tradePos = i;
+    }
+
     averageHorizontalLine.push(averageVolume);
     controlStartVerticalBar.push(null);
     controlEndVerticalBar.push(null);
+    predictionVerticalBar.push(null);
+    announceVerticalBar.push(null);
+    tradeVerticalBar.push(null);
   }
 
   controlStartVerticalBar[controlStartPos] = maxVertical;
   controlEndVerticalBar[controlEndPos] = maxVertical;
+  predictionVerticalBar[predictionPos] = maxVertical;
+  announceVerticalBar[announcePos] = maxVertical;
+  tradeVerticalBar[tradePos] = maxVertical;
   controlStTitle = new Date(lookbackStDt * 1000).toLocaleDateString('en-US');
   controlEndTitle = new Date(lookbackEndDt * 1000).toLocaleDateString('en-US');
   tickerData.excessVolCumulative = excessVolCumulative;
-  tickerData.excessVolDates = excessVolDates;
+  tickerData.controlStartVerticalBar = controlStartVerticalBar;
+  tickerData.controlEndVerticalBar = controlEndVerticalBar;
+  tickerData.predictionVerticalBar = predictionVerticalBar;
+  tickerData.announceVerticalBar = announceVerticalBar;
+  tickerData.tradeVerticalBar = tradeVerticalBar;
   const data = {
-    labels: excessVolDates,
+    labels: tickerData.stringDates,
     datasets: [{
       type: 'bar',
       label: 'Ticker Excess Volume',
@@ -327,7 +351,7 @@ function plotExcessVolume(tickerData) {
     }, {
       type: 'line',
       label: '3 Mth Average Volume',
-      backgroundColor: 'Green',
+      backgroundColor: 'Aqua',
       data: averageHorizontalLine,
       borderWidth: 1,
       pointRadius: 1
@@ -335,12 +359,27 @@ function plotExcessVolume(tickerData) {
       type: 'bar',
       label: 'Control Period Start',
       backgroundColor: 'Green',
-      data: controlStartVerticalBar
+      data: tickerData.controlStartVerticalBar
     }, {
       type: 'bar',
       label: 'Control Period End',
       backgroundColor: 'Green',
-      data: controlEndVerticalBar
+      data: tickerData.controlEndVerticalBar
+    }, {
+      type: 'bar',
+      label: 'Prediction Date',
+      backgroundColor: 'Magenta',
+      data: tickerData.predictionVerticalBar
+    }, {
+      type: 'bar',
+      label: 'Announcement Date',
+      backgroundColor: 'Red',
+      data: tickerData.announceVerticalBar
+    }, {
+      type: 'bar',
+      label: 'Trade Date',
+      backgroundColor: 'Blue',
+      data: tickerData.tradeVerticalBar
     }]
   };
   const config = {
@@ -388,7 +427,7 @@ function plotExcessVolumeCumulative(tickerData) {
   var previous = 0;
 
   for (let i = 1; i < tickerData.excessVolCumulative.length; i++) {
-    if (tickerData.excessVolCumulative[i] == 0) {
+    if (tickerData.excessVolCumulative[i] == 0 && tickerData.completeDates[i] <= tickerData.date[tickerData.date.length - 1]) {
       excessVolCumulativePadded.push(previous);
     } else {
       excessVolCumulativePadded.push(tickerData.excessVolCumulative[i]);
@@ -398,7 +437,7 @@ function plotExcessVolumeCumulative(tickerData) {
 
   tickerData.excessVolCumulativePadded = excessVolCumulativePadded;
   const data = {
-    labels: tickerData.excessVolDates,
+    labels: tickerData.stringDates,
     datasets: [{
       type: 'bar',
       label: 'Ticker Volume',
@@ -444,6 +483,23 @@ function plotExcessVolumeCumulative(tickerData) {
   new Chart(document.getElementById('excessVolumeCumulativeChart'), config);
 }
 
+class Navbar extends React.Component {
+  render() {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("ul", {
+      id: "nav"
+    }, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#"
+    }, "Home")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#"
+    }, "Tab1")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#"
+    }, "Tab2")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
+      href: "#"
+    }, "Tab3"))));
+  }
+
+}
+
 class Charting extends React.Component {
   constructor() {
     super();
@@ -470,7 +526,6 @@ class Charting extends React.Component {
         px_volume
       }
     }`;
-    var side = issue.side;
     var tickerData = await graphQLFetch(tickerQuery, {
       ticker: ticker
     });
@@ -479,17 +534,18 @@ class Charting extends React.Component {
     });
     tickerData = tickerData.queryData;
     benchmarkData = benchmarkData.queryData;
+    tickerData.prediction_date = issue.prediction_date;
+    tickerData.announcement_date = issue.announcement_date;
+    tickerData.trade_date = issue.trade_date;
+    tickerData.side = issue.side;
     var starting_point = tickerData.px_last.length - tickerData.date.length;
     benchmarkData.px_last = benchmarkData.px_last.slice(starting_point);
     benchmarkData.date = benchmarkData.date.slice(starting_point);
     tickerData.date = tickerData.date.slice(starting_point);
-    var stringDates = [];
     var tickerPctChg = [null];
     var benchmarkPctChg = [null];
 
     for (let i = 0; i < tickerData.date.length; i++) {
-      stringDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
-
       if (i >= 1 && i != tickerData.date.length) {
         tickerPctChg.push((tickerData.px_last[i] - tickerData.px_last[i - 1]) / tickerData.px_last[i - 1]);
         benchmarkPctChg.push((benchmarkData.px_last[i] - benchmarkData.px_last[i - 1]) / benchmarkData.px_last[i - 1]);
@@ -502,7 +558,35 @@ class Charting extends React.Component {
       pctChgvsIdx.push(tickerPctChg[i] - benchmarkPctChg[i]);
     }
 
-    tickerData.side = side;
+    Date.prototype.addDays = function (days) {
+      var dat = new Date(this.valueOf());
+      dat.setDate(dat.getDate() + days);
+      return dat;
+    };
+
+    var completeDates = [];
+    var stringDates = [];
+    var currDate = new Date(tickerData.date[tickerData.date.length - 1] * 1000);
+    var stopDate = new Date(tickerData.trade_date * 1000).addDays(15);
+    var counter = 0;
+
+    while (currDate <= stopDate) {
+      if (counter < tickerData.date.length) {
+        completeDates.push(tickerData.date[counter]);
+        stringDates.push(new Date(tickerData.date[counter] * 1000).toLocaleDateString('en-US'));
+      } else {
+        if (currDate.getDay() != 0 && currDate.getDay() != 6) {
+          completeDates.push(currDate.getTime() / 1000);
+          stringDates.push(currDate.toLocaleDateString('en-US'));
+        }
+
+        currDate = currDate.addDays(1);
+      }
+
+      counter = counter + 1;
+    }
+
+    tickerData.completeDates = completeDates;
     tickerData.stringDates = stringDates;
     tickerData.pctChg = tickerPctChg;
     tickerData.pctChgvsIdx = pctChgvsIdx;
@@ -694,7 +778,7 @@ class IssueList extends React.Component {
   }
 
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watcher (Beta)"), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, "Index Rebalance Watcher (Beta)"), /*#__PURE__*/React.createElement(Navbar, null), /*#__PURE__*/React.createElement(Charting, null), /*#__PURE__*/React.createElement(EventFilter, {
       issues: this.state.issues
     }), /*#__PURE__*/React.createElement(CountryFilter, {
       issues: this.state.issues

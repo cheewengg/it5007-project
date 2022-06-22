@@ -1,6 +1,6 @@
-const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
-
 function jsonDateReviver(key, value) {
+  const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
+
   if (dateRegex.test(value)) return new Date(value);
   return value;
 }
@@ -18,9 +18,9 @@ function IssueRow(props) {
       <td>{issue.ticker}</td>
       <td>{issue.name}</td>
       <td>{issue.ticker_px_close_1D}</td>  
+      <td>{new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{new Date(issue.trade_date * 1000).toLocaleDateString('en-US')}</td>
-      <td>{new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{issue.days_to_announcement}</td>
       <td>{issue.conviction}</td>
       <td>{issue.side}</td>
@@ -98,9 +98,9 @@ function IssueTable(props) {
           <th>Ticker</th>
           <th>Name</th>
           <th>Last Px</th>
+          <th>Review Cut-Off Date</th>
           <th>Announcement Date</th>
           <th>Trade Date</th>
-          <th>Prediction Date</th>
           <th>Days to Announce</th>
           <th>Conviction</th>
           <th>Side</th>
@@ -265,7 +265,7 @@ function plotLineChart(tickerData, benchmarkData) {
         backgroundColor: 'Grey',
         data: tickerData.px_volume,
         hidden: false,
-      }
+      }, 
     ]
   };
 
@@ -342,9 +342,9 @@ function plotExcessVolume(tickerData) {
     Chart.getChart('excessVolumeChart').destroy();
   }
 
-  var refDate = new Date();
-  var lookbackStDt = new Date(refDate.setDate(refDate.getDate() - 180)).getTime() / 1000;
-  var lookbackEndDt = new Date(refDate.setDate(refDate.getDate() + 90)).getTime() / 1000;  
+  var lookbackStDt = new Date(tickerData.announcement_date * 1000).addDays(-120).getTime() / 1000;
+  var lookbackEndDt = new Date(tickerData.announcement_date * 1000).addDays(-30).getTime() / 1000;
+
   var maxVertical = 0
   var averageVolume = []
 
@@ -366,22 +366,25 @@ function plotExcessVolume(tickerData) {
   
   var excessVolDaily = [];
   var originalVolDaily = []; 
-  
   var excessVolCumulative = [];
-  var excessVolCumulativeTotal = 0 ;
-  
+  var excessVolCumulativeTotal = 0;
   var averageHorizontalLine = [];
 
   var controlStartPos = Infinity;
   var controlEndPos = Infinity;
+  var predictionPos = tickerData.completeDates.length; 
+  var announcePos = tickerData.completeDates.length; 
+  var tradePos = tickerData.completeDates.length;
+
   var controlStartVerticalBar = [];
   var controlEndVerticalBar = [];
-
-  var excessVolDates = [];
-
-  for (let i=0; i < tickerData.date.length; i++) {
+  var predictionVerticalBar = [];
+  var announceVerticalBar = [];
+  var tradeVerticalBar = [];
+  
+  for (let i=0; i < tickerData.completeDates.length; i++) {
     if (
-      tickerData.date[i] > lookbackEndDt && 
+      tickerData.completeDates[i] > lookbackEndDt && 
       Math.sign(tickerData.pctChgvsIdx[i]) == Math.sign(tickerData.side)
       ) {
         excessVolDaily.push(tickerData.px_volume[i] - averageVolume);
@@ -394,29 +397,48 @@ function plotExcessVolume(tickerData) {
         originalVolDaily.push(tickerData.px_volume[i]); 
       }
 
-    if (tickerData.date[i] >= lookbackStDt && i < controlStartPos) {
+    if (tickerData.completeDates[i] >= lookbackStDt && i < controlStartPos) {
       controlStartPos = i;
-    } 
-    if (tickerData.date[i] >= lookbackEndDt && i < controlEndPos) {
+    }
+    if (tickerData.completeDates[i] >= lookbackEndDt && i < controlEndPos) {
       controlEndPos = i;
     }
-    
-    excessVolDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
+    if (tickerData.completeDates[i] >= tickerData.prediction_date && i < predictionPos) {
+      predictionPos = i; 
+    }
+    if (tickerData.completeDates[i] >= tickerData.announcement_date && i < announcePos) {
+      announcePos = i; 
+    }
+    if (tickerData.completeDates[i] >= tickerData.trade_date && i < tradePos) {
+      tradePos = i; 
+    }
+
     averageHorizontalLine.push(averageVolume); 
     controlStartVerticalBar.push(null);
     controlEndVerticalBar.push(null);
+    predictionVerticalBar.push(null);
+    announceVerticalBar.push(null);
+    tradeVerticalBar.push(null);
   }
+
   controlStartVerticalBar[controlStartPos] = maxVertical;
   controlEndVerticalBar[controlEndPos] = maxVertical;
-
+  predictionVerticalBar[predictionPos] = maxVertical;
+  announceVerticalBar[announcePos] = maxVertical;
+  tradeVerticalBar[tradePos] = maxVertical;
+  
   controlStTitle = new Date(lookbackStDt * 1000).toLocaleDateString('en-US');
   controlEndTitle = new Date(lookbackEndDt * 1000).toLocaleDateString('en-US');
   
   tickerData.excessVolCumulative = excessVolCumulative;
-  tickerData.excessVolDates = excessVolDates;
+  tickerData.controlStartVerticalBar = controlStartVerticalBar;
+  tickerData.controlEndVerticalBar = controlEndVerticalBar;
+  tickerData.predictionVerticalBar = predictionVerticalBar;
+  tickerData.announceVerticalBar = announceVerticalBar;
+  tickerData.tradeVerticalBar = tradeVerticalBar;
 
   const data = {
-    labels: excessVolDates,
+    labels: tickerData.stringDates,
     datasets: [
       {
         type: 'bar',
@@ -435,7 +457,7 @@ function plotExcessVolume(tickerData) {
       {
         type: 'line',
         label: '3 Mth Average Volume',
-        backgroundColor: 'Green', 
+        backgroundColor: 'Aqua', 
         data: averageHorizontalLine,
         borderWidth: 1,
         pointRadius: 1,
@@ -444,15 +466,32 @@ function plotExcessVolume(tickerData) {
         type: 'bar',
         label: 'Control Period Start',
         backgroundColor: 'Green',
-        data: controlStartVerticalBar,
+        data: tickerData.controlStartVerticalBar,
       },
       {
         type: 'bar',
         label: 'Control Period End',
         backgroundColor: 'Green',
-        data: controlEndVerticalBar,
-      }
-
+        data: tickerData.controlEndVerticalBar,
+      },
+      {
+        type: 'bar',
+        label: 'Prediction Date',
+        backgroundColor: 'Magenta',
+        data: tickerData.predictionVerticalBar,
+      },
+      {
+        type: 'bar',
+        label: 'Announcement Date',
+        backgroundColor: 'Red',
+        data: tickerData.announceVerticalBar,
+      },
+      {
+        type: 'bar',
+        label: 'Trade Date',
+        backgroundColor: 'Blue',
+        data: tickerData.tradeVerticalBar,
+      },
     ]
   };
 
@@ -502,7 +541,10 @@ function plotExcessVolumeCumulative(tickerData) {
   var previous = 0 
 
   for (let i=1; i < tickerData.excessVolCumulative.length; i++) {
-    if (tickerData.excessVolCumulative[i] == 0) {
+    if (
+      tickerData.excessVolCumulative[i] == 0 && 
+      tickerData.completeDates[i] <= tickerData.date[tickerData.date.length -1] 
+    ) {
       excessVolCumulativePadded.push(previous);
     } else {
       excessVolCumulativePadded.push(tickerData.excessVolCumulative[i]);
@@ -513,7 +555,7 @@ function plotExcessVolumeCumulative(tickerData) {
   tickerData.excessVolCumulativePadded = excessVolCumulativePadded;
 
   const data = {
-    labels: tickerData.excessVolDates,
+    labels: tickerData.stringDates,
     datasets: [
       {
         type: 'bar',
@@ -563,6 +605,21 @@ function plotExcessVolumeCumulative(tickerData) {
   new Chart(document.getElementById('excessVolumeCumulativeChart'), config);
 }
 
+class Navbar extends React.Component{
+  render() {
+      return (
+          <div>
+            <ul id="nav">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Tab1</a></li>
+              <li><a href="#">Tab2</a></li>
+              <li><a href="#">Tab3</a></li>
+            </ul>
+          </div>
+      );
+  }
+}
+
 class Charting extends React.Component {
   constructor() {
     super();
@@ -592,38 +649,65 @@ class Charting extends React.Component {
       }
     }`;
 
-    var side = issue.side;
     var tickerData = await graphQLFetch(tickerQuery, { ticker: ticker });
     var benchmarkData = await graphQLFetch(benchmarkQuery, { ticker: benchmark });
 
     tickerData = tickerData.queryData;
     benchmarkData = benchmarkData.queryData;
 
+    tickerData.prediction_date = issue.prediction_date;
+    tickerData.announcement_date = issue.announcement_date;
+    tickerData.trade_date = issue.trade_date;
+    tickerData.side = issue.side;
+
     var starting_point = (tickerData.px_last.length) - tickerData.date.length;
     benchmarkData.px_last = benchmarkData.px_last.slice(starting_point);
     benchmarkData.date = benchmarkData.date.slice(starting_point);
     tickerData.date = tickerData.date.slice(starting_point);
 
-    var stringDates = [];
     var tickerPctChg = [null, ];
     var benchmarkPctChg = [null, ];
 
-    
-
     for (let i=0; i < tickerData.date.length; i++) {
-      stringDates.push(new Date(tickerData.date[i] * 1000).toLocaleDateString('en-US'));
       if (i >= 1 && i != tickerData.date.length) {
         tickerPctChg.push((tickerData.px_last[i] - tickerData.px_last[i-1]) / tickerData.px_last[i-1]);
         benchmarkPctChg.push((benchmarkData.px_last[i] - benchmarkData.px_last[i-1]) / benchmarkData.px_last[i-1]);
       }
     }
 
-    var pctChgvsIdx = [null, ] 
+    var pctChgvsIdx = [null, ]
+
     for (let i=1; i < tickerPctChg.length; i++) {
       pctChgvsIdx.push(tickerPctChg[i] - benchmarkPctChg[i]);
     }
 
-    tickerData.side = side 
+    Date.prototype.addDays = function(days) {
+      var dat = new Date(this.valueOf());
+      dat.setDate(dat.getDate() + days); 
+      return dat; 
+    }
+    
+    var completeDates = [];
+    var stringDates = [];
+    var currDate = new Date(tickerData.date[tickerData.date.length - 1] * 1000);
+    var stopDate = new Date(tickerData.trade_date * 1000).addDays(15);
+    var counter = 0; 
+
+    while (currDate <= stopDate) {
+      if (counter < tickerData.date.length) {
+        completeDates.push(tickerData.date[counter]);
+        stringDates.push(new Date(tickerData.date[counter] * 1000).toLocaleDateString('en-US'));
+      } else {
+        if (currDate.getDay() != 0 && currDate.getDay() != 6) {
+          completeDates.push(currDate.getTime() / 1000);
+          stringDates.push(currDate.toLocaleDateString('en-US'));
+        }
+        currDate = currDate.addDays(1);
+      }
+      counter = counter + 1; 
+    }
+
+    tickerData.completeDates = completeDates;
     tickerData.stringDates = stringDates;
     tickerData.pctChg = tickerPctChg;
     tickerData.pctChgvsIdx = pctChgvsIdx;
@@ -635,7 +719,6 @@ class Charting extends React.Component {
     plotExcessVolume(tickerData); 
     plotExcessVolumeCumulative(tickerData); 
   }
-
 
   render() {   
     return (
@@ -779,6 +862,7 @@ class IssueList extends React.Component {
     return (
       <React.Fragment>
         <h1>Index Rebalance Watcher (Beta)</h1>
+        <Navbar/>
         <Charting/>
         <EventFilter issues={this.state.issues}/> 
         <CountryFilter issues={this.state.issues}/> 
