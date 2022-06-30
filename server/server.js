@@ -40,11 +40,8 @@ const resolvers = {
 async function issueList() {
   const issues = await db.collection('brianfreitas').find({}).toArray();
   const issues2 = await db.collection('intropic').find({}).toArray();
-  const issues3 = await db.collection('mizuho').find({}).toArray();
-
   const res = issues.concat(issues2);
-  const res_updated = res.concat(issues3);
-  return res_updated;
+  return res;
 }
 
 async function queryData(_, issue) {

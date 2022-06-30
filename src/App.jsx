@@ -12,12 +12,10 @@ function IssueRow(props) {
     <tr>
       <td>{issue.id}</td>
       <td>{issue.visualize}</td>
-      <td>{issue.add_basket}</td>
       <td>{issue.event_name}</td>
       <td>{issue.country}</td>
       <td>{issue.ticker}</td>
       <td>{issue.name}</td>
-      <td>{issue.ticker_px_close_1D}</td>  
       <td>{new Date(issue.prediction_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{new Date(issue.announcement_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{new Date(issue.trade_date * 1000).toLocaleDateString('en-US')}</td>
@@ -27,29 +25,8 @@ function IssueRow(props) {
       <td>{'$' + issue.demand_usd.toFixed(2)}</td>
       <td>{issue.demand_shares.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
       <td>{issue.demand_adv.toFixed(2)}</td>
-      <td>{(100 * issue.ticker_pct_chg_1D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_pct_chg_5D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_pct_chg_30D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_pct_chg_90D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_index_1D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_index_5D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_index_30D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_index_90D).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_ticker_30DpreA).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.ticker_vs_index_30DpreA).toFixed(2) + '%'}</td>
-      <td>{issue.average_volume.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-      <td>{(100 * issue.excess_volume1D_A).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume5D_A).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume15D_A).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume30D_A).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume1D_B).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume5D_B).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume15D_B).toFixed(2) + '%'}</td>
-      <td>{(100 * issue.excess_volume30D_B).toFixed(2) + '%'}</td>
       <td>{new Date(issue.exp_reporting_date * 1000).toLocaleDateString('en-US')}</td>
       <td>{issue.benchmark_index}</td>
-      <td>{issue.lookback_duration}</td>
-      <td>{issue.lookback_end_days_ago}</td>
       <td>{issue.creator}</td>
     </tr>
   );
@@ -61,11 +38,10 @@ function IssueTable(props) {
     new Charting().updateChart(issues); 
   }
 
-  // add visualization and shortlist buttons
+  // add visualization button
   for (let i=0; i < props.issues.length; i++) {
     props.issues[i].id = i + 1;
     props.issues[i].visualize = <button onClick={(e) => chartingSubmit(e, issues=props.issues[i])}>Visualize</button>;
-    props.issues[i].add_basket = <button onClick={(e) => Shortlist(e, ticker=props.issues[i].ticker)}>Shortlist</button>;
   }
 
   // add main rows with data
@@ -92,12 +68,10 @@ function IssueTable(props) {
         <tr>
           <th>ID</th>
           <th>Charting</th>
-          <th>Trade Basket</th>
           <th>Event Name</th>
           <th>Country</th>
           <th>Ticker</th>
           <th>Name</th>
-          <th>Last Px</th>
           <th>Review Cut-Off Date</th>
           <th>Announcement Date</th>
           <th>Trade Date</th>
@@ -107,29 +81,8 @@ function IssueTable(props) {
           <th>Demand USD $m</th>
           <th>Demand Shares</th>
           <th>Days to Trade</th>
-          <th>1D%Chg</th>
-          <th>5D%Chg</th>
-          <th>30D%Chg</th>
-          <th>90D%Chg</th>
-          <th>1D%Chg vsIdx</th>
-          <th>5D%Chg vsIdx</th>
-          <th>30D%Chg vsIdx</th>
-          <th>90D%Chg vsIdx</th>
-          <th>30D%Chg preA</th>
-          <th>30D%Chg preA vsIdx</th>
-          <th>Avg Volume</th>
-          <th>1Dv1 Excess Volume</th>
-          <th>5Dv1 Excess Volume</th>
-          <th>15Dv1 Excess Volume</th>
-          <th>30Dv1 Excess Volume</th>
-          <th>1Dv2 Excess Volume</th>
-          <th>5Dv2 Excess Volume</th>
-          <th>15Dv2 Excess Volume</th>
-          <th>30Dv2 Excess Volume</th>
           <th>Exp Reporting Date</th>
           <th>Benchmark</th>
-          <th>Benchmark Duration</th>
-          <th>Benchmark End (days ago)</th>
           <th>Creator</th>
         </tr>
       </thead>
@@ -138,10 +91,6 @@ function IssueTable(props) {
       </tbody>
     </table>
   );
-}
-
-function Shortlist() {
-  console.log('Placeholder for Shortlisting ' + ticker + ' to Trade Basket')
 }
 
 function FilterTable() {
@@ -160,9 +109,9 @@ function FilterTable() {
   for (let row of rows) { 
     cells = row.getElementsByTagName("td");
 
-    event = cells[3] || null;   // be careful, identification of value is index-based
-    country = cells[4] || null;
-    creator = cells[40] || null;
+    event = cells[2] || null;   // be careful, identification of value is index-based (idx)
+    country = cells[3] || null;
+    creator = cells[17] || null;
 
     eventBool = ((eventFilter === ("All Events") || !event || (eventFilter === event.textContent)))
     countryBool = ((countryFilter === "All Countries") || !country || (countryFilter === country.textContent))
@@ -342,8 +291,8 @@ function plotExcessVolume(tickerData) {
     Chart.getChart('excessVolumeChart').destroy();
   }
 
-  var lookbackStDt = new Date(tickerData.announcement_date * 1000).addDays(-120).getTime() / 1000;
-  var lookbackEndDt = new Date(tickerData.announcement_date * 1000).addDays(-30).getTime() / 1000;
+  var lookbackStDt = new Date(tickerData.announcement_date * 1000).addDays(-240).getTime() / 1000;
+  var lookbackEndDt = new Date(tickerData.announcement_date * 1000).addDays(-180).getTime() / 1000;
 
   var maxVertical = 0
   var averageVolume = []
@@ -605,21 +554,6 @@ function plotExcessVolumeCumulative(tickerData) {
   new Chart(document.getElementById('excessVolumeCumulativeChart'), config);
 }
 
-class Navbar extends React.Component{
-  render() {
-      return (
-          <div>
-            <ul id="nav">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Tab1</a></li>
-              <li><a href="#">Tab2</a></li>
-              <li><a href="#">Tab3</a></li>
-            </ul>
-          </div>
-      );
-  }
-}
-
 class Charting extends React.Component {
   constructor() {
     super();
@@ -817,7 +751,6 @@ class IssueList extends React.Component {
         country
         ticker
         name
-        ticker_px_close_1D
         announcement_date
         trade_date
         prediction_date
@@ -827,29 +760,8 @@ class IssueList extends React.Component {
         demand_usd
         demand_shares
         demand_adv
-        ticker_pct_chg_1D
-        ticker_pct_chg_5D
-        ticker_pct_chg_30D
-        ticker_pct_chg_90D
-        ticker_vs_index_1D
-        ticker_vs_index_5D
-        ticker_vs_index_30D
-        ticker_vs_index_90D
-        ticker_vs_ticker_30DpreA
-        ticker_vs_index_30DpreA
-        average_volume
-        excess_volume1D_A
-        excess_volume5D_A
-        excess_volume15D_A
-        excess_volume30D_A
-        excess_volume1D_B
-        excess_volume5D_B
-        excess_volume15D_B
-        excess_volume30D_B
         exp_reporting_date
         benchmark_index
-        lookback_duration
-        lookback_end_days_ago
         creator
       }
     }`;
@@ -862,7 +774,6 @@ class IssueList extends React.Component {
     return (
       <React.Fragment>
         <h1>Index Rebalance Watcher (Beta)</h1>
-        <Navbar/>
         <Charting/>
         <EventFilter issues={this.state.issues}/> 
         <CountryFilter issues={this.state.issues}/> 

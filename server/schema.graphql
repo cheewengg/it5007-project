@@ -5,7 +5,6 @@ type Issue {
   country: String
   ticker: String
   name: String
-  ticker_px_close_1D: Float
   announcement_date: Int
   trade_date: Int
   prediction_date: Int
@@ -15,29 +14,8 @@ type Issue {
   demand_usd: Float
   demand_shares: Float
   demand_adv: Float
-  ticker_pct_chg_1D: Float
-  ticker_pct_chg_5D: Float
-  ticker_pct_chg_30D: Float
-  ticker_pct_chg_90D: Float
-  ticker_vs_index_1D: Float
-  ticker_vs_index_5D: Float
-  ticker_vs_index_30D: Float
-  ticker_vs_index_90D: Float
-  ticker_vs_ticker_30DpreA: Float
-  ticker_vs_index_30DpreA: Float
-  average_volume: Float
-  excess_volume1D_A: Float
-  excess_volume5D_A: Float
-  excess_volume15D_A: Float
-  excess_volume30D_A: Float
-  excess_volume1D_B: Float
-  excess_volume5D_B: Float
-  excess_volume15D_B: Float
-  excess_volume30D_B: Float
   exp_reporting_date: Int
   benchmark_index: String
-  lookback_duration: String
-  lookback_end_days_ago: String
   creator: String
 }
 
